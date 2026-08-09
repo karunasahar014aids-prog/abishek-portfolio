@@ -235,15 +235,19 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           Leave Feedback
         </button>
-        <a href="#" target="_blank" rel="noopener" class="btn btn-outline magnetic" id="google-review-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
-          Write a Google Review
-        </a>
       </div>
     </div>
 
-    <div class="feedback-grid" id="feedback-grid">
-      <!-- feedback cards injected by script.js (Supabase, with in-memory fallback) -->
+    <div class="feedback-carousel">
+      <button class="fb-arrow fb-arrow-left" id="fb-scroll-left" aria-label="Scroll feedback left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="feedback-grid" id="feedback-grid">
+        <!-- feedback cards injected by script.js (Supabase, with in-memory fallback) -->
+      </div>
+      <button class="fb-arrow fb-arrow-right" id="fb-scroll-right" aria-label="Scroll feedback right">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
     </div>
     <div class="feedback-empty" id="feedback-empty">
       <p>No feedback yet — be the first to share your experience.</p>
@@ -287,9 +291,9 @@
             <label class="static-label">Project Type</label>
             <select id="cf-type"><option>Wedding Photography</option><option>Editorial / Portrait</option><option>Digital Art / Commission</option><option>Other</option></select>
           </div>
-          <div class="f-group floating">
-            <textarea id="cf-message" rows="4" placeholder=" " required></textarea>
-            <label for="cf-message">Message</label>
+          <div class="f-group">
+            <label class="static-label" for="cf-message">Message</label>
+            <textarea id="cf-message" rows="4" placeholder="Tell me about your project..." required></textarea>
           </div>
           <button type="submit" class="btn btn-primary send-btn magnetic">Send Message
             <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
@@ -358,8 +362,8 @@
           <label for="fb-name">Full Name</label>
         </div>
         <div class="f-group floating">
-          <input type="tel" id="fb-phone" placeholder=" ">
-          <label for="fb-phone">Phone Number (optional)</label>
+          <input type="tel" id="fb-phone" placeholder=" " required>
+          <label for="fb-phone">Phone Number</label>
         </div>
       </div>
       <div class="f-group floating">
@@ -377,9 +381,13 @@
         </div>
         <input type="hidden" id="fb-rating" value="0">
       </div>
-      <div class="f-group floating">
-        <textarea id="fb-message" rows="4" placeholder=" " required></textarea>
-        <label for="fb-message">Feedback Message</label>
+      <div class="f-group">
+        <label class="static-label" for="fb-message">Feedback Message</label>
+        <textarea id="fb-message" rows="4" placeholder="Share your experience working together..." required></textarea>
+      </div>
+      <div class="f-group">
+        <label class="static-label" for="fb-pin">Set a 4-Digit PIN (to delete this later)</label>
+        <input type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" id="fb-pin" placeholder="••••" required style="letter-spacing:.3em;">
       </div>
       <div class="fb-error" id="fb-error"></div>
       <button type="submit" class="btn btn-primary send-btn magnetic" id="fb-submit-btn">Submit Feedback
@@ -390,6 +398,37 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
       <h3>Thank you!</h3>
       <p>Your feedback has been submitted and now appears below.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FEEDBACK VIEW MODAL (like Selected Work modal) ===================== -->
+<div id="fb-view-backdrop">
+  <div id="fb-view-modal">
+    <button class="modal-close" id="fb-view-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="fb-view-stars" id="fb-view-stars"></div>
+    <p class="fb-view-quote" id="fb-view-quote"></p>
+    <div class="fb-person" style="margin-top:28px;">
+      <div class="fb-avatar" id="fb-view-avatar"></div>
+      <div>
+        <div class="fb-name" id="fb-view-name"></div>
+        <div class="fb-date" id="fb-view-date"></div>
+      </div>
+    </div>
+
+    <div class="fb-delete-zone">
+      <button class="fb-delete-trigger" id="fb-delete-trigger">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/></svg>
+        Delete this feedback
+      </button>
+      <div class="fb-delete-panel" id="fb-delete-panel">
+        <label class="static-label" for="fb-delete-pin">Enter the 4-digit PIN you set when posting this</label>
+        <div class="fb-delete-row">
+          <input type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" id="fb-delete-pin" placeholder="••••" style="letter-spacing:.3em;">
+          <button class="btn btn-primary" id="fb-delete-confirm" type="button">Confirm Delete</button>
+        </div>
+        <div class="fb-delete-error" id="fb-delete-error"></div>
+      </div>
     </div>
   </div>
 </div>
