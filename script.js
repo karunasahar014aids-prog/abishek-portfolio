@@ -1,6 +1,39 @@
 gsap.registerPlugin(ScrollTrigger);
 
 /* ============================================================
+   MODAL SCROLL LOCK (shared by all modals: gallery, feedback
+   form, feedback view)
+   ------------------------------------------------------------
+   Locks both <html> and <body> (not just body — some browsers
+   scroll the html element instead) and uses a counter so that
+   if one modal opens while another is technically still
+   closing, they don't stomp on each other's unlock. Also blocks
+   wheel/touch scroll on the backdrop itself so the page behind
+   a blurred modal never scrolls — only the modal box (which has
+   its own overflow-y:auto) scrolls.
+============================================================ */
+let modalLockCount = 0;
+function lockPageScroll(){
+  modalLockCount++;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+}
+function unlockPageScroll(){
+  modalLockCount = Math.max(0, modalLockCount - 1);
+  if(modalLockCount === 0){
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+}
+function preventBackdropScroll(backdropEl, boxSelector){
+  const block = e=>{
+    if(!e.target.closest(boxSelector)) e.preventDefault();
+  };
+  backdropEl.addEventListener('wheel', block, { passive:false });
+  backdropEl.addEventListener('touchmove', block, { passive:false });
+}
+
+/* ============================================================
    SUPABASE CONFIG (Feedback System)
    ------------------------------------------------------------
    Fill these in with your own Supabase project values:
@@ -26,7 +59,6 @@ gsap.registerPlugin(ScrollTrigger);
 ============================================================ */
 const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-const GOOGLE_REVIEW_URL = 'https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review'; // replace with the real link
 
 let sb = null;
 try{
@@ -34,8 +66,6 @@ try{
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 }catch(err){ console.warn('Supabase not configured yet, using local fallback.', err); }
-
-document.getElementById('google-review-btn').href = GOOGLE_REVIEW_URL;
 
 /* ============ DATA ============ */
 const galleryData = [
@@ -166,6 +196,34 @@ categories.forEach((c,i)=>{
   filterBar.appendChild(b);
 });
 
+/* ============================================================
+   FAVORITES (per-device, stored in localStorage)
+   ------------------------------------------------------------
+   Each gallery photo gets a stable id (its index in galleryData,
+   which never changes at runtime). We keep a simple array of
+   favorited ids in localStorage under FAV_KEY. Every time a card
+   is rendered we check this array and paint the heart red if the
+   photo is already a favorite — so it survives reloads, tab
+   closes, and repeat visits on that same browser/device.
+============================================================ */
+const FAV_KEY = 'portfolio_favorites_v1';
+function getFavorites(){
+  try{ return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+  catch(err){ return []; }
+}
+function saveFavorites(arr){
+  try{ localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }
+  catch(err){ console.warn('Could not save favorites to localStorage.', err); }
+}
+function isFavorited(gid){ return getFavorites().includes(gid); }
+function toggleFavorite(gid){
+  const favs = getFavorites();
+  const i = favs.indexOf(gid);
+  if(i === -1) favs.push(gid); else favs.splice(i,1);
+  saveFavorites(favs);
+  return favs.includes(gid);
+}
+
 /* ============ GALLERY ============ */
 const gallery = document.getElementById('gallery');
 let visibleCount = 8;
@@ -179,12 +237,18 @@ function renderGallery(filter){
   : galleryData.filter(g => g.cat===filter);
   const items = currentFilteredList.slice(0, visibleCount);
   items.forEach((g)=>{
+    const gid = galleryData.indexOf(g); // stable id — never changes across filters/reloads
+    const favActive = isFavorited(gid);
     const card = document.createElement('div');
     card.className = 'g-card reveal';
     card.dataset.idx = currentFilteredList.indexOf(g);
+    card.dataset.gid = gid;
     card.innerHTML = `
       <div class="g-card-img">
         <img src="${IMG(g.img,700)}" style="height:${g.h}px;object-fit:cover;" alt="${g.title}" loading="lazy">
+        <button class="g-fav-badge${favActive?' favorited':''}" data-act="favorite" aria-label="Favorite this photo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="${favActive?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5 5 0 00-7.1 0L12 6.3l-1.7-1.7a5 5 0 00-7.1 7.1L12 21l8.8-9.3a5 5 0 000-7.1z"/></svg>
+        </button>
         <div class="g-overlay">
           <div class="g-cat">${g.cat}</div>
           <div class="g-title">${g.title}</div>
@@ -196,10 +260,10 @@ function renderGallery(filter){
         <button data-act="view"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>View Details</button>
         <button data-act="share"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
         <button data-act="download"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download</button>
-        <button data-act="favorite"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5 5 0 00-7.1 0L12 6.3l-1.7-1.7a5 5 0 00-7.1 7.1L12 21l8.8-9.3a5 5 0 000-7.1z"/></svg>Favorite</button>
+        <button class="fav-menu-item${favActive?' favorited':''}" data-act="favorite"><svg width="14" height="14" viewBox="0 0 24 24" fill="${favActive?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5 5 0 00-7.1 0L12 6.3l-1.7-1.7a5 5 0 00-7.1 7.1L12 21l8.8-9.3a5 5 0 000-7.1z"/></svg>${favActive?'Favorited':'Favorite'}</button>
       </div>`;
     const img = card.querySelector('img');
-    withFallback(img, 'gal-'+galleryData.indexOf(g));
+    withFallback(img, 'gal-'+gid);
     gallery.appendChild(card);
   });
   document.getElementById('load-more-btn').style.display =
@@ -222,10 +286,29 @@ document.getElementById('load-more-btn').addEventListener('click', ()=>{
   renderGallery(active);
 });
 
+function setFavUI(card, active){
+  const badge = card.querySelector('.g-fav-badge');
+  const menuItem = card.querySelector('.fav-menu-item');
+  [badge, menuItem].forEach(btn=>{
+    if(!btn) return;
+    btn.classList.toggle('favorited', active);
+    btn.querySelector('svg').setAttribute('fill', active ? 'currentColor' : 'none');
+  });
+  if(menuItem) menuItem.lastChild.textContent = active ? 'Favorited' : 'Favorite';
+}
+
 gallery.addEventListener('click', e=>{
   const dots = e.target.closest('.g-dots');
+  const favBadge = e.target.closest('.g-fav-badge');
   const menuBtn = e.target.closest('.g-menu button');
   const card = e.target.closest('.g-card');
+
+  if(favBadge){
+    e.stopPropagation();
+    const active = toggleFavorite(parseInt(card.dataset.gid));
+    setFavUI(card, active);
+    return;
+  }
   if(dots){
     e.stopPropagation();
     const menu = card.querySelector('.g-menu');
@@ -239,7 +322,10 @@ gallery.addEventListener('click', e=>{
     if(menuBtn.dataset.act==='view') openModal(parseInt(card.dataset.idx));
     else if(menuBtn.dataset.act==='share') shareItem(currentFilteredList[parseInt(card.dataset.idx)]);
     else if(menuBtn.dataset.act==='download') downloadItem(currentFilteredList[parseInt(card.dataset.idx)]);
-    else if(menuBtn.dataset.act==='favorite') menuBtn.classList.toggle('favorited');
+    else if(menuBtn.dataset.act==='favorite'){
+      const active = toggleFavorite(parseInt(card.dataset.gid));
+      setFavUI(card, active);
+    }
     return;
   }
   if(card){ openModal(parseInt(card.dataset.idx)); }
@@ -294,10 +380,10 @@ function openModal(i){
     img.addEventListener('click', ()=> openModal(parseInt(img.dataset.idx)));
   });
 
+  if(!backdrop.classList.contains('open')) lockPageScroll();
   backdrop.classList.add('open');
-  document.body.style.overflow='hidden';
 }
-function closeModal(){ backdrop.classList.remove('open'); document.body.style.overflow=''; currentModalIndex=-1; }
+function closeModal(){ backdrop.classList.remove('open'); unlockPageScroll(); currentModalIndex=-1; }
 function modalNext(){ if(currentModalIndex<0) return; openModal((currentModalIndex+1) % currentFilteredList.length); }
 function modalPrev(){ if(currentModalIndex<0) return; openModal((currentModalIndex-1+currentFilteredList.length) % currentFilteredList.length); }
 
@@ -305,6 +391,7 @@ document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-next').addEventListener('click', modalNext);
 document.getElementById('modal-prev').addEventListener('click', modalPrev);
 backdrop.addEventListener('click', e=>{ if(e.target===backdrop) closeModal(); });
+preventBackdropScroll(backdrop, '#modal');
 document.addEventListener('keydown', e=>{
   if(!backdrop.classList.contains('open')) return;
   if(e.key==='Escape') closeModal();
@@ -334,6 +421,8 @@ projectsData.forEach((p,i)=>{
    FEEDBACK SYSTEM (Supabase, in-memory fallback)
 ============================================================ */
 let localFeedbacks = []; // session-only fallback if Supabase isn't configured
+let currentFeedbackList = [];
+let currentFeedbackViewIdx = -1;
 
 function initials(name){
   return name.trim().split(/\s+/).slice(0,2).map(n=>n[0]?.toUpperCase()).join('') || '?';
@@ -346,31 +435,166 @@ function renderFeedback(list){
   const grid = document.getElementById('feedback-grid');
   const empty = document.getElementById('feedback-empty');
   grid.innerHTML = '';
+  currentFeedbackList = list;
   if(!list.length){ empty.classList.add('show'); return; }
   empty.classList.remove('show');
   list.forEach((f, i)=>{
     const stars = Array.from({length:f.rating}).map(()=>`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>`).join('');
     const card = document.createElement('div');
     card.className = 'fb-card';
+    card.dataset.idx = i;
     card.style.animationDelay = (i*0.06)+'s';
     card.innerHTML = `
+      <div class="fb-card-dots"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>
+      <div class="fb-card-menu">
+        <button data-act="view"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>View Full</button>
+        <button data-act="delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/></svg>Delete</button>
+      </div>
       <div class="fb-stars">${stars}</div>
       <p class="fb-quote">"${f.message}"</p>
       <div class="fb-person">
         <div class="fb-avatar">${initials(f.full_name || f.name)}</div>
         <div>
           <div class="fb-name">${f.full_name || f.name}</div>
-          <div class="fb-date">${formatDate(f.created_at || f.date || Date.now())}</div>
+          <div class="fb-date">${formatDate(f.created_at || f.date || Date.now())}${f.phone ? ' · '+f.phone : ''}</div>
         </div>
       </div>`;
     grid.appendChild(card);
   });
   refreshRevealTargets();
+  updateFbArrows();
 }
+
+/* horizontal scroll arrows for the feedback carousel */
+const fbGrid = document.getElementById('feedback-grid');
+const fbLeftBtn = document.getElementById('fb-scroll-left');
+const fbRightBtn = document.getElementById('fb-scroll-right');
+function fbScrollAmount(){
+  const card = fbGrid.querySelector('.fb-card');
+  const gap = 22;
+  return card ? card.getBoundingClientRect().width + gap : 320;
+}
+function updateFbArrows(){
+  if(!fbGrid) return;
+  const maxScroll = fbGrid.scrollWidth - fbGrid.clientWidth;
+  fbLeftBtn.disabled = fbGrid.scrollLeft <= 4;
+  fbRightBtn.disabled = fbGrid.scrollLeft >= maxScroll - 4;
+  const hasOverflow = maxScroll > 4;
+  fbLeftBtn.style.display = hasOverflow ? '' : 'none';
+  fbRightBtn.style.display = hasOverflow ? '' : 'none';
+}
+fbLeftBtn?.addEventListener('click', ()=> fbGrid.scrollBy({ left: -fbScrollAmount(), behavior:'smooth' }));
+fbRightBtn?.addEventListener('click', ()=> fbGrid.scrollBy({ left: fbScrollAmount(), behavior:'smooth' }));
+fbGrid?.addEventListener('scroll', updateFbArrows);
+window.addEventListener('resize', updateFbArrows);
+
+/* 3-dot menu on each feedback card: View Full / Delete */
+fbGrid?.addEventListener('click', e=>{
+  const dots = e.target.closest('.fb-card-dots');
+  const menuBtn = e.target.closest('.fb-card-menu button');
+  const card = e.target.closest('.fb-card');
+  if(dots){
+    e.stopPropagation();
+    const menu = card.querySelector('.fb-card-menu');
+    document.querySelectorAll('.fb-card-menu.open').forEach(m=>{ if(m!==menu) m.classList.remove('open'); });
+    menu.classList.toggle('open');
+    return;
+  }
+  if(menuBtn){
+    e.stopPropagation();
+    card.querySelector('.fb-card-menu').classList.remove('open');
+    const idx = parseInt(card.dataset.idx);
+    if(menuBtn.dataset.act==='view') openFbView(idx);
+    else if(menuBtn.dataset.act==='delete') openFbView(idx, true);
+  }
+});
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.fb-card-menu') && !e.target.closest('.fb-card-dots')){
+    document.querySelectorAll('.fb-card-menu.open').forEach(m=>m.classList.remove('open'));
+  }
+});
+
+/* ===== feedback view modal (View Full + Delete-with-PIN) ===== */
+const fbViewBackdrop = document.getElementById('fb-view-backdrop');
+const fbDeletePanel = document.getElementById('fb-delete-panel');
+function openFbView(idx, openDeletePanel){
+  const f = currentFeedbackList[idx];
+  if(!f) return;
+  currentFeedbackViewIdx = idx;
+  const stars = Array.from({length:f.rating}).map(()=>`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>`).join('');
+  document.getElementById('fb-view-stars').innerHTML = stars;
+  document.getElementById('fb-view-quote').textContent = `"${f.message}"`;
+  document.getElementById('fb-view-avatar').textContent = initials(f.full_name || f.name);
+  document.getElementById('fb-view-name').textContent = f.full_name || f.name;
+  document.getElementById('fb-view-date').textContent = formatDate(f.created_at || f.date || Date.now()) + (f.phone ? ' · '+f.phone : '');
+  document.getElementById('fb-delete-pin').value = '';
+  document.getElementById('fb-delete-error').textContent = '';
+  fbDeletePanel.classList.toggle('open', !!openDeletePanel);
+  fbViewBackdrop.classList.add('open');
+  lockPageScroll();
+}
+function closeFbView(){
+  fbViewBackdrop.classList.remove('open');
+  unlockPageScroll();
+  fbDeletePanel.classList.remove('open');
+  currentFeedbackViewIdx = -1;
+}
+document.getElementById('fb-view-close').addEventListener('click', closeFbView);
+fbViewBackdrop.addEventListener('click', e=>{ if(e.target===fbViewBackdrop) closeFbView(); });
+preventBackdropScroll(fbViewBackdrop, '#fb-view-modal');
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && fbViewBackdrop.classList.contains('open')) closeFbView(); });
+
+document.getElementById('fb-delete-trigger').addEventListener('click', ()=>{
+  fbDeletePanel.classList.toggle('open');
+  document.getElementById('fb-delete-pin').focus();
+});
+
+document.getElementById('fb-delete-confirm').addEventListener('click', async ()=>{
+  const f = currentFeedbackList[currentFeedbackViewIdx];
+  const errorEl = document.getElementById('fb-delete-error');
+  const pinInput = document.getElementById('fb-delete-pin');
+  const pin = pinInput.value.trim();
+  if(!f) return;
+  if(!/^\d{4}$/.test(pin)){
+    errorEl.textContent = 'Enter the 4-digit PIN you set when posting.';
+    return;
+  }
+  const btn = document.getElementById('fb-delete-confirm');
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+  const ok = await deleteFeedback(f, pin);
+  btn.disabled = false;
+  btn.textContent = 'Confirm Delete';
+  if(ok){
+    closeFbView();
+    await loadFeedback();
+  } else {
+    errorEl.textContent = 'That PIN doesn\'t match — check the PIN you set when you posted it.';
+  }
+});
+
+async function deleteFeedback(f, pin){
+  if(sb && f.id && !String(f.id).startsWith('local-')){
+    try{
+      const { data, error } = await sb.rpc('delete_feedback', { feedback_id: f.id, submitted_pin: pin });
+      if(error) throw error;
+      return data === true;
+    }catch(err){ console.warn('Supabase delete failed.', err); return false; }
+  }
+  // local fallback (session-only feedback)
+  if(f._localPin && f._localPin === pin){
+    localFeedbacks = localFeedbacks.filter(x=>x!==f);
+    return true;
+  }
+  return false;
+}
+
 async function loadFeedback(){
   if(sb){
     try{
-      const { data, error } = await sb.from('feedbacks').select('*').order('created_at', { ascending:false });
+      const { data, error } = await sb.from('feedbacks')
+        .select('id, full_name, phone, email, rating, message, created_at')
+        .order('created_at', { ascending:false });
       if(error) throw error;
       renderFeedback(data || []);
       return;
@@ -389,7 +613,12 @@ async function submitFeedback(payload){
       console.warn('Supabase insert failed, saving locally for this session instead.', err);
     }
   }
-  localFeedbacks.unshift({ ...payload, created_at: new Date().toISOString() });
+  localFeedbacks.unshift({
+    ...payload,
+    id: 'local-' + Date.now(),
+    _localPin: payload.pin_hash, // stored in-memory only, for this session's fallback delete
+    created_at: new Date().toISOString()
+  });
   renderFeedback(localFeedbacks);
   return true;
 }
@@ -399,13 +628,14 @@ loadFeedback();
 const fbBackdrop = document.getElementById('fb-modal-backdrop');
 document.getElementById('open-feedback-btn').addEventListener('click', ()=>{
   fbBackdrop.classList.add('open');
-  document.body.style.overflow='hidden';
+  lockPageScroll();
   document.getElementById('fb-form').style.display='';
   document.getElementById('fb-success').classList.remove('show');
 });
-function closeFbModal(){ fbBackdrop.classList.remove('open'); document.body.style.overflow=''; }
+function closeFbModal(){ fbBackdrop.classList.remove('open'); unlockPageScroll(); }
 document.getElementById('fb-modal-close').addEventListener('click', closeFbModal);
 fbBackdrop.addEventListener('click', e=>{ if(e.target===fbBackdrop) closeFbModal(); });
+preventBackdropScroll(fbBackdrop, '#fb-modal');
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && fbBackdrop.classList.contains('open')) closeFbModal(); });
 
 /* star rating input */
@@ -427,10 +657,19 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
   const phone = document.getElementById('fb-phone').value.trim();
   const email = document.getElementById('fb-email').value.trim();
   const message = document.getElementById('fb-message').value.trim();
+  const pin = document.getElementById('fb-pin').value.trim();
   const rating = parseInt(ratingInput.value);
 
   if(!name || !message || !rating){
     errorEl.textContent = 'Please add your name, a star rating, and a short message.';
+    return;
+  }
+  if(!/^[0-9+\-\s]{7,15}$/.test(phone)){
+    errorEl.textContent = 'Please add a valid phone number.';
+    return;
+  }
+  if(!/^\d{4}$/.test(pin)){
+    errorEl.textContent = 'Please set a 4-digit PIN — you\'ll need it later to delete this feedback.';
     return;
   }
   errorEl.textContent = '';
@@ -438,7 +677,7 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
   btn.textContent = 'Submitting...';
   btn.disabled = true;
 
-  await submitFeedback({ full_name:name, phone:phone||null, email:email||null, rating, message });
+  await submitFeedback({ full_name:name, phone, email:email||null, rating, message, pin_hash: pin });
 
   btn.disabled = false;
   btn.innerHTML = 'Submit Feedback <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>';
@@ -454,9 +693,47 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
   }, 1800);
 });
 
-/* ============ CONTACT FORM ============ */
-document.getElementById('contact-form').addEventListener('submit', function(e){
+/* ============================================================
+   CONTACT FORM (Supabase, in-memory fallback)
+   ------------------------------------------------------------
+   Create the table with this SQL in the Supabase SQL editor:
+
+   create table contacts (
+     id uuid primary key default gen_random_uuid(),
+     name text not null,
+     email text not null,
+     project_type text,
+     message text not null,
+     created_at timestamptz default now()
+   );
+   alter table contacts enable row level security;
+   create policy "public insert" on contacts for insert with check (true);
+   -- no public "select" policy on purpose: only you (via the Supabase
+   -- dashboard / service role) can read submitted leads.
+============================================================ */
+let localContacts = [];
+async function submitContact(payload){
+  if(sb){
+    try{
+      const { error } = await sb.from('contacts').insert([payload]);
+      if(error) throw error;
+      return true;
+    }catch(err){ console.warn('Supabase insert failed, saving locally for this session instead.', err); }
+  }
+  localContacts.push({ ...payload, created_at: new Date().toISOString() });
+  return true;
+}
+
+document.getElementById('contact-form').addEventListener('submit', async function(e){
   e.preventDefault();
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const type = document.getElementById('cf-type').value;
+  const message = document.getElementById('cf-message').value.trim();
+  if(!name || !email || !message) return;
+
+  await submitContact({ name, email, project_type:type, message });
+
   this.style.display = 'none';
   document.getElementById('form-success').classList.add('show');
 });
