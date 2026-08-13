@@ -449,9 +449,6 @@ img{content-visibility:auto;}
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important;}
 }
-/* =========================================
-   3D PARTICLE BACKGROUND
-========================================= */
 
 #particle-background {
     position: fixed;
