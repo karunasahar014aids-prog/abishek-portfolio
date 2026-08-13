@@ -3,436 +3,1360 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ABISHEK</title>
-<meta name="description" content="ABISHEK — Professional Photographer &amp; Digital Artist. Photography is not just capturing moments, it is preserving emotions.">
+
+<meta name="description"
+content="ABISHEK — Professional Photographer & Digital Artist. Photography is not just capturing moments, it is preserving emotions.">
+
 <link rel="icon" type="image/png" href="images/icon.png">
 <link rel="apple-touch-icon" href="images/icon.png">
-<!-- Fonts: General Sans (primary + secondary heading fallback) + Lexend (body) -->
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
-<!--
-  NOTE: "TT Hoves Pro Trial" is a licensed commercial font and cannot be
-  loaded from a free CDN. Per the brief, it automatically falls back to
-  General Sans (see --f-head-secondary in style.css). If the client later
-  purchases a license, host the font files and update that one variable.
--->
 
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap"
+rel="stylesheet">
+
+<!-- Existing CSS -->
 <link rel="stylesheet" href="style.css">
 
+<!-- Existing Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-<!-- Supabase client for the feedback system (see script.js for config) -->
+
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+
+<!-- =========================================
+     THREE.JS IMPORTS FOR BACKGROUND
+========================================= -->
+
+<script type="importmap">
+{
+    "imports": {
+        "three":
+        "https://unpkg.com/three@0.160.0/build/three.module.js",
+
+        "three/addons/":
+        "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+
+
+<!-- =========================================
+     BACKGROUND CSS
+========================================= -->
+
+<style>
+
+html,
+body {
+    background: transparent !important;
+}
+
+
+/* 3D background */
+
+#particle-background {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: -999;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #180818 0%,
+            #09040d 40%,
+            #020204 100%
+        );
+}
+
+
+#particle-background canvas {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+}
+
+
+/* Make website transparent */
+
+#hero,
+#about,
+#skills,
+#portfolio,
+#projects,
+#testimonials,
+#contact,
+footer {
+
+    background: transparent !important;
+
+}
+
+
+/* Hide old decorative hero lines */
+
+.hero-bg-lines {
+
+    display: none !important;
+
+}
+
+
+/* Keep website above background */
+
+#site-header,
+section,
+footer {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* Slight glass effect */
+
+.a-card,
+.contact-form {
+
+    backdrop-filter: blur(8px);
+
+}
+
+</style>
+
 </head>
+
+
 <body>
 
+
+<!-- =========================================
+     3D PARTICLE BACKGROUND
+========================================= -->
+
+<div id="particle-background"></div>
+
+
+<!-- =========================================
+     CURSOR
+========================================= -->
+
 <div id="cursor-dot"></div>
+
 <div id="cursor-ring"></div>
 
+
+<!-- =========================================
+     LOADER
+========================================= -->
+
 <div id="loader">
-  <div class="shutter">
-    <svg viewBox="0 0 150 150">
-      <g id="blades" fill="#111827">
-        <path class="shutter-blade" d="M75 75 L75 8 A67 67 0 0 1 132 45 Z"/>
-        <path class="shutter-blade" d="M75 75 L132 45 A67 67 0 0 1 132 105 Z"/>
-        <path class="shutter-blade" d="M75 75 L132 105 A67 67 0 0 1 75 142 Z"/>
-        <path class="shutter-blade" d="M75 75 L75 142 A67 67 0 0 1 18 105 Z"/>
-        <path class="shutter-blade" d="M75 75 L18 105 A67 67 0 0 1 18 45 Z"/>
-        <path class="shutter-blade" d="M75 75 L18 45 A67 67 0 0 1 75 8 Z"/>
-      </g>
-      <circle cx="75" cy="75" r="67" fill="none" stroke="#2962FF" stroke-width="1.5" opacity=".35"/>
-    </svg>
-  </div>
-  <div class="loader-label">ABISHEK</div>
-  <div class="loader-pct" id="loader-pct">0%</div>
+
+    <div class="shutter">
+
+        <svg viewBox="0 0 150 150">
+
+            <g id="blades" fill="#111827">
+
+                <path class="shutter-blade"
+                d="M75 75 L75 8 A67 67 0 0 1 132 45 Z"/>
+
+                <path class="shutter-blade"
+                d="M75 75 L132 45 A67 67 0 0 1 132 105 Z"/>
+
+                <path class="shutter-blade"
+                d="M75 75 L132 105 A67 67 0 0 1 75 142 Z"/>
+
+                <path class="shutter-blade"
+                d="M75 75 L75 142 A67 67 0 0 1 18 105 Z"/>
+
+                <path class="shutter-blade"
+                d="M75 75 L18 105 A67 67 0 0 1 18 45 Z"/>
+
+                <path class="shutter-blade"
+                d="M75 75 L18 45 A67 67 0 0 1 75 8 Z"/>
+
+            </g>
+
+            <circle
+            cx="75"
+            cy="75"
+            r="67"
+            fill="none"
+            stroke="#2962FF"
+            stroke-width="1.5"
+            opacity=".35"/>
+
+        </svg>
+
+    </div>
+
+    <div class="loader-label">
+        ABISHEK
+    </div>
+
+    <div class="loader-pct" id="loader-pct">
+        0%
+    </div>
+
 </div>
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
 
 <header id="site-header">
-  <div class="navbar">
-    <div class="nav-inner">
-      <a href="#hero" class="logo"><img src="images/logo.png" alt="Vision By Abishek logo" class="logo-img"></a>
-      <ul class="nav-links">
-        <li><a href="#hero" class="nav-link active" data-target="hero">Home</a></li>
-        <li><a href="#about" class="nav-link" data-target="about">About</a></li>
-        <li><a href="#portfolio" class="nav-link" data-target="portfolio">Photography</a></li>
-        <li><a href="#projects" class="nav-link" data-target="projects">Projects</a></li>
-        <li><a href="#testimonials" class="nav-link" data-target="testimonials">Feedback</a></li>
-        <li><a href="#contact" class="nav-link" data-target="contact">Contact</a></li>
-      </ul>
-      <a href="#contact" class="nav-cta magnetic">Hire Me
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </a>
-      <button class="burger" id="burger-btn"><span></span><span></span><span></span></button>
+
+    <div class="navbar">
+
+        <div class="nav-inner">
+
+            <a href="#hero" class="logo">
+
+                <img
+                src="images/logo.png"
+                alt="Vision By Abishek logo"
+                class="logo-img">
+
+            </a>
+
+
+            <ul class="nav-links">
+
+                <li>
+                    <a
+                    href="#hero"
+                    class="nav-link active"
+                    data-target="hero">
+                    Home
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                    href="#about"
+                    class="nav-link"
+                    data-target="about">
+                    About
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                    href="#portfolio"
+                    class="nav-link"
+                    data-target="portfolio">
+                    Photography
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                    href="#projects"
+                    class="nav-link"
+                    data-target="projects">
+                    Projects
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                    href="#testimonials"
+                    class="nav-link"
+                    data-target="testimonials">
+                    Feedback
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                    href="#contact"
+                    class="nav-link"
+                    data-target="contact">
+                    Contact
+                    </a>
+                </li>
+
+            </ul>
+
+
+            <a href="#contact" class="nav-cta magnetic">
+
+                Hire Me
+
+                <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+
+                </svg>
+
+            </a>
+
+
+            <button
+            class="burger"
+            id="burger-btn">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
     </div>
-  </div>
+
 </header>
 
+
+<!-- =========================================
+     MOBILE MENU
+========================================= -->
+
 <div id="mobile-menu">
-  <button class="mm-close" id="mm-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <a href="#hero" class="mm-link">Home</a>
-  <a href="#about" class="mm-link">About</a>
-  <a href="#portfolio" class="mm-link">Photography</a>
-  <a href="#projects" class="mm-link">Projects</a>
-  <a href="#testimonials" class="mm-link">Feedback</a>
-  <a href="#contact" class="mm-link">Contact</a>
+
+    <button
+    class="mm-close"
+    id="mm-close">
+
+        <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#111827"
+        stroke-width="2">
+
+            <path d="M6 6l12 12M18 6L6 18"/>
+
+        </svg>
+
+    </button>
+
+
+    <a href="#hero" class="mm-link">
+        Home
+    </a>
+
+    <a href="#about" class="mm-link">
+        About
+    </a>
+
+    <a href="#portfolio" class="mm-link">
+        Photography
+    </a>
+
+    <a href="#projects" class="mm-link">
+        Projects
+    </a>
+
+    <a href="#testimonials" class="mm-link">
+        Feedback
+    </a>
+
+    <a href="#contact" class="mm-link">
+        Contact
+    </a>
+
 </div>
 
-<!-- ===================== HERO ===================== -->
+
+<!-- =========================================
+     HERO
+========================================= -->
+
 <section id="hero">
-  <svg class="hero-bg-lines" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
-    <circle cx="1150" cy="200" r="180" fill="none" stroke="#111827" stroke-width="1" opacity=".05"/>
-    <circle cx="1150" cy="200" r="130" fill="none" stroke="#111827" stroke-width="1" opacity=".06"/>
-    <circle cx="150" cy="760" r="220" fill="none" stroke="#2962FF" stroke-width="1" opacity=".06"/>
-    <path d="M1230 120 L1230 280 M1080 200 L1220 200" stroke="#111827" stroke-width="1" opacity=".08"/>
-    <rect x="1180" y="150" width="100" height="100" rx="14" fill="none" stroke="#111827" stroke-width="1" opacity=".06"/>
-  </svg>
-  <div class="wrap hero-grid">
-    <div>
-      <div class="hero-eyebrow">Photography &amp; Digital Art Studio</div>
-      <h1 class="hero-title">
-        <span class="line"><span>ABISHEK</span></span>
-      </h1>
-      <div class="hero-role">Professional Photographer &amp; Digital Artist</div>
-      <p class="hero-desc">Photography is not just capturing moments. It is preserving emotions — every frame designed with intention, every story told with light.</p>
-      <div class="hero-btns">
-        <a href="#portfolio" class="btn btn-primary magnetic">View Portfolio
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-        </a>
-        <a href="#contact" class="btn btn-outline magnetic">Hire Me</a>
-      </div>
+
+    <svg
+    class="hero-bg-lines"
+    viewBox="0 0 1400 900"
+    preserveAspectRatio="xMidYMid slice">
+
+        <circle
+        cx="1150"
+        cy="200"
+        r="180"
+        fill="none"
+        stroke="#111827"
+        stroke-width="1"
+        opacity=".05"/>
+
+    </svg>
+
+
+    <div class="wrap hero-grid">
+
+        <div>
+
+            <div class="hero-eyebrow">
+                Photography & Digital Art Studio
+            </div>
+
+
+            <h1 class="hero-title">
+
+                <span class="line">
+
+                    <span>
+                        ABISHEK
+                    </span>
+
+                </span>
+
+            </h1>
+
+
+            <div class="hero-role">
+                Professional Photographer & Digital Artist
+            </div>
+
+
+            <p class="hero-desc">
+
+                Photography is not just capturing moments.
+                It is preserving emotions — every frame designed
+                with intention, every story told with light.
+
+            </p>
+
+
+            <div class="hero-btns">
+
+                <a
+                href="#portfolio"
+                class="btn btn-primary magnetic">
+
+                    View Portfolio
+
+                    <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+
+                    </svg>
+
+                </a>
+
+
+                <a
+                href="#contact"
+                class="btn btn-outline magnetic">
+
+                    Hire Me
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div
+        class="hero-visual"
+        id="hero-visual">
+
+            <div class="hero-portrait-ring"></div>
+
+
+            <div
+            class="hero-portrait-frame"
+            id="hero-portrait">
+
+                <img
+                src="images/hero.png"
+                alt="Abishek, photographer portrait"
+                onerror="this.onerror=null;this.src='https://picsum.photos/seed/abishek-hero/700/860';">
+
+            </div>
+
+
+            <div class="float-icon fi-1">
+
+                <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+
+                    <rect
+                    x="3"
+                    y="7"
+                    width="18"
+                    height="13"
+                    rx="2"/>
+
+                    <circle
+                    cx="12"
+                    cy="13.5"
+                    r="3.5"/>
+
+                    <path
+                    d="M8 7l1.4-2.5h5.2L16 7"/>
+
+                </svg>
+
+            </div>
+
+
+            <div class="float-icon fi-2">
+
+                <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+
+                    <circle
+                    cx="12"
+                    cy="12"
+                    r="8"/>
+
+                    <circle
+                    cx="12"
+                    cy="12"
+                    r="3"/>
+
+                </svg>
+
+            </div>
+
+
+            <div class="float-icon fi-3">
+
+                <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+
+                    <path
+                    d="M4 15l4-4 3 3 5-6 4 5"/>
+
+                </svg>
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="hero-visual" id="hero-visual">
-      <div class="hero-portrait-ring"></div>
-      <div class="hero-portrait-frame" id="hero-portrait">
-        <img src="images/hero.png" alt="Abishek, photographer portrait" onerror="this.onerror=null;this.src='https://picsum.photos/seed/abishek-hero/700/860';">
-      </div>
-      <div class="float-icon fi-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.4-2.5h5.2L16 7"/></svg></div>
-      <div class="float-icon fi-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div class="float-icon fi-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 15l4-4 3 3 5-6 4 5"/></svg></div>
+
+
+    <div class="hero-scroll">
+
+        <span>
+            Scroll
+        </span>
+
+        <span class="line"></span>
+
     </div>
-  </div>
-  <div class="hero-scroll"><span>Scroll</span><span class="line"></span></div>
+
 </section>
 
-<!-- ===================== ABOUT ===================== -->
+
+<!-- =========================================
+     ABOUT
+========================================= -->
+
 <section id="about">
-  <div class="wrap">
-    <div class="about-grid">
-      <div class="about-portrait reveal">
-        <div class="about-portrait-img">
-          <img src="images/about-2.jpg" alt="Abishek at work">
-        </div>
-        <div class="about-badge">
-          <div class="badge-ring">
-            <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" stroke="#EEF2F7"/><circle cx="30" cy="30" r="26" stroke="#2962FF" stroke-dasharray="163" stroke-dashoffset="20" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div class="badge-num">8+ yrs</div>
-            <div class="badge-label">Behind the lens, crafting visual stories</div>
-          </div>
-        </div>
-        
-      </div>
 
-      <div>
-        <div class="eyebrow reveal">About Abishek</div>
-        <h2 class="section-title reveal" style="margin-bottom:26px;">Where craft meets<br>quiet obsession.</h2>
-        <p class="section-tag reveal" style="max-width:100%;margin-bottom:40px;">Eight years spent chasing light — as a photographer and a digital artist — has taught me one thing: the best work never feels designed. It feels inevitable. Click a card to read more.</p>
+<div class="wrap">
 
-        <div class="about-cards reveal">
-          <div class="a-card" data-open="true">
-            <div class="a-card-top"><div class="a-card-left"><span class="a-num">01</span><span class="a-title">Who I Am</span></div><div class="a-plus"></div></div>
-            <div class="a-body"><div class="a-body-in">A visual storyteller based between studio and street — equally at home behind a medium-format camera or inside a design file, building brand identities that photograph as well as they print.</div></div>
-          </div>
-          <div class="a-card">
-            <div class="a-card-top"><div class="a-card-left"><span class="a-num">02</span><span class="a-title">Experience</span></div><div class="a-plus"></div></div>
-            <div class="a-body"><div class="a-body-in">8+ years shooting weddings, editorial, and brand campaigns across three countries, alongside 6 years designing identity systems and packaging for boutique and enterprise clients alike.</div></div>
-          </div>
-          <div class="a-card">
-            <div class="a-card-top"><div class="a-card-left"><span class="a-num">03</span><span class="a-title">Creative Philosophy</span></div><div class="a-plus"></div></div>
-            <div class="a-body"><div class="a-body-in">Restraint is a design decision. I chase the one true frame and the one right typeface rather than a hundred good-enough options — precision over volume, always.</div></div>
-          </div>
-          <div class="a-card">
-            <div class="a-card-top"><div class="a-card-left"><span class="a-num">04</span><span class="a-title">Education</span></div><div class="a-plus"></div></div>
-            <div class="a-body"><div class="a-body-in">BFA in Visual Communication, National Institute of Design — followed by an independent apprenticeship under two documentary photographers across Southeast Asia.</div></div>
-          </div>
-          <div class="a-card">
-            <div class="a-card-top"><div class="a-card-left"><span class="a-num">05</span><span class="a-title">Achievements</span></div><div class="a-plus"></div></div>
-            <div class="a-body"><div class="a-body-in">Featured in International Photography Awards 2023, two Awwwards-recognised brand launches, and 40+ published editorial covers.</div></div>
-          </div>
-        </div>
+<div class="about-grid">
 
-        <div class="counters reveal">
-          <div class="counter-item"><div class="counter-num" data-count="240"><span class="n">0</span><span class="suffix">+</span></div><div class="counter-label">Projects Completed</div></div>
-          <div class="counter-item"><div class="counter-num" data-count="180"><span class="n">0</span><span class="suffix">+</span></div><div class="counter-label">Happy Clients</div></div>
-          <div class="counter-item"><div class="counter-num" data-count="8"><span class="n">0</span><span class="suffix">yr</span></div><div class="counter-label">Years Experience</div></div>
-          <div class="counter-item"><div class="counter-num" data-count="52"><span class="n">0</span><span class="suffix">k+</span></div><div class="counter-label">Photos Taken</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+<div class="about-portrait reveal">
+
+<div class="about-portrait-img">
+
+<img
+src="images/about-2.jpg"
+alt="Abishek at work">
+
+</div>
+
+
+<div class="about-badge">
+
+<div class="badge-ring">
+
+<svg viewBox="0 0 60 60">
+
+<circle
+cx="30"
+cy="30"
+r="26"
+stroke="#EEF2F7"/>
+
+<circle
+cx="30"
+cy="30"
+r="26"
+stroke="#2962FF"
+stroke-dasharray="163"
+stroke-dashoffset="20"
+stroke-linecap="round"/>
+
+</svg>
+
+</div>
+
+
+<div>
+
+<div class="badge-num">
+8+ yrs
+</div>
+
+<div class="badge-label">
+Behind the lens, crafting visual stories
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div>
+
+<div class="eyebrow reveal">
+About Abishek
+</div>
+
+
+<h2
+class="section-title reveal"
+style="margin-bottom:26px;">
+
+Where craft meets
+<br>
+quiet obsession.
+
+</h2>
+
+
+<p
+class="section-tag reveal"
+style="max-width:100%;margin-bottom:40px;">
+
+Eight years spent chasing light — as a photographer
+and a digital artist — has taught me one thing:
+the best work never feels designed. It feels inevitable.
+Click a card to read more.
+
+</p>
+
+
+<div class="about-cards reveal">
+
+
+<div class="a-card" data-open="true">
+
+<div class="a-card-top">
+
+<div class="a-card-left">
+
+<span class="a-num">
+01
+</span>
+
+<span class="a-title">
+Who I Am
+</span>
+
+</div>
+
+<div class="a-plus"></div>
+
+</div>
+
+
+<div class="a-body">
+
+<div class="a-body-in">
+
+A visual storyteller based between studio and street —
+equally at home behind a medium-format camera or
+inside a design file, building brand identities that
+photograph as well as they print.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="a-card">
+
+<div class="a-card-top">
+
+<div class="a-card-left">
+
+<span class="a-num">
+02
+</span>
+
+<span class="a-title">
+Experience
+</span>
+
+</div>
+
+<div class="a-plus"></div>
+
+</div>
+
+
+<div class="a-body">
+
+<div class="a-body-in">
+
+8+ years shooting weddings, editorial, and brand
+campaigns across three countries, alongside 6 years
+designing identity systems and packaging for boutique
+and enterprise clients alike.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="a-card">
+
+<div class="a-card-top">
+
+<div class="a-card-left">
+
+<span class="a-num">
+03
+</span>
+
+<span class="a-title">
+Creative Philosophy
+</span>
+
+</div>
+
+<div class="a-plus"></div>
+
+</div>
+
+
+<div class="a-body">
+
+<div class="a-body-in">
+
+Restraint is a design decision. I chase the one true
+frame and the one right typeface rather than a hundred
+good-enough options — precision over volume, always.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="a-card">
+
+<div class="a-card-top">
+
+<div class="a-card-left">
+
+<span class="a-num">
+04
+</span>
+
+<span class="a-title">
+Education
+</span>
+
+</div>
+
+<div class="a-plus"></div>
+
+</div>
+
+
+<div class="a-body">
+
+<div class="a-body-in">
+
+BFA in Visual Communication, National Institute of Design —
+followed by an independent apprenticeship under two
+documentary photographers across Southeast Asia.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="a-card">
+
+<div class="a-card-top">
+
+<div class="a-card-left">
+
+<span class="a-num">
+05
+</span>
+
+<span class="a-title">
+Achievements
+</span>
+
+</div>
+
+<div class="a-plus"></div>
+
+</div>
+
+
+<div class="a-body">
+
+<div class="a-body-in">
+
+Featured in International Photography Awards 2023,
+two Awwwards-recognised brand launches, and 40+
+published editorial covers.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="counters">
+
+
+<div class="counter-item">
+
+<div
+class="counter-num"
+data-count="240">
+
+<span class="n">
+0
+</span>
+
+<span class="suffix">
++
+</span>
+
+</div>
+
+<div class="counter-label">
+Projects Completed
+</div>
+
+</div>
+
+
+<div class="counter-item">
+
+<div
+class="counter-num"
+data-count="180">
+
+<span class="n">
+0
+</span>
+
+<span class="suffix">
++
+</span>
+
+</div>
+
+<div class="counter-label">
+Happy Clients
+</div>
+
+</div>
+
+
+<div class="counter-item">
+
+<div
+class="counter-num"
+data-count="8">
+
+<span class="n">
+0
+</span>
+
+<span class="suffix">
+yr
+</span>
+
+</div>
+
+<div class="counter-label">
+Years Experience
+</div>
+
+</div>
+
+
+<div class="counter-item">
+
+<div
+class="counter-num"
+data-count="52">
+
+<span class="n">
+0
+</span>
+
+<span class="suffix">
+k+
+</span>
+
+</div>
+
+<div class="counter-label">
+Photos Taken
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- ===================== SKILLS ===================== -->
+
+<!-- =========================================
+     SKILLS
+========================================= -->
+
 <section id="skills">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow reveal">Craft &amp; Tools</div>
-        <h2 class="section-title reveal">Skills that hold<br>the frame together.</h2>
-      </div>
-      <p class="section-tag reveal">Hover any card for a short note on how each skill shows up in the work.</p>
-    </div>
-    <div class="skills-grid" id="skills-grid"></div>
-  </div>
+
+<div class="wrap">
+
+<div class="section-head">
+
+<div>
+
+<div class="eyebrow reveal">
+Craft & Tools
+</div>
+
+<h2 class="section-title reveal">
+
+Skills that hold
+<br>
+the frame together.
+
+</h2>
+
+</div>
+
+
+<p class="section-tag reveal">
+
+Hover any card for a short note on how each skill
+shows up in the work.
+
+</p>
+
+</div>
+
+
+<div
+class="skills-grid"
+id="skills-grid">
+</div>
+
+</div>
+
 </section>
 
-<!-- ===================== PORTFOLIO ===================== -->
+
+<!-- =========================================
+     PORTFOLIO
+========================================= -->
+
 <section id="portfolio">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow reveal">Selected Work</div>
-        <h2 class="section-title reveal">Photography &amp;<br>Digital Art.</h2>
-      </div>
-      <p class="section-tag reveal">A collection of frames — filter by category, click to see the full story behind each piece.</p>
-    </div>
-    <div class="filter-bar reveal" id="filter-bar"></div>
-    <div class="masonry" id="gallery"></div>
-    <div class="view-more-wrap reveal">
-      <button class="btn btn-outline magnetic" id="load-more-btn">Load More Work</button>
-    </div>
-  </div>
+
+<div class="wrap">
+
+<div class="section-head">
+
+<div>
+
+<div class="eyebrow reveal">
+Selected Work
+</div>
+
+<h2 class="section-title reveal">
+
+Photography &
+<br>
+Digital Art.
+
+</h2>
+
+</div>
+
+
+<p class="section-tag reveal">
+
+A collection of frames — filter by category,
+click to see the full story behind each piece.
+
+</p>
+
+</div>
+
+
+<div
+class="filter-bar reveal"
+id="filter-bar">
+</div>
+
+
+<div
+class="masonry"
+id="gallery">
+</div>
+
+
+<div class="view-more-wrap reveal">
+
+<button
+class="btn btn-outline magnetic"
+id="load-more-btn">
+
+Load More Work
+
+</button>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- ===================== PROJECTS ===================== -->
+
+<!-- =========================================
+     PROJECTS
+========================================= -->
+
 <section id="projects">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow reveal">Case Studies</div>
-        <h2 class="section-title reveal">Selected Projects.</h2>
-      </div>
-      <p class="section-tag reveal">Full campaigns — from brief to final delivery — with role, tools, and results.</p>
-    </div>
-    <div class="projects-grid" id="projects-grid"></div>
-  </div>
+
+<div class="wrap">
+
+<div class="section-head">
+
+<div>
+
+<div class="eyebrow reveal">
+Case Studies
+</div>
+
+<h2 class="section-title reveal">
+Selected Projects.
+</h2>
+
+</div>
+
+
+<p class="section-tag reveal">
+
+Full campaigns — from brief to final delivery —
+with role, tools, and results.
+
+</p>
+
+</div>
+
+
+<div
+class="projects-grid"
+id="projects-grid">
+</div>
+
+</div>
+
 </section>
 
-<!-- ===================== CLIENT FEEDBACK ===================== -->
+
+<!-- =========================================
+     FEEDBACK
+========================================= -->
+
 <section id="testimonials">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow reveal">Real Words, From Real Clients</div>
-        <h2 class="section-title reveal">Client Feedback.</h2>
-      </div>
-      <div class="feedback-actions reveal">
-        <button class="btn btn-primary magnetic" id="open-feedback-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20l9-9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Leave Feedback
-        </button>
-      </div>
-    </div>
 
-    <div class="feedback-carousel">
-      <button class="fb-arrow fb-arrow-left" id="fb-scroll-left" aria-label="Scroll feedback left">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <div class="feedback-grid" id="feedback-grid">
-        <!-- feedback cards injected by script.js (Supabase, with in-memory fallback) -->
-      </div>
-      <button class="fb-arrow fb-arrow-right" id="fb-scroll-right" aria-label="Scroll feedback right">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-    <div class="feedback-empty" id="feedback-empty">
-      <p>No feedback yet — be the first to share your experience.</p>
-    </div>
-  </div>
+<div class="wrap">
+
+<div class="section-head">
+
+<div>
+
+<div class="eyebrow reveal">
+Real Words, From Real Clients
+</div>
+
+<h2 class="section-title reveal">
+Client Feedback.
+</h2>
+
+</div>
+
+
+<div class="feedback-actions reveal">
+
+<button
+class="btn btn-primary magnetic"
+id="open-feedback-btn">
+
+Leave Feedback
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="feedback-carousel">
+
+<button
+class="fb-arrow fb-arrow-left"
+id="fb-scroll-left"
+aria-label="Scroll feedback left">
+
+‹
+
+</button>
+
+
+<div
+class="feedback-grid"
+id="feedback-grid">
+
+</div>
+
+
+<button
+class="fb-arrow fb-arrow-right"
+id="fb-scroll-right"
+aria-label="Scroll feedback right">
+
+›
+
+</button>
+
+</div>
+
+
+<div
+class="feedback-empty"
+id="feedback-empty">
+
+<p>
+No feedback yet — be the first to share your experience.
+</p>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- ===================== CONTACT ===================== -->
+
+<!-- =========================================
+     CONTACT
+========================================= -->
+
 <section id="contact">
-  <div class="wrap">
-    <div class="contact-grid">
-      <div>
-        <div class="eyebrow reveal">Get In Touch</div>
-        <h2 class="section-title reveal">Let's create<br>something timeless.</h2>
-        <p class="section-tag reveal" style="margin-top:20px;">Available for weddings, editorial shoots, and digital art commissions worldwide.</p>
-        <div class="contact-info-list reveal">
-          <div class="ci-item"><div class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div><div><div class="ci-label">Phone</div><div class="ci-val">+91 63859 44576</div></div></div>
-          <div class="ci-item"><div class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></div><div><div class="ci-label">Email</div><div class="ci-val">abia38909@gmail.com</div></div></div>
-          <div class="ci-item"><div class="ci-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="ci-label">Studio</div><div class="ci-val">Tamilnadu,Nagapattinam-611001</div></div></div>
-        </div>
-        <div class="social-row reveal">
-          <a href="#" class="social-btn magnetic" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-          <a href="#" class="social-btn magnetic" aria-label="Behance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 7h7M2 12h5.5a3 3 0 010 6H2V7h6a2.5 2.5 0 010 5H2M16 15.5c1 1.2 4 1.2 5-.2M14 13h8a4 4 0 00-4-4c-2.5 0-4 2-4 4.5S15.5 18 18 18"/></svg></a>
-          <a href="#" class="social-btn magnetic" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4V8h4v1.5A5.98 5.98 0 0116 8z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
-        </div>
-      </div>
 
-      <div class="contact-form reveal">
-        <form id="contact-form">
-          <div class="f-row">
-            <div class="f-group floating">
-              <input type="text" id="cf-name" placeholder=" " required>
-              <label for="cf-name">Name</label>
-            </div>
-            <div class="f-group floating">
-              <input type="email" id="cf-email" placeholder=" " required>
-              <label for="cf-email">Email</label>
-            </div>
-          </div>
-          <div class="f-group">
-            <label class="static-label">Project Type</label>
-            <select id="cf-type"><option>Wedding Photography</option><option>Editorial / Portrait</option><option>Digital Art / Commission</option><option>Other</option></select>
-          </div>
-          <div class="f-group">
-            <label class="static-label" for="cf-message">Message</label>
-            <textarea id="cf-message" rows="4" placeholder="Tell me about your project..." required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary send-btn magnetic">Send Message
-            <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-          </button>
-        </form>
-        <div class="form-success" id="form-success">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
-          <h3>Message sent</h3>
-          <p>Thanks for reaching out — Abishek typically replies within 24 hours.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="wrap">
 
-<footer>
-  <div class="wrap">
-    <div class="footer-top">
-      <h3 class="footer-cta-title">Have a story worth<br>preserving? <span>Let's talk.</span></h3>
-      <a href="#contact" class="btn btn-primary magnetic">Start a Project
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </a>
-    </div>
-    <div class="footer-bottom">
-      <div>© <span id="year"></span> Abishek Studio. All rights reserved.</div>
-      <div class="footer-links"><a href="#hero">Home</a><a href="#about">About</a><a href="#portfolio">Photography</a><a href="#contact">Contact</a></div>
-    </div>
-  </div>
-</footer>
+<div class="contact-grid">
 
-<!-- ===================== IMAGE MODAL ===================== -->
-<div id="modal-backdrop">
-  <div id="modal">
-    <button class="modal-close" id="modal-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <button class="modal-nav modal-prev" id="modal-prev" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <button class="modal-nav modal-next" id="modal-next" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-    <div class="modal-img"><img id="modal-img" src="" alt=""></div>
-    <div class="modal-info">
-      <div class="modal-cat" id="modal-cat"></div>
-      <h3 class="modal-title" id="modal-title"></h3>
-      <p class="modal-desc" id="modal-desc"></p>
-      <div class="modal-story"><b>Story Behind The Photo</b><span id="modal-story"></span></div>
-      <div class="modal-specs" id="modal-specs"></div>
-      <div class="modal-tags" id="modal-tags"></div>
-      <div class="modal-related">
-        <b class="modal-related-label">Related Photos</b>
-        <div class="modal-related-row" id="modal-related-row"></div>
-      </div>
-    </div>
-  </div>
+
+<div>
+
+<div class="eyebrow reveal">
+Get In Touch
 </div>
 
-<!-- ===================== FEEDBACK MODAL ===================== -->
-<div id="fb-modal-backdrop">
-  <div id="fb-modal">
-    <button class="modal-close" id="fb-modal-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="fb-modal-head">
-      <div class="eyebrow" style="margin-bottom:12px;">Client Feedback</div>
-      <h3>Share your experience</h3>
-      <p>Your feedback helps other clients trust the work — and helps me improve it.</p>
-    </div>
-    <form id="fb-form">
-      <div class="f-row">
-        <div class="f-group floating">
-          <input type="text" id="fb-name" placeholder=" " required>
-          <label for="fb-name">Full Name</label>
-        </div>
-        <div class="f-group floating">
-          <input type="tel" id="fb-phone" placeholder=" " required>
-          <label for="fb-phone">Phone Number</label>
-        </div>
-      </div>
-      <div class="f-group floating">
-        <input type="email" id="fb-email" placeholder=" ">
-        <label for="fb-email">Email (optional)</label>
-      </div>
-      <div class="f-group">
-        <label class="static-label">Rating</label>
-        <div class="star-input" id="fb-star-input">
-          <button type="button" class="star" data-val="1">★</button>
-          <button type="button" class="star" data-val="2">★</button>
-          <button type="button" class="star" data-val="3">★</button>
-          <button type="button" class="star" data-val="4">★</button>
-          <button type="button" class="star" data-val="5">★</button>
-        </div>
-        <input type="hidden" id="fb-rating" value="0">
-      </div>
-      <div class="f-group">
-        <label class="static-label" for="fb-message">Feedback Message</label>
-        <textarea id="fb-message" rows="4" placeholder="Share your experience working together..." required></textarea>
-      </div>
-      <div class="f-group">
-        <label class="static-label" for="fb-pin">Set a 4-Digit PIN (to delete this later)</label>
-        <input type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" id="fb-pin" placeholder="••••" required style="letter-spacing:.3em;">
-      </div>
-      <div class="fb-error" id="fb-error"></div>
-      <button type="submit" class="btn btn-primary send-btn magnetic" id="fb-submit-btn">Submit Feedback
-        <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-      </button>
-    </form>
-    <div class="form-success" id="fb-success">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
-      <h3>Thank you!</h3>
-      <p>Your feedback has been submitted and now appears below.</p>
-    </div>
-  </div>
+
+<h2 class="section-title reveal">
+
+Let's create
+<br>
+something timeless.
+
+</h2>
+
+
+<p
+class="section-tag reveal"
+style="margin-top:20px;">
+
+Available for weddings, editorial shoots,
+and digital art commissions worldwide.
+
+</p>
+
+
+<div class="contact-info-list reveal">
+
+
+<div class="ci-item">
+
+<div class="ci-icon">
+
+<svg
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+stroke-width="1.8">
+
+<path d="M22 16.92v3a2 2 0 01-2.18 2
+19.8 19.8 0 01-8.63-3.07
+19.5 19.5 0 01-6-6
+19.8 19.8 0 01-3.07-8.67
+A2 2 0 014.11 2h3
+a2 2 0 012 1.72
+c.127.96.361 1.903.7 2.81
+a2 2 0 01-.45 2.11
+L8.09 9.91a16 16 0 006 6
+l1.27-1.27
+a2 2 0 012.11-.45
+c.907.339 1.85.573 2.81.7
+A2 2 0 0122 16.92z"/>
+
+</svg>
+
 </div>
 
-<!-- ===================== FEEDBACK VIEW MODAL (like Selected Work modal) ===================== -->
-<div id="fb-view-backdrop">
-  <div id="fb-view-modal">
-    <button class="modal-close" id="fb-view-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="fb-view-stars" id="fb-view-stars"></div>
-    <p class="fb-view-quote" id="fb-view-quote"></p>
-    <div class="fb-person" style="margin-top:28px;">
-      <div class="fb-avatar" id="fb-view-avatar"></div>
-      <div>
-        <div class="fb-name" id="fb-view-name"></div>
-        <div class="fb-date" id="fb-view-date"></div>
-      </div>
-    </div>
 
-    <div class="fb-delete-zone">
-      <button class="fb-delete-trigger" id="fb-delete-trigger">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/></svg>
-        Delete this feedback
-      </button>
-      <div class="fb-delete-panel" id="fb-delete-panel">
-        <label class="static-label" for="fb-delete-pin">Enter the 4-digit PIN you set when posting this</label>
-        <div class="fb-delete-row">
-          <input type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" id="fb-delete-pin" placeholder="••••" style="letter-spacing:.3em;">
-          <button class="btn btn-primary" id="fb-delete-confirm" type="button">Confirm Delete</button>
-        </div>
-        <div class="fb-delete-error" id="fb-delete-error"></div>
-      </div>
-    </div>
-  </div>
+<div>
+
+<div class="ci-label">
+Phone
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>
+<div class="ci-val">
++91 63859 44576
+</div>
+
+</div>
+
+</div>
+
+
+<div class="ci-item">
+
+<div class="ci-icon">
+
+<svg
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+stroke-width="1.8">
+
+<rect
+x="2"
+y="4"
+width="20"
+height="16"
+rx="2"/>
+
+<path d="M22 6l-10 7L2 6"/>
+
+</svg>
+
+</div>
+
+
+<div>
+
+<div class="ci-label">
+Email
+</div>
+
+<div class="ci-val">
+abia38909@gmail.com
+</div>
+
+</div>
+
+</div>
+
+
+<div class="ci-item">
+
+<div class="ci-icon">
+
+<svg
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+stroke-width="1.8">
+
+<path d="M2
