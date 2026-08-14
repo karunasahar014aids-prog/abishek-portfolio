@@ -1059,3 +1059,48 @@ svg{
 /* =========================================================
    END CINEMATIC PHOTOGRAPHY THEME
    ========================================================= */
+
+/* =====================================================
+   PHOTOGRAPHY IMAGE ACTION MENU - TEXT COLOR FIX
+===================================================== */
+
+.photo-actions-menu,
+.image-actions-menu,
+.gallery-actions-menu,
+.photo-menu {
+    background: #ffffff !important;
+}
+
+.photo-actions-menu button,
+.image-actions-menu button,
+.gallery-actions-menu button,
+.photo-menu button,
+.photo-actions-menu a,
+.image-actions-menu a,
+.gallery-actions-menu a,
+.photo-menu a {
+    color: #222222 !important;
+}
+
+.photo-actions-menu svg,
+.image-actions-menu svg,
+.gallery-actions-menu svg,
+.photo-menu svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+}
+
+.photo-actions-menu button:hover,
+.image-actions-menu button:hover,
+.gallery-actions-menu button:hover,
+.photo-menu button:hover {
+    color: #C9A227 !important;
+}
+
+.photo-actions-menu button:hover svg,
+.image-actions-menu button:hover svg,
+.gallery-actions-menu button:hover svg,
+.photo-menu button:hover svg {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
