@@ -1104,3 +1104,47 @@ svg{
     color: #C9A227 !important;
     stroke: #C9A227 !important;
 }
+/* =====================================================
+   GALLERY ACTION POPUP - FINAL TEXT COLOR FIX
+===================================================== */
+
+button {
+    color: var(--text);
+}
+
+/* Any white action popup */
+button[title="View Details"],
+button[title="Share"],
+button[title="Download"],
+button[title="Favorite"],
+button[aria-label="View Details"],
+button[aria-label="Share"],
+button[aria-label="Download"],
+button[aria-label="Favorite"] {
+    color: #111827 !important;
+}
+
+/* Text inside popup */
+button[title="View Details"] *,
+button[title="Share"] *,
+button[title="Download"] *,
+button[title="Favorite"] *,
+button[aria-label="View Details"] *,
+button[aria-label="Share"] *,
+button[aria-label="Download"] *,
+button[aria-label="Favorite"] * {
+    color: #111827 !important;
+    stroke: #111827 !important;
+}
+
+/* Hover */
+button[title="View Details"]:hover,
+button[title="Share"]:hover,
+button[title="Download"]:hover,
+button[title="Favorite"]:hover,
+button[aria-label="View Details"]:hover,
+button[aria-label="Share"]:hover,
+button[aria-label="Download"]:hover,
+button[aria-label="Favorite"]:hover {
+    color: #F4B400 !important;
+}
