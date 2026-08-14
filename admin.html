@@ -1,204 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>Abishek Studio | Admin</title>
 
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet"
+        href="admin.css">
 </head>
 
 <body>
 
-    <!-- Background -->
-    <div class="background">
-        <div class="glow glow-one"></div>
-        <div class="glow glow-two"></div>
-        <div class="grain"></div>
-    </div>
-
-    <!-- Admin Header -->
-    <header class="admin-header">
-
-        <a href="index.html" class="brand">
-            <span class="brand-icon">✦</span>
-            <span>ABISHEK <small>STUDIO</small></span>
-        </a>
-
-        <a href="index.html" class="back-link">
-            ← Back to Portfolio
-        </a>
-
-    </header>
-
-
-    <!-- Main Login Area -->
     <main class="admin-main">
+
+        <!-- LOGIN -->
 
         <div class="login-wrapper">
 
-            <!-- Left Photography Section -->
-            <div class="visual-section">
+            <div class="login-card">
 
-                <div class="vertical-text">
-                    PHOTOGRAPHY • CREATIVE • STORIES
+                <div class="brand-mark">
+                    AS
                 </div>
 
-                <div class="visual-content">
+                <span class="eyebrow">
+                    ABISHEK STUDIO
+                </span>
 
-                    <span class="eyebrow">
-                        PRIVATE ACCESS
-                    </span>
+                <h1>
+                    Photography Admin
+                </h1>
 
-                    <h1>
-                        Manage your
-                        <em>visual story.</em>
-                    </h1>
+                <p class="login-description">
+                    Manage your photography portfolio,
+                    galleries and published photographs.
+                </p>
 
-                    <p>
-                        Welcome back to your photography workspace.
-                        Manage photographs, galleries, categories and
-                        portfolio content from one place.
-                    </p>
+                <div class="input-group">
 
-                    <div class="camera-symbol">
-                        <span>◉</span>
-                    </div>
+                    <label>
+                        EMAIL
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Admin Email"
+                    >
 
                 </div>
 
-                <div class="visual-footer">
-                    <span>ABISHEK PHOTOGRAPHY</span>
-                    <span>EST. 2026</span>
-                </div>
+                <div class="input-group">
 
-            </div>
+                    <label>
+                        PASSWORD
+                    </label>
 
+                    <div class="password-box">
 
-            <!-- Login Section -->
-            <div class="login-section">
-
-                <div class="login-card">
-
-                    <div class="login-top">
-
-                        <div class="admin-badge">
-                            <span>✦</span>
-                        </div>
-
-                        <div>
-                            <span class="login-label">
-                                ADMINISTRATOR
-                            </span>
-
-                            <h2>
-                                Welcome back.
-                            </h2>
-                        </div>
-
-                    </div>
-
-
-                    <p class="login-description">
-                        Sign in to access your photography
-                        portfolio management panel.
-                    </p>
-
-
-                    <!-- Login Form -->
-                    <form onsubmit="event.preventDefault(); login();">
-
-                        <div class="input-group">
-
-                            <label for="email">
-                                EMAIL ADDRESS
-                            </label>
-
-                            <div class="input-wrapper">
-
-                                <span class="input-icon">
-                                    @
-                                </span>
-
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="Enter your admin email"
-                                    autocomplete="email"
-                                    required
-                                >
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="input-group">
-
-                            <label for="password">
-                                PASSWORD
-                            </label>
-
-                            <div class="input-wrapper">
-
-                                <span class="input-icon">
-                                    •
-                                </span>
-
-                                <input
-                                    type="password"
-                                    id="password"
-                                    placeholder="Enter your password"
-                                    autocomplete="current-password"
-                                    required
-                                >
-
-                                <button
-                                    type="button"
-                                    class="password-toggle"
-                                    onclick="togglePassword()"
-                                    aria-label="Show password"
-                                >
-                                    ◉
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="login-button"
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Password"
                         >
 
-                            <span>ENTER STUDIO</span>
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()">
 
-                            <span class="arrow">
-                                →
-                            </span>
+                            ◉
 
                         </button>
 
-                    </form>
-
-
-                    <!-- Login Message -->
-                    <p id="message" class="login-message"></p>
-
-
-                    <div class="security-note">
-
-                        <span>🔒</span>
-
-                        <span>
-                            Secure administrator access
-                        </span>
-
                     </div>
 
                 </div>
+
+                <button
+                    class="login-btn"
+                    onclick="login()">
+
+                    <span>
+                        Login to Dashboard
+                    </span>
+
+                    <b>
+                        →
+                    </b>
+
+                </button>
+
+                <p
+                    id="message"
+                    class="login-message">
+                </p>
 
             </div>
 
@@ -207,21 +107,8 @@
     </main>
 
 
-    <!-- Footer -->
-    <footer class="admin-footer">
-
-        <span>
-            © 2026 Abishek Studio
-        </span>
-
-        <span>
-            Photography Portfolio Management
-        </span>
-
-    </footer>
-
-
     <script src="admin.js"></script>
 
 </body>
+
 </html>
