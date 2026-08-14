@@ -1520,3 +1520,559 @@ button[aria-label="Favorite"]:hover {
 .g-dots svg circle {
   stroke: currentColor !important;
 }
+/* =========================================================
+   📷 ABISHEK STUDIO
+   CINEMATIC CAMERA UI THEME
+   Add this at the VERY END of your CSS
+   ========================================================= */
+
+/* ================= CAMERA HUD VARIABLES ================= */
+
+:root{
+  --camera-gold:#D4AF37;
+  --camera-gold-light:#F0D98C;
+  --camera-dark:#080808;
+  --camera-glass:rgba(10,10,10,.72);
+  --camera-line:rgba(212,175,55,.28);
+}
+
+
+/* =========================================================
+   CAMERA HUD - HERO
+   ========================================================= */
+
+#hero::before{
+  content:'';
+  position:absolute;
+  inset:28px;
+  border:1px solid rgba(212,175,55,.10);
+  pointer-events:none;
+  z-index:1;
+}
+
+#hero::after{
+  content:'';
+  position:absolute;
+  width:180px;
+  height:180px;
+  border:1px solid rgba(212,175,55,.12);
+  border-radius:50%;
+  right:8%;
+  top:18%;
+  pointer-events:none;
+  animation:cameraLensPulse 5s ease-in-out infinite;
+}
+
+@keyframes cameraLensPulse{
+  0%,100%{
+    transform:scale(1);
+    opacity:.35;
+  }
+  50%{
+    transform:scale(1.08);
+    opacity:.75;
+  }
+}
+
+
+/* =========================================================
+   CAMERA CORNER FOCUS MARKS
+   ========================================================= */
+
+#hero .hero-grid::before,
+#hero .hero-grid::after{
+  content:'';
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-color:var(--camera-gold);
+  opacity:.65;
+  pointer-events:none;
+}
+
+#hero .hero-grid::before{
+  left:0;
+  top:0;
+  border-left:1px solid;
+  border-top:1px solid;
+}
+
+#hero .hero-grid::after{
+  right:0;
+  bottom:0;
+  border-right:1px solid;
+  border-bottom:1px solid;
+}
+
+
+/* =========================================================
+   CAMERA REC INDICATOR
+   ========================================================= */
+
+.hero-eyebrow::after{
+  content:'● REC';
+  margin-left:18px;
+  color:#D94A4A;
+  font-size:10px;
+  letter-spacing:.18em;
+  animation:recBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes recBlink{
+  0%,100%{
+    opacity:1;
+  }
+  50%{
+    opacity:.25;
+  }
+}
+
+
+/* =========================================================
+   CAMERA SETTINGS HUD
+   ========================================================= */
+
+.hero-visual::after{
+  content:'F2.8    1/250    ISO 400';
+  position:absolute;
+  bottom:24px;
+  right:8px;
+  font-family:var(--f-display);
+  font-size:10px;
+  letter-spacing:.16em;
+  color:rgba(240,217,140,.75);
+  white-space:nowrap;
+  padding:8px 12px;
+  border:1px solid rgba(212,175,55,.16);
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(8px);
+}
+
+
+/* =========================================================
+   HERO CAMERA LENS RING
+   ========================================================= */
+
+.hero-portrait-ring{
+  box-shadow:
+    0 0 0 1px rgba(212,175,55,.08),
+    0 0 35px rgba(212,175,55,.08);
+}
+
+.hero-portrait-ring::before,
+.hero-portrait-ring::after{
+  content:'';
+  position:absolute;
+  inset:18px;
+  border-radius:50%;
+  border:1px dashed rgba(212,175,55,.18);
+}
+
+.hero-portrait-ring::after{
+  inset:38px;
+  border-style:solid;
+  border-color:rgba(240,217,140,.12);
+}
+
+
+/* =========================================================
+   CAMERA FOCUS FRAME ON HERO IMAGE
+   ========================================================= */
+
+.hero-portrait-frame::before{
+  content:'';
+  position:absolute;
+  inset:18px;
+  border:1px solid rgba(240,217,140,.35);
+  z-index:3;
+  pointer-events:none;
+  opacity:.55;
+}
+
+.hero-portrait-frame::after{
+  content:'FOCUS';
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:72px;
+  height:72px;
+  border:1px solid rgba(240,217,140,.5);
+  color:rgba(240,217,140,.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:8px;
+  letter-spacing:.2em;
+  opacity:0;
+  transition:opacity .5s ease;
+  z-index:4;
+  pointer-events:none;
+}
+
+.hero-portrait-frame:hover::after{
+  opacity:1;
+}
+
+
+/* =========================================================
+   FLOATING CAMERA ICONS
+   ========================================================= */
+
+.float-icon{
+  transition:
+    transform .4s cubic-bezier(.16,.84,.44,1),
+    box-shadow .4s ease;
+}
+
+.float-icon:hover{
+  transform:scale(1.12) rotate(6deg);
+  box-shadow:
+    0 20px 45px rgba(0,0,0,.65),
+    0 0 25px rgba(212,175,55,.12);
+}
+
+
+/* =========================================================
+   SECTION CAMERA MARKER
+   ========================================================= */
+
+section::before{
+  content:'';
+  position:absolute;
+  top:32px;
+  left:40px;
+  width:28px;
+  height:28px;
+  border-left:1px solid rgba(212,175,55,.18);
+  border-top:1px solid rgba(212,175,55,.18);
+  pointer-events:none;
+}
+
+section::after{
+  content:'';
+  position:absolute;
+  bottom:32px;
+  right:40px;
+  width:28px;
+  height:28px;
+  border-right:1px solid rgba(212,175,55,.18);
+  border-bottom:1px solid rgba(212,175,55,.18);
+  pointer-events:none;
+}
+
+
+/* =========================================================
+   PORTFOLIO CAMERA HUD
+   ========================================================= */
+
+#portfolio .section-head{
+  position:relative;
+}
+
+#portfolio .section-head::after{
+  content:'FRAME / 001';
+  position:absolute;
+  right:0;
+  top:0;
+  font-family:var(--f-display);
+  font-size:9px;
+  letter-spacing:.2em;
+  color:rgba(212,175,55,.55);
+}
+
+
+/* =========================================================
+   PHOTO CARD - CAMERA FOCUS EFFECT
+   ========================================================= */
+
+.g-card{
+  position:relative;
+}
+
+.g-card::before{
+  content:'';
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(212,175,55,0);
+  z-index:2;
+  pointer-events:none;
+  transition:
+    border-color .45s ease,
+    inset .45s ease;
+}
+
+.g-card:hover::before{
+  inset:18px;
+  border-color:rgba(212,175,55,.35);
+}
+
+
+/* =========================================================
+   PHOTO CARD FOCUS CORNERS
+   ========================================================= */
+
+.g-card-img::before,
+.g-card-img::after{
+  content:'';
+  position:absolute;
+  width:22px;
+  height:22px;
+  border-color:rgba(240,217,140,.65);
+  opacity:0;
+  z-index:4;
+  transition:opacity .4s ease;
+  pointer-events:none;
+}
+
+.g-card-img::before{
+  left:14px;
+  top:14px;
+  border-left:1px solid;
+  border-top:1px solid;
+}
+
+.g-card-img::after{
+  right:14px;
+  bottom:14px;
+  border-right:1px solid;
+  border-bottom:1px solid;
+}
+
+.g-card:hover .g-card-img::before,
+.g-card:hover .g-card-img::after{
+  opacity:1;
+}
+
+
+/* =========================================================
+   PHOTO INFO HUD
+   ========================================================= */
+
+.g-overlay{
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.9) 0%,
+      rgba(0,0,0,.35) 45%,
+      transparent 75%
+    ) !important;
+}
+
+.g-cat{
+  color:var(--camera-gold-light) !important;
+}
+
+.g-title{
+  letter-spacing:-.01em;
+}
+
+
+/* =========================================================
+   GALLERY DOT BUTTON - CAMERA STYLE
+   ========================================================= */
+
+.g-dots{
+  border:1px solid rgba(212,175,55,.25) !important;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.4),
+    inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+.g-dots::before{
+  content:'';
+  position:absolute;
+  inset:4px;
+  border-radius:50%;
+  border:1px solid rgba(212,175,55,.12);
+}
+
+
+/* =========================================================
+   FAVORITE BUTTON - CAMERA STYLE
+   ========================================================= */
+
+.g-fav-badge{
+  border:1px solid rgba(212,175,55,.25) !important;
+  box-shadow:0 8px 25px rgba(0,0,0,.45) !important;
+}
+
+.g-fav-badge:hover{
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.5),
+    0 0 18px rgba(212,175,55,.12) !important;
+}
+
+
+/* =========================================================
+   FILTER BUTTONS - CAMERA DIAL STYLE
+   ========================================================= */
+
+.filter-btn{
+  position:relative;
+  letter-spacing:.04em;
+}
+
+.filter-btn::before{
+  content:'';
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.35;
+  display:inline-block;
+  margin-right:7px;
+  vertical-align:middle;
+}
+
+.filter-btn.active::before{
+  background:#111;
+  opacity:.8;
+}
+
+
+/* =========================================================
+   BUTTON CAMERA SHUTTER EFFECT
+   ========================================================= */
+
+.btn{
+  transition:
+    transform .3s cubic-bezier(.16,.84,.44,1),
+    box-shadow .3s ease,
+    background .3s ease;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+.btn:active{
+  transform:scale(.96);
+}
+
+
+/* =========================================================
+   CONTACT FORM - CAMERA CONTROL STYLE
+   ========================================================= */
+
+.contact-form{
+  position:relative;
+}
+
+.contact-form::before{
+  content:'CAMERA CONTROL';
+  position:absolute;
+  top:18px;
+  right:24px;
+  font-family:var(--f-display);
+  font-size:8px;
+  letter-spacing:.18em;
+  color:rgba(212,175,55,.4);
+}
+
+
+/* =========================================================
+   FOOTER CAMERA MARK
+   ========================================================= */
+
+footer{
+  position:relative;
+  overflow:hidden;
+}
+
+footer::after{
+  content:'◉  FOCUS  •  CAPTURE  •  CREATE';
+  position:absolute;
+  right:40px;
+  bottom:20px;
+  font-family:var(--f-display);
+  font-size:8px;
+  letter-spacing:.18em;
+  color:rgba(212,175,55,.25);
+}
+
+
+/* =========================================================
+   LOADER CAMERA FEEL
+   ========================================================= */
+
+#loader::after{
+  content:'INITIALIZING CAMERA';
+  position:absolute;
+  bottom:40px;
+  font-family:var(--f-display);
+  font-size:9px;
+  letter-spacing:.25em;
+  color:rgba(212,175,55,.5);
+  animation:loaderCamera 2s ease-in-out infinite;
+}
+
+@keyframes loaderCamera{
+  0%,100%{
+    opacity:.3;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:900px){
+
+  #hero::before{
+    inset:18px;
+  }
+
+  #hero::after{
+    width:120px;
+    height:120px;
+    right:4%;
+  }
+
+  .hero-visual::after{
+    font-size:8px;
+    right:50%;
+    transform:translateX(50%);
+    bottom:4px;
+  }
+
+  section::before{
+    left:20px;
+  }
+
+  section::after{
+    right:20px;
+  }
+
+  #portfolio .section-head::after{
+    position:static;
+    display:block;
+    margin-top:12px;
+  }
+
+  footer::after{
+    display:none;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+  #hero::after,
+  .hero-eyebrow::after,
+  #loader::after{
+    animation:none !important;
+  }
+}
+
+/* =========================================================
+   END CAMERA UI THEME
+   ========================================================= */
