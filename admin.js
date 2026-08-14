@@ -1,15 +1,15 @@
 /* =========================================================
-   ABISHEK PORTFOLIO - ADMIN PANEL
+   ABISHEK STUDIO - PHOTOGRAPHY ADMIN PANEL
+   Supabase powered
    ========================================================= */
 
 
 /* ================= SUPABASE CONFIG ================= */
 
-const SUPABASE_URL =
-    "https://jaryhmtzzassnzomtsch.supabase.co";
+const SUPABASE_URL = "YOUR_EXISTING_SUPABASE_URL";
 
-const SUPABASE_ANON_KEY =
-    "sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA";
+const SUPABASE_ANON_KEY = "YOUR_EXISTING_SUPABASE_ANON_KEY";
+
 
 let supabaseClient = null;
 let currentPosterId = null;
@@ -22,22 +22,29 @@ function loadSupabase() {
     return new Promise((resolve, reject) => {
 
         if (window.supabase) {
+
             initializeSupabase();
+
             resolve();
+
             return;
         }
+
 
         const script = document.createElement("script");
 
         script.src =
             "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
+
         script.onload = () => {
 
             initializeSupabase();
+
             resolve();
 
         };
+
 
         script.onerror = () => {
 
@@ -46,6 +53,7 @@ function loadSupabase() {
             );
 
         };
+
 
         document.head.appendChild(script);
 
@@ -80,11 +88,13 @@ async function login() {
     const message =
         document.getElementById("message");
 
+
     const email =
         emailInput.value.trim();
 
     const password =
         passwordInput.value;
+
 
     if (!email || !password) {
 
@@ -92,8 +102,8 @@ async function login() {
             "Please enter email and password.";
 
         return;
-
     }
+
 
     if (!supabaseClient) {
 
@@ -101,11 +111,12 @@ async function login() {
             "Supabase is not configured.";
 
         return;
-
     }
 
+
     message.textContent =
-        "Logging in...";
+        "Authenticating...";
+
 
     try {
 
@@ -118,24 +129,29 @@ async function login() {
 
             });
 
+
         if (error) {
 
             throw error;
 
         }
 
+
         message.textContent =
-            "Login successful!";
+            "Login successful.";
+
 
         showDashboard();
 
-        loadPosters();
+        await loadPosters();
 
     }
+
 
     catch (error) {
 
         console.error(error);
+
 
         message.textContent =
             error.message ||
@@ -146,200 +162,438 @@ async function login() {
 }
 
 
-/* ================= SHOW DASHBOARD ================= */
+/* ================= PASSWORD TOGGLE ================= */
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const button =
+        document.querySelector(".password-toggle");
+
+
+    if (!password) return;
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        if (button) {
+            button.textContent = "◉";
+        }
+
+    }
+
+    else {
+
+        password.type = "password";
+
+        if (button) {
+            button.textContent = "◉";
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+   ===================================================== */
 
 function showDashboard() {
 
-    const loginBox =
-        document.querySelector(".login-box");
+    const main =
+        document.querySelector(".admin-main");
 
-    if (loginBox) {
 
-        loginBox.style.display =
+    if (!main) {
+
+        console.error(
+            "Admin main container not found."
+        );
+
+        return;
+    }
+
+
+    /* Prevent duplicate dashboard */
+
+    if (
+        document.querySelector(
+            ".dashboard"
+        )
+    ) {
+
+        document.querySelector(
+            ".dashboard"
+        ).style.display = "block";
+
+        return;
+    }
+
+
+    /* Hide login */
+
+    const loginWrapper =
+        document.querySelector(
+            ".login-wrapper"
+        );
+
+
+    if (loginWrapper) {
+
+        loginWrapper.style.display =
             "none";
 
     }
 
 
-    let dashboard =
-        document.querySelector(".dashboard");
+    /* Create dashboard */
+
+    const dashboard =
+        document.createElement("div");
 
 
-    if (!dashboard) {
-
-        dashboard =
-            document.createElement("div");
-
-        dashboard.className =
-            "dashboard";
+    dashboard.className =
+        "dashboard";
 
 
-        dashboard.innerHTML = `
+    dashboard.innerHTML = `
 
-            <div class="dashboard-header">
+        <!-- Dashboard Header -->
 
-                <h2>Admin Dashboard</h2>
+        <div class="dashboard-top">
 
-                <button
-                    class="logout-btn"
-                    onclick="logout()">
-                    Logout
-                </button>
+            <div>
 
-            </div>
+                <span class="dashboard-eyebrow">
+                    ABISHEK STUDIO
+                </span>
 
+                <h1>
+                    Photography Dashboard
+                </h1>
 
-            <div class="stats">
-
-                <div class="stat-card">
-
-                    <h3>Total Posters</h3>
-
-                    <p id="totalPosters">
-                        0
-                    </p>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <h3>Published</h3>
-
-                    <p id="publishedPosters">
-                        0
-                    </p>
-
-                </div>
-
-
-                <div class="stat-card">
-
-                    <h3>Drafts</h3>
-
-                    <p id="draftPosters">
-                        0
-                    </p>
-
-                </div>
+                <p>
+                    Manage your visual portfolio,
+                    photographs and published work.
+                </p>
 
             </div>
 
 
-            <div class="add-poster">
+            <button
+                class="logout-btn"
+                onclick="logout()">
 
-                <h2 id="formTitle">
-                    Add New Poster
-                </h2>
+                <span>↪</span>
+                Logout
 
+            </button>
 
-                <input
-                    type="text"
-                    id="posterTitle"
-                    placeholder="Poster Title">
-
-
-                <select id="posterCategory">
-
-                    <option value="posters">
-                        Posters
-                    </option>
-
-                    <option value="covers">
-                        Covers
-                    </option>
-
-                    <option value="street">
-                        Street
-                    </option>
-
-                    <option value="other">
-                        Other
-                    </option>
-
-                </select>
+        </div>
 
 
-                <input
-                    type="text"
-                    id="posterLocation"
-                    placeholder="Location">
+        <!-- Statistics -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ◉
+                </div>
+
+                <div>
+
+                    <span>
+                        TOTAL PHOTOS
+                    </span>
+
+                    <strong id="totalPosters">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
 
 
-                <input
-                    type="text"
-                    id="posterDate"
-                    placeholder="Year">
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <span>
+                        PUBLISHED
+                    </span>
+
+                    <strong id="publishedPosters">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
 
 
-                <textarea
-                    id="posterDescription"
-                    placeholder="Description">
-                </textarea>
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ◇
+                </div>
+
+                <div>
+
+                    <span>
+                        DRAFTS
+                    </span>
+
+                    <strong id="draftPosters">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
 
 
-                <input
-                    type="file"
-                    id="posterImage"
-                    accept="image/*">
+        <!-- Main Dashboard Grid -->
 
+        <div class="dashboard-grid">
+
+
+            <!-- Add Photo -->
+
+            <section class="add-poster">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span>
+                            PHOTOGRAPHY
+                        </span>
+
+                        <h2 id="formTitle">
+                            Add New Photograph
+                        </h2>
+
+                    </div>
+
+                    <div class="heading-symbol">
+                        +
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-field full">
+
+                        <label>
+                            PHOTO TITLE
+                        </label>
+
+                        <input
+                            type="text"
+                            id="posterTitle"
+                            placeholder="Example: Golden Hour Portrait"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>
+                            CATEGORY
+                        </label>
+
+                        <select id="posterCategory">
+
+                            <option value="posters">
+                                Posters
+                            </option>
+
+                            <option value="covers">
+                                Covers
+                            </option>
+
+                            <option value="street">
+                                Street
+                            </option>
+
+                            <option value="other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>
+                            LOCATION
+                        </label>
+
+                        <input
+                            type="text"
+                            id="posterLocation"
+                            placeholder="Nagapattinam, Tamil Nadu"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>
+                            YEAR
+                        </label>
+
+                        <input
+                            type="text"
+                            id="posterDate"
+                            placeholder="2026"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>
+                            IMAGE
+                        </label>
+
+                        <input
+                            type="file"
+                            id="posterImage"
+                            accept="image/*"
+                        >
+
+                    </div>
+
+
+                    <div class="form-field full">
+
+                        <label>
+                            DESCRIPTION
+                        </label>
+
+                        <textarea
+                            id="posterDescription"
+                            placeholder="Write a short description about this photograph..."
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Image Preview -->
 
                 <div
                     id="imagePreview"
-                    style="margin-bottom:15px;">
+                    class="image-preview">
                 </div>
 
 
-                <button
-                    onclick="savePoster()">
-                    Save Poster
-                </button>
+                <!-- Buttons -->
+
+                <div class="form-actions">
+
+                    <button
+                        class="save-btn"
+                        onclick="savePoster()">
+
+                        <span>
+                            Save Photograph
+                        </span>
+
+                        <b>
+                            →
+                        </b>
+
+                    </button>
 
 
-                <button
-                    onclick="cancelEdit()"
-                    id="cancelEditBtn"
-                    style="display:none;">
-                    Cancel
-                </button>
+                    <button
+                        class="cancel-btn"
+                        onclick="cancelEdit()"
+                        id="cancelEditBtn"
+                        style="display:none;">
 
-            </div>
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </section>
 
 
-            <div class="poster-list">
+            <!-- Manage Photos -->
 
-                <h2>
-                    Manage Posters
-                </h2>
+            <section class="poster-list">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <span>
+                            COLLECTION
+                        </span>
+
+                        <h2>
+                            Manage Photographs
+                        </h2>
+
+                    </div>
+
+                    <div class="collection-count">
+                        LIVE
+                    </div>
+
+                </div>
+
 
                 <div id="posterList">
-                    Loading posters...
+
+                    <div class="loading-state">
+                        Loading photographs...
+                    </div>
+
                 </div>
 
-            </div>
-
-        `;
+            </section>
 
 
-        const container =
-            document.querySelector(
-                ".admin-container"
-            );
+        </div>
+
+    `;
 
 
-        if (container) {
-
-            container.appendChild(
-                dashboard
-            );
-
-        }
-
-    }
+    main.appendChild(dashboard);
 
 
-    dashboard.style.display =
-        "block";
+    main.scrollIntoView({
+        behavior: "smooth"
+    });
 
 }
 
@@ -354,19 +608,21 @@ async function logout() {
 
     }
 
+
     location.reload();
 
 }
 
 
-/* ================= LOAD POSTERS ================= */
+/* =====================================================
+   LOAD PHOTOGRAPHS
+   ===================================================== */
 
 async function loadPosters() {
 
     if (!supabaseClient) {
 
         return;
-
     }
 
 
@@ -403,14 +659,32 @@ async function loadPosters() {
 
     }
 
+
     catch (error) {
 
         console.error(error);
 
+
         if (posterList) {
 
-            posterList.innerHTML =
-                "<p>Unable to load posters.</p>";
+            posterList.innerHTML = `
+
+                <div class="empty-state">
+
+                    <strong>
+                        Unable to load photographs
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(
+                            error.message ||
+                            "Database connection failed."
+                        )}
+                    </p>
+
+                </div>
+
+            `;
 
         }
 
@@ -419,7 +693,9 @@ async function loadPosters() {
 }
 
 
-/* ================= DISPLAY POSTERS ================= */
+/* =====================================================
+   DISPLAY PHOTOGRAPHS
+   ===================================================== */
 
 function displayPosters(posters) {
 
@@ -432,18 +708,36 @@ function displayPosters(posters) {
     if (!posterList) {
 
         return;
-
     }
 
 
-    if (!posters ||
-        posters.length === 0) {
+    if (
+        !posters ||
+        posters.length === 0
+    ) {
 
-        posterList.innerHTML =
-            "<p>No posters found.</p>";
+        posterList.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    ◉
+                </div>
+
+                <strong>
+                    No photographs yet
+                </strong>
+
+                <p>
+                    Add your first photograph
+                    using the form.
+                </p>
+
+            </div>
+
+        `;
 
         return;
-
     }
 
 
@@ -462,57 +756,111 @@ function displayPosters(posters) {
             "poster-item";
 
 
+        const image =
+            poster.image_url || "";
+
+
+        const title =
+            poster.title ||
+            "Untitled";
+
+
+        const category =
+            poster.category ||
+            "Other";
+
+
         item.innerHTML = `
 
-            <img
-                src="${escapeHTML(
-                    poster.image_url || ""
-                )}"
-                alt="${escapeHTML(
-                    poster.title || ""
-                )}">
+            <div class="poster-image">
+
+                ${
+                    image
+
+                    ?
+
+                    `<img
+                        src="${escapeHTML(image)}"
+                        alt="${escapeHTML(title)}"
+                    >`
+
+                    :
+
+                    `<div class="no-image">
+                        No Image
+                    </div>`
+                }
+
+            </div>
 
 
             <div class="poster-info">
 
-                <h3>
+                <div class="poster-category">
+
                     ${escapeHTML(
-                        poster.title ||
-                        "Untitled"
+                        category
                     )}
+
+                </div>
+
+
+                <h3>
+
+                    ${escapeHTML(
+                        title
+                    )}
+
                 </h3>
 
 
                 <p>
-                    Category:
-                    ${escapeHTML(
-                        poster.category || ""
-                    )}
-                </p>
 
-
-                <p>
-                    Location:
-                    ${escapeHTML(
-                        poster.location || ""
-                    )}
-                </p>
-
-
-                <p>
-                    Order:
-                    ${poster.display_order ?? 0}
-                </p>
-
-
-                <p>
-                    Status:
                     ${
-                        poster.published
-                        ? "Published"
-                        : "Draft"
+                        escapeHTML(
+                            poster.location ||
+                            "Location not added"
+                        )
                     }
+
                 </p>
+
+
+                <div class="poster-meta">
+
+                    <span>
+                        ${escapeHTML(
+                            poster.date ||
+                            "—"
+                        )}
+                    </span>
+
+                    <span>
+                        Order:
+                        ${poster.display_order ?? 0}
+                    </span>
+
+                </div>
+
+
+                <div class="status">
+
+                    <span
+                        class="${
+                            poster.published
+                            ? "published"
+                            : "draft"
+                        }">
+
+                        ${
+                            poster.published
+                            ? "Published"
+                            : "Draft"
+                        }
+
+                    </span>
+
+                </div>
 
             </div>
 
@@ -522,7 +870,9 @@ function displayPosters(posters) {
                 <button
                     class="edit-btn"
                     onclick="editPoster('${poster.id}')">
+
                     Edit
+
                 </button>
 
 
@@ -545,7 +895,9 @@ function displayPosters(posters) {
                 <button
                     class="delete-btn"
                     onclick="deletePoster('${poster.id}')">
+
                     Delete
+
                 </button>
 
             </div>
@@ -560,7 +912,9 @@ function displayPosters(posters) {
 }
 
 
-/* ================= SAVE POSTER ================= */
+/* =====================================================
+   SAVE PHOTOGRAPH
+   ===================================================== */
 
 async function savePoster() {
 
@@ -571,7 +925,6 @@ async function savePoster() {
         );
 
         return;
-
     }
 
 
@@ -614,11 +967,10 @@ async function savePoster() {
     if (!title) {
 
         alert(
-            "Please enter poster title."
+            "Please enter photo title."
         );
 
         return;
-
     }
 
 
@@ -641,12 +993,10 @@ async function savePoster() {
             const fileName =
                 Date.now() +
                 "-" +
-                file.name
-                    .replace(/\s+/g, "-");
-
-
-            const filePath =
-                fileName;
+                file.name.replace(
+                    /\s+/g,
+                    "-"
+                );
 
 
             const { error: uploadError } =
@@ -654,7 +1004,7 @@ async function savePoster() {
                     .storage
                     .from("posters")
                     .upload(
-                        filePath,
+                        fileName,
                         file,
                         {
                             cacheControl:
@@ -678,7 +1028,7 @@ async function savePoster() {
                     .storage
                     .from("posters")
                     .getPublicUrl(
-                        filePath
+                        fileName
                     );
 
 
@@ -743,7 +1093,7 @@ async function savePoster() {
 
 
             alert(
-                "Poster updated successfully."
+                "Photograph updated successfully."
             );
 
         }
@@ -753,8 +1103,10 @@ async function savePoster() {
 
         else {
 
-            const { data: lastPoster,
-                    error: orderError } =
+            const {
+                data: lastPoster,
+                error: orderError
+            } =
                 await supabaseClient
                     .from("posters")
                     .select(
@@ -834,7 +1186,7 @@ async function savePoster() {
 
 
             alert(
-                "Poster added successfully."
+                "Photograph added successfully."
             );
 
         }
@@ -846,12 +1198,14 @@ async function savePoster() {
 
     }
 
+
     catch (error) {
 
         console.error(error);
 
+
         alert(
-            "Error saving poster: " +
+            "Error saving photograph: " +
             error.message
         );
 
@@ -860,14 +1214,15 @@ async function savePoster() {
 }
 
 
-/* ================= EDIT POSTER ================= */
+/* =====================================================
+   EDIT PHOTOGRAPH
+   ===================================================== */
 
 async function editPoster(id) {
 
     if (!supabaseClient) {
 
         return;
-
     }
 
 
@@ -877,7 +1232,10 @@ async function editPoster(id) {
             await supabaseClient
                 .from("posters")
                 .select("*")
-                .eq("id", id)
+                .eq(
+                    "id",
+                    id
+                )
                 .single();
 
 
@@ -925,13 +1283,13 @@ async function editPoster(id) {
         document.getElementById(
             "formTitle"
         ).textContent =
-            "Edit Poster";
+            "Edit Photograph";
 
 
         document.getElementById(
             "cancelEditBtn"
         ).style.display =
-            "inline-block";
+            "inline-flex";
 
 
         if (data.image_url) {
@@ -940,39 +1298,51 @@ async function editPoster(id) {
                 "imagePreview"
             ).innerHTML = `
 
-                <img
-                    src="${escapeHTML(
-                        data.image_url
-                    )}"
-                    style="
-                        width:150px;
-                        border-radius:10px;
-                    "
-                >
+                <div class="current-image">
 
-                <p>Current Image</p>
+                    <img
+                        src="${escapeHTML(
+                            data.image_url
+                        )}"
+                        alt="Current photograph"
+                    >
+
+                    <span>
+                        Current Photograph
+                    </span>
+
+                </div>
 
             `;
 
         }
 
 
-        window.scrollTo({
+        const dashboard =
+            document.querySelector(
+                ".dashboard"
+            );
 
-            top: 0,
 
-            behavior: "smooth"
+        if (dashboard) {
 
-        });
+            dashboard.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
 
     }
+
 
     catch (error) {
 
         console.error(error);
 
+
         alert(
-            "Unable to edit poster."
+            "Unable to edit photograph."
         );
 
     }
@@ -980,29 +1350,45 @@ async function editPoster(id) {
 }
 
 
-/* ================= CANCEL EDIT ================= */
+/* =====================================================
+   CANCEL EDIT
+   ===================================================== */
 
 function cancelEdit() {
 
     currentPosterId = null;
 
 
-    const title =
-        document.getElementById(
-            "posterTitle"
-        );
+    const fields = [
 
-    if (title) {
+        "posterTitle",
+        "posterLocation",
+        "posterDate",
+        "posterDescription"
 
-        title.value = "";
+    ];
 
-    }
+
+    fields.forEach(id => {
+
+        const element =
+            document.getElementById(id);
+
+
+        if (element) {
+
+            element.value = "";
+
+        }
+
+    });
 
 
     const category =
         document.getElementById(
             "posterCategory"
         );
+
 
     if (category) {
 
@@ -1012,46 +1398,11 @@ function cancelEdit() {
     }
 
 
-    const location =
-        document.getElementById(
-            "posterLocation"
-        );
-
-    if (location) {
-
-        location.value = "";
-
-    }
-
-
-    const date =
-        document.getElementById(
-            "posterDate"
-        );
-
-    if (date) {
-
-        date.value = "";
-
-    }
-
-
-    const description =
-        document.getElementById(
-            "posterDescription"
-        );
-
-    if (description) {
-
-        description.value = "";
-
-    }
-
-
     const image =
         document.getElementById(
             "posterImage"
         );
+
 
     if (image) {
 
@@ -1065,6 +1416,7 @@ function cancelEdit() {
             "imagePreview"
         );
 
+
     if (preview) {
 
         preview.innerHTML = "";
@@ -1077,10 +1429,11 @@ function cancelEdit() {
             "formTitle"
         );
 
+
     if (formTitle) {
 
         formTitle.textContent =
-            "Add New Poster";
+            "Add New Photograph";
 
     }
 
@@ -1089,6 +1442,7 @@ function cancelEdit() {
         document.getElementById(
             "cancelEditBtn"
         );
+
 
     if (cancelButton) {
 
@@ -1100,27 +1454,27 @@ function cancelEdit() {
 }
 
 
-/* ================= DELETE POSTER ================= */
+/* =====================================================
+   DELETE PHOTOGRAPH
+   ===================================================== */
 
 async function deletePoster(id) {
 
     if (!supabaseClient) {
 
         return;
-
     }
 
 
     const confirmDelete =
         confirm(
-            "Are you sure you want to delete this poster?"
+            "Are you sure you want to delete this photograph?"
         );
 
 
     if (!confirmDelete) {
 
         return;
-
     }
 
 
@@ -1130,7 +1484,10 @@ async function deletePoster(id) {
             await supabaseClient
                 .from("posters")
                 .delete()
-                .eq("id", id);
+                .eq(
+                    "id",
+                    id
+                );
 
 
         if (error) {
@@ -1141,7 +1498,7 @@ async function deletePoster(id) {
 
 
         alert(
-            "Poster deleted successfully."
+            "Photograph deleted successfully."
         );
 
 
@@ -1149,9 +1506,11 @@ async function deletePoster(id) {
 
     }
 
+
     catch (error) {
 
         console.error(error);
+
 
         alert(
             "Delete failed: " +
@@ -1163,7 +1522,9 @@ async function deletePoster(id) {
 }
 
 
-/* ================= IMAGE PREVIEW ================= */
+/* =====================================================
+   IMAGE PREVIEW
+   ===================================================== */
 
 document.addEventListener(
     "change",
@@ -1175,7 +1536,6 @@ document.addEventListener(
         ) {
 
             return;
-
         }
 
 
@@ -1186,7 +1546,6 @@ document.addEventListener(
         if (!file) {
 
             return;
-
         }
 
 
@@ -1206,25 +1565,23 @@ document.addEventListener(
                 if (!preview) {
 
                     return;
-
                 }
 
 
                 preview.innerHTML = `
 
-                    <img
-                        src="${e.target.result}"
-                        style="
-                            width:150px;
-                            border-radius:10px;
-                            display:block;
-                            margin-bottom:5px;
-                        "
-                    >
+                    <div class="current-image">
 
-                    <p>
-                        Image Preview
-                    </p>
+                        <img
+                            src="${e.target.result}"
+                            alt="Image preview"
+                        >
+
+                        <span>
+                            Image Preview
+                        </span>
+
+                    </div>
 
                 `;
 
@@ -1237,7 +1594,9 @@ document.addEventListener(
 );
 
 
-/* ================= UPDATE STATISTICS ================= */
+/* =====================================================
+   UPDATE STATISTICS
+   ===================================================== */
 
 function updateStats(posters) {
 
@@ -1300,7 +1659,9 @@ function updateStats(posters) {
 }
 
 
-/* ================= PUBLISH / UNPUBLISH ================= */
+/* =====================================================
+   PUBLISH / UNPUBLISH
+   ===================================================== */
 
 async function togglePublish(
     id,
@@ -1310,7 +1671,6 @@ async function togglePublish(
     if (!supabaseClient) {
 
         return;
-
     }
 
 
@@ -1345,9 +1705,11 @@ async function togglePublish(
 
     }
 
+
     catch (error) {
 
         console.error(error);
+
 
         alert(
             "Unable to change publish status."
@@ -1358,7 +1720,9 @@ async function togglePublish(
 }
 
 
-/* ================= SECURITY HELPER ================= */
+/* =====================================================
+   SECURITY HELPER
+   ===================================================== */
 
 function escapeHTML(value) {
 
@@ -1402,18 +1766,22 @@ function escapeHTML(value) {
 }
 
 
-/* ================= CHECK EXISTING SESSION ================= */
+/* =====================================================
+   CHECK EXISTING SESSION
+   ===================================================== */
 
 async function checkSession() {
 
     if (!supabaseClient) {
 
         return;
-
     }
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
             .auth
             .getSession();
@@ -1442,7 +1810,9 @@ async function checkSession() {
 }
 
 
-/* ================= START ================= */
+/* =====================================================
+   START
+   ===================================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1455,6 +1825,7 @@ document.addEventListener(
             await checkSession();
 
         }
+
 
         catch (error) {
 
