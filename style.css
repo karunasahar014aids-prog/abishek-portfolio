@@ -2076,3 +2076,338 @@ footer::after{
 /* =========================================================
    END CAMERA UI THEME
    ========================================================= */
+/* =====================================================
+   DARK / LIGHT THEME TOGGLE
+===================================================== */
+
+/* ---------- Theme Button ---------- */
+
+.theme-toggle{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#171717;
+    border:1px solid rgba(212,175,55,.25);
+
+    color:#D4AF37;
+    font-size:19px;
+
+    cursor:pointer;
+
+    transition:
+        background .35s ease,
+        color .35s ease,
+        border-color .35s ease,
+        transform .3s ease;
+}
+
+.theme-toggle:hover{
+    background:#D4AF37;
+    color:#080808;
+    border-color:#D4AF37;
+    transform:rotate(15deg) scale(1.06);
+}
+
+
+/* ---------- LIGHT MODE ---------- */
+
+body.light-mode{
+
+    --bg:#F8F7F3;
+    --bg2:#EEECE6;
+
+    --accent:#B08A20;
+    --accent-2:#D4AF37;
+
+    --text:#171717;
+    --text-light:#66635D;
+
+    --border:rgba(17,24,39,.10);
+
+    --white:#FFFFFF;
+
+    --shadow-sm:0 3px 15px rgba(17,24,39,.06);
+    --shadow-md:0 12px 35px rgba(17,24,39,.10);
+    --shadow-lg:0 24px 70px rgba(17,24,39,.14);
+
+    background:#F8F7F3 !important;
+    color:#171717 !important;
+}
+
+
+/* ---------- BODY ---------- */
+
+body.light-mode{
+    background:#F8F7F3 !important;
+}
+
+
+/* ---------- Header ---------- */
+
+body.light-mode .nav-inner{
+    background:rgba(255,255,255,.78) !important;
+    border-color:rgba(17,24,39,.10) !important;
+
+    box-shadow:
+        0 10px 35px rgba(17,24,39,.08) !important;
+}
+
+body.light-mode .nav-links a{
+    color:#66635D !important;
+}
+
+body.light-mode .nav-links a:hover,
+body.light-mode .nav-links a.active{
+    color:#171717 !important;
+}
+
+body.light-mode .logo{
+    color:#171717 !important;
+}
+
+
+/* ---------- Sections ---------- */
+
+body.light-mode section{
+    background:#F8F7F3 !important;
+}
+
+body.light-mode #about{
+    background:#EEECE6 !important;
+}
+
+body.light-mode #skills{
+    background:#F8F7F3 !important;
+}
+
+body.light-mode #portfolio{
+    background:#EEECE6 !important;
+}
+
+body.light-mode #projects{
+    background:#F8F7F3 !important;
+}
+
+body.light-mode #testimonials{
+    background:#EEECE6 !important;
+}
+
+body.light-mode #contact{
+    background:#F8F7F3 !important;
+}
+
+
+/* ---------- Text ---------- */
+
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4{
+    color:#171717 !important;
+}
+
+body.light-mode .hero-title{
+    color:#171717 !important;
+}
+
+body.light-mode .hero-desc,
+body.light-mode .section-tag,
+body.light-mode .badge-label,
+body.light-mode .counter-label{
+    color:#66635D !important;
+}
+
+
+/* ---------- Hero ---------- */
+
+body.light-mode #hero{
+    background:
+        radial-gradient(
+            circle at 80% 15%,
+            rgba(212,175,55,.10),
+            transparent 30%
+        ),
+        linear-gradient(
+            115deg,
+            #F8F7F3 0%,
+            #F3F0E8 55%,
+            #EEECE6 100%
+        ) !important;
+}
+
+body.light-mode .hero-desc{
+    color:#66635D !important;
+}
+
+
+/* ---------- Cards ---------- */
+
+body.light-mode .a-card,
+body.light-mode .skill-card,
+body.light-mode .p-card,
+body.light-mode .fb-card,
+body.light-mode .contact-form,
+body.light-mode .ci-item{
+    background:#FFFFFF !important;
+
+    border-color:
+        rgba(17,24,39,.09) !important;
+
+    box-shadow:
+        0 8px 30px rgba(17,24,39,.06);
+}
+
+
+/* ---------- About ---------- */
+
+body.light-mode .about-badge{
+    background:#FFFFFF !important;
+    color:#171717 !important;
+
+    border-color:
+        rgba(176,138,32,.20) !important;
+}
+
+body.light-mode .a-title{
+    color:#171717 !important;
+}
+
+body.light-mode .a-body-in{
+    color:#66635D !important;
+}
+
+
+/* ---------- Skills ---------- */
+
+body.light-mode .skill-card h3{
+    color:#171717 !important;
+}
+
+body.light-mode .skill-card p{
+    color:#66635D !important;
+}
+
+body.light-mode .skill-ring .bg-c{
+    stroke:#E5E1D8 !important;
+}
+
+
+/* ---------- Portfolio ---------- */
+
+body.light-mode .filter-btn{
+    background:#FFFFFF !important;
+    color:#66635D !important;
+
+    border-color:
+        rgba(17,24,39,.10) !important;
+}
+
+body.light-mode .filter-btn.active{
+    background:#171717 !important;
+    color:#FFFFFF !important;
+}
+
+
+/* ---------- Contact ---------- */
+
+body.light-mode .f-group input,
+body.light-mode .f-group textarea,
+body.light-mode .f-group select{
+    background:#F8F7F3 !important;
+    color:#171717 !important;
+
+    border-color:
+        rgba(17,24,39,.12) !important;
+}
+
+body.light-mode .f-group input::placeholder,
+body.light-mode .f-group textarea::placeholder{
+    color:#88847C !important;
+}
+
+
+/* ---------- Social Buttons ---------- */
+
+body.light-mode .social-btn{
+    background:#FFFFFF !important;
+    color:#171717 !important;
+
+    border-color:
+        rgba(17,24,39,.10) !important;
+}
+
+body.light-mode .social-btn:hover{
+    background:#171717 !important;
+    color:#FFFFFF !important;
+}
+
+
+/* ---------- Buttons ---------- */
+
+body.light-mode .btn-outline{
+    color:#171717 !important;
+    background:#FFFFFF !important;
+
+    border-color:
+        rgba(176,138,32,.40) !important;
+}
+
+body.light-mode .btn-outline:hover{
+    background:#B08A20 !important;
+    color:#FFFFFF !important;
+}
+
+
+/* ---------- Modal ---------- */
+
+body.light-mode #modal,
+body.light-mode #fb-modal,
+body.light-mode #fb-view-modal{
+    background:#FFFFFF !important;
+    color:#171717 !important;
+}
+
+body.light-mode .modal-desc,
+body.light-mode .fb-view-quote{
+    color:#66635D !important;
+}
+
+body.light-mode .modal-story{
+    background:#F1EFE9 !important;
+}
+
+
+/* ---------- Footer ---------- */
+
+body.light-mode footer{
+    background:#171717 !important;
+    color:#AAA59B !important;
+}
+
+
+/* ---------- Theme Icon ---------- */
+
+body.light-mode .theme-toggle{
+    background:#FFFFFF;
+    color:#B08A20;
+
+    border-color:
+        rgba(176,138,32,.30);
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media(max-width:900px){
+
+    .theme-toggle{
+        width:42px;
+        height:42px;
+        font-size:18px;
+    }
+
+}
