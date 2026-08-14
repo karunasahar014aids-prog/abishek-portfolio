@@ -1059,3 +1059,38 @@ svg{
 /* =========================================================
    END CINEMATIC PHOTOGRAPHY THEME
    ========================================================= */
+/* =====================================================
+   PHOTOGRAPHY FILTER + MOBILE MENU TEXT FIX
+===================================================== */
+
+/* Photography filter buttons */
+.filter-bar button,
+.filter-bar a {
+    color: var(--text) !important;
+}
+
+.filter-bar button:hover,
+.filter-bar button.active,
+.filter-bar a:hover,
+.filter-bar a.active {
+    color: var(--accent) !important;
+}
+
+/* Mobile menu */
+#mobile-menu a {
+    color: var(--text) !important;
+}
+
+#mobile-menu a:hover,
+#mobile-menu a.active {
+    color: var(--accent) !important;
+}
+
+/* Mobile menu close button */
+#mobile-menu .mm-close {
+    color: var(--text) !important;
+}
+
+#mobile-menu .mm-close svg {
+    stroke: var(--text) !important;
+}
