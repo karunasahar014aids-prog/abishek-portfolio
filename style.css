@@ -1148,3 +1148,210 @@ button[aria-label="Download"]:hover,
 button[aria-label="Favorite"]:hover {
     color: #F4B400 !important;
 }
+/* =========================================================
+   FINAL PHOTOGRAPHY GALLERY ACTION COLOR FIX
+   View Details / Share / Download / Favorite
+   ========================================================= */
+
+/* ===== GALLERY 3-DOT MENU ===== */
+
+.g-menu {
+    background: #FFFFFF !important;
+    color: #222222 !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Menu buttons */
+.g-menu button {
+    color: #222222 !important;
+    background: transparent !important;
+}
+
+/* Text inside buttons */
+.g-menu button span,
+.g-menu button strong,
+.g-menu button small,
+.g-menu button i {
+    color: #222222 !important;
+}
+
+/* SVG icons */
+.g-menu button svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+    fill: none !important;
+}
+
+/* Hover */
+.g-menu button:hover {
+    background: #F7F3E8 !important;
+    color: #C9A227 !important;
+}
+
+.g-menu button:hover span,
+.g-menu button:hover strong,
+.g-menu button:hover small,
+.g-menu button:hover i {
+    color: #C9A227 !important;
+}
+
+.g-menu button:hover svg {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   FAVORITE CIRCLE
+   ========================================================= */
+
+.g-fav-badge {
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: #222222 !important;
+    border: 1px solid rgba(212, 175, 55, 0.20) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Favorite SVG */
+.g-fav-badge svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+    fill: none !important;
+}
+
+/* Favorite hover */
+.g-fav-badge:hover {
+    background: #F5F1E8 !important;
+    color: #C9A227 !important;
+    transform: scale(1.1);
+}
+
+.g-fav-badge:hover svg {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   FAVORITED STATE
+   ========================================================= */
+
+.g-fav-badge.favorited {
+    background: #C9A227 !important;
+    color: #111111 !important;
+}
+
+.g-fav-badge.favorited svg {
+    color: #111111 !important;
+    stroke: #111111 !important;
+    fill: currentColor !important;
+}
+
+
+/* =========================================================
+   FAVORITE INSIDE 3-DOT MENU
+   ========================================================= */
+
+.g-menu .fav-menu-item {
+    color: #222222 !important;
+}
+
+.g-menu .fav-menu-item svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+}
+
+/* Favorite active */
+.g-menu .fav-menu-item.favorited {
+    color: #C9A227 !important;
+}
+
+.g-menu .fav-menu-item.favorited svg {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   UNIVERSAL FIX FOR WHITE TEXT INSIDE GALLERY POPUPS
+   ========================================================= */
+
+.photo-actions-menu button,
+.image-actions-menu button,
+.gallery-actions-menu button,
+.photo-menu button,
+.g-menu button {
+    color: #222222 !important;
+}
+
+/* Any text element inside popup */
+.photo-actions-menu *,
+.image-actions-menu *,
+.gallery-actions-menu *,
+.photo-menu *,
+.g-menu * {
+    --popup-text-color: #222222;
+}
+
+/* SVG safety */
+.photo-actions-menu svg,
+.image-actions-menu svg,
+.gallery-actions-menu svg,
+.photo-menu svg,
+.g-menu svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+}
+
+
+/* =========================================================
+   POPUP HOVER GOLD
+   ========================================================= */
+
+.photo-actions-menu button:hover *,
+.image-actions-menu button:hover *,
+.gallery-actions-menu button:hover *,
+.photo-menu button:hover *,
+.g-menu button:hover * {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   GALLERY DOT BUTTON
+   ========================================================= */
+
+.g-dots {
+    background: rgba(255,255,255,.96) !important;
+    color: #222222 !important;
+    border: 1px solid rgba(212,175,55,.15) !important;
+}
+
+.g-dots svg {
+    color: #222222 !important;
+    stroke: #222222 !important;
+}
+
+.g-dots:hover {
+    background: #F5F1E8 !important;
+    color: #C9A227 !important;
+}
+
+.g-dots:hover svg {
+    color: #C9A227 !important;
+    stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.g-menu button:focus-visible,
+.g-dots:focus-visible,
+.g-fav-badge:focus-visible {
+    outline: 2px solid #C9A227 !important;
+    outline-offset: 2px;
+}
