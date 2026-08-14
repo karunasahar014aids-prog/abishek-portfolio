@@ -1355,3 +1355,168 @@ button[aria-label="Favorite"]:hover {
     outline: 2px solid #C9A227 !important;
     outline-offset: 2px;
 }
+/* =========================================================
+   FINAL PHOTOGRAPHY ACTION MENU COLOR FIX
+   View Details / Share / Download / Favorite
+   ========================================================= */
+
+/* ===== 3 DOT ACTION MENU ===== */
+
+.g-menu {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Menu buttons */
+.g-menu button {
+  color: #222222 !important;
+  background: transparent !important;
+}
+
+/* Text inside buttons */
+.g-menu button span,
+.g-menu button svg,
+.g-menu button i {
+  color: #222222 !important;
+  stroke: #222222 !important;
+  fill: none !important;
+}
+
+/* Hover */
+.g-menu button:hover {
+  background: #F3F3F3 !important;
+  color: #C9A227 !important;
+}
+
+.g-menu button:hover span,
+.g-menu button:hover svg,
+.g-menu button:hover i {
+  color: #C9A227 !important;
+  stroke: #C9A227 !important;
+}
+
+/* ===== FAVORITE MENU ITEM ===== */
+
+.g-menu .fav-menu-item {
+  color: #222222 !important;
+}
+
+.g-menu .fav-menu-item svg {
+  color: #222222 !important;
+  stroke: #222222 !important;
+}
+
+.g-menu .fav-menu-item:hover {
+  color: #C9A227 !important;
+  background: #F3F3F3 !important;
+}
+
+.g-menu .fav-menu-item:hover svg {
+  color: #C9A227 !important;
+  stroke: #C9A227 !important;
+}
+
+/* Favorite active */
+.g-menu .fav-menu-item.favorited {
+  color: #E0245E !important;
+}
+
+.g-menu .fav-menu-item.favorited svg {
+  color: #E0245E !important;
+  stroke: #E0245E !important;
+  fill: none !important;
+}
+
+
+/* =========================================================
+   FAVORITE CIRCLE ON IMAGE
+   ========================================================= */
+
+.g-fav-badge {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #222222 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Heart icon */
+.g-fav-badge svg {
+  color: #222222 !important;
+  stroke: #222222 !important;
+  fill: none !important;
+}
+
+/* Hover */
+.g-fav-badge:hover {
+  background: #FFFFFF !important;
+  color: #C9A227 !important;
+  transform: scale(1.1);
+}
+
+.g-fav-badge:hover svg {
+  color: #C9A227 !important;
+  stroke: #C9A227 !important;
+}
+
+/* Favorite selected */
+.g-fav-badge.favorited {
+  background: #E0245E !important;
+  color: #FFFFFF !important;
+}
+
+.g-fav-badge.favorited svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+
+/* =========================================================
+   THREE DOT BUTTON
+   ========================================================= */
+
+.g-dots {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #222222 !important;
+}
+
+.g-dots svg {
+  color: #222222 !important;
+  stroke: #222222 !important;
+}
+
+.g-dots:hover {
+  background: #FFFFFF !important;
+  color: #C9A227 !important;
+}
+
+.g-dots:hover svg {
+  color: #C9A227 !important;
+  stroke: #C9A227 !important;
+}
+
+
+/* =========================================================
+   EXTRA SAFETY FIX
+   If SVG uses currentColor
+   ========================================================= */
+
+.g-menu svg path,
+.g-menu svg line,
+.g-menu svg polyline,
+.g-menu svg circle {
+  stroke: currentColor !important;
+}
+
+.g-fav-badge svg path,
+.g-fav-badge svg line,
+.g-fav-badge svg polyline,
+.g-fav-badge svg circle {
+  stroke: currentColor !important;
+}
+
+.g-dots svg path,
+.g-dots svg line,
+.g-dots svg polyline,
+.g-dots svg circle {
+  stroke: currentColor !important;
+}
