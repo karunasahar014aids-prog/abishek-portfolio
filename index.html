@@ -36,13 +36,15 @@
   <!-- Supabase -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-  <!-- =========================================
-       DARK / LIGHT THEME - HTML ONLY
-  ========================================== -->
+  <!-- =====================================================
+       DARK / LIGHT THEME
+  ====================================================== -->
 
   <style>
 
-    /* Theme Button */
+    /* =========================
+       THEME BUTTON
+    ========================= */
 
     .theme-toggle {
       width: 42px;
@@ -56,7 +58,7 @@
       justify-content: center;
       cursor: pointer;
       font-size: 20px;
-      transition: 0.3s ease;
+      transition: all 0.3s ease;
       margin-right: 12px;
     }
 
@@ -66,7 +68,10 @@
       transform: rotate(15deg);
     }
 
-    /* DARK THEME */
+
+    /* =========================
+       DARK THEME
+    ========================= */
 
     body.dark-theme {
       background: #0b0f19;
@@ -74,7 +79,7 @@
     }
 
     body.dark-theme #site-header {
-      background: rgba(11, 15, 25, 0.92);
+      background: rgba(11, 15, 25, 0.95);
       border-color: rgba(255, 255, 255, 0.1);
     }
 
@@ -84,11 +89,11 @@
 
     body.dark-theme .nav-link:hover,
     body.dark-theme .nav-link.active {
-      color: white;
+      color: #ffffff;
     }
 
     body.dark-theme .theme-toggle {
-      color: white;
+      color: #ffffff;
       border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -123,7 +128,7 @@
     body.dark-theme textarea,
     body.dark-theme select {
       background: #0f172a;
-      color: white;
+      color: #ffffff;
       border-color: rgba(255, 255, 255, 0.15);
     }
 
@@ -133,16 +138,45 @@
     }
 
     body.dark-theme .btn-outline {
-      color: white;
+      color: #ffffff;
       border-color: rgba(255, 255, 255, 0.25);
     }
 
     body.dark-theme footer {
       background: #070b12;
-      color: white;
+      color: #ffffff;
     }
 
-    /* Mobile */
+    body.dark-theme .modal-close {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    body.dark-theme #modal,
+    body.dark-theme #fb-modal,
+    body.dark-theme #fb-view-modal {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    body.dark-theme .modal-title,
+    body.dark-theme .modal-desc,
+    body.dark-theme .fb-modal-head h3,
+    body.dark-theme .fb-view-quote,
+    body.dark-theme .fb-name {
+      color: #ffffff;
+    }
+
+    body.dark-theme .modal-desc,
+    body.dark-theme .fb-modal-head p,
+    body.dark-theme .fb-date {
+      color: #a7b0c0;
+    }
+
+
+    /* =========================
+       MOBILE THEME BUTTON
+    ========================= */
 
     .mobile-theme-toggle {
       margin-top: 20px;
@@ -159,11 +193,14 @@
     }
 
     body.dark-theme .mobile-theme-toggle {
-      color: white;
+      color: #ffffff;
       border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* Smooth Theme Transition */
+
+    /* =========================
+       SMOOTH THEME TRANSITION
+    ========================= */
 
     body,
     #site-header,
@@ -171,10 +208,14 @@
     .skill-card,
     .project-card,
     .contact-form,
+    .counter-item,
     input,
     textarea,
     select,
-    footer {
+    footer,
+    #modal,
+    #fb-modal,
+    #fb-view-modal {
       transition:
         background-color 0.35s ease,
         color 0.35s ease,
@@ -188,15 +229,17 @@
 
 <body>
 
-  <!-- CUSTOM CURSOR -->
+  <!-- =====================================================
+       CUSTOM CURSOR
+  ====================================================== -->
 
   <div id="cursor-dot"></div>
   <div id="cursor-ring"></div>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        LOADER
-  ========================================== -->
+  ====================================================== -->
 
   <div id="loader">
 
@@ -250,9 +293,9 @@
   </div>
 
 
-  <!-- =========================================
-       HEADER / NAVBAR
-  ========================================== -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
   <header id="site-header">
 
@@ -332,11 +375,10 @@
         <button
           class="theme-toggle"
           id="theme-toggle"
+          type="button"
           aria-label="Toggle Dark Light Theme">
 
-          <span id="theme-icon">
-            ☾
-          </span>
+          <span id="theme-icon">☾</span>
 
         </button>
 
@@ -367,7 +409,8 @@
 
         <button
           class="burger"
-          id="burger-btn">
+          id="burger-btn"
+          type="button">
 
           <span></span>
           <span></span>
@@ -382,15 +425,16 @@
   </header>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        MOBILE MENU
-  ========================================== -->
+  ====================================================== -->
 
   <div id="mobile-menu">
 
     <button
       class="mm-close"
-      id="mm-close">
+      id="mm-close"
+      type="button">
 
       <svg
         width="18"
@@ -436,7 +480,8 @@
 
     <button
       class="mobile-theme-toggle"
-      id="mobile-theme-toggle">
+      id="mobile-theme-toggle"
+      type="button">
 
       <span id="mobile-theme-icon">
         ☾
@@ -451,9 +496,9 @@
   </div>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        HERO
-  ========================================== -->
+  ====================================================== -->
 
   <section id="hero">
 
@@ -676,16 +721,15 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        ABOUT
-  ========================================== -->
+  ====================================================== -->
 
   <section id="about">
 
     <div class="wrap">
 
       <div class="about-grid">
-
 
         <div class="about-portrait reveal">
 
@@ -777,7 +821,6 @@
           <!-- ABOUT CARDS -->
 
           <div class="about-cards reveal">
-
 
             <div
               class="a-card"
@@ -973,20 +1016,14 @@
 
           <div class="counters reveal">
 
-
             <div class="counter-item">
 
               <div
                 class="counter-num"
                 data-count="240">
 
-                <span class="n">
-                  0
-                </span>
-
-                <span class="suffix">
-                  +
-                </span>
+                <span class="n">0</span>
+                <span class="suffix">+</span>
 
               </div>
 
@@ -1003,13 +1040,8 @@
                 class="counter-num"
                 data-count="180">
 
-                <span class="n">
-                  0
-                </span>
-
-                <span class="suffix">
-                  +
-                </span>
+                <span class="n">0</span>
+                <span class="suffix">+</span>
 
               </div>
 
@@ -1026,13 +1058,8 @@
                 class="counter-num"
                 data-count="8">
 
-                <span class="n">
-                  0
-                </span>
-
-                <span class="suffix">
-                  yr
-                </span>
+                <span class="n">0</span>
+                <span class="suffix">yr</span>
 
               </div>
 
@@ -1049,13 +1076,8 @@
                 class="counter-num"
                 data-count="52">
 
-                <span class="n">
-                  0
-                </span>
-
-                <span class="suffix">
-                  k+
-                </span>
+                <span class="n">0</span>
+                <span class="suffix">k+</span>
 
               </div>
 
@@ -1064,7 +1086,6 @@
               </div>
 
             </div>
-
 
           </div>
 
@@ -1077,9 +1098,9 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        SKILLS
-  ========================================== -->
+  ====================================================== -->
 
   <section id="skills">
 
@@ -1125,9 +1146,9 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        PORTFOLIO
-  ========================================== -->
+  ====================================================== -->
 
   <section id="portfolio">
 
@@ -1182,7 +1203,8 @@
 
         <button
           class="btn btn-outline magnetic"
-          id="load-more-btn">
+          id="load-more-btn"
+          type="button">
 
           Load More Work
 
@@ -1195,9 +1217,9 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        PROJECTS
-  ========================================== -->
+  ====================================================== -->
 
   <section id="projects">
 
@@ -1240,9 +1262,9 @@
   </section>
 
 
-  <!-- =========================================
-       CLIENT FEEDBACK
-  ========================================== -->
+  <!-- =====================================================
+       TESTIMONIALS
+  ====================================================== -->
 
   <section id="testimonials">
 
@@ -1267,20 +1289,8 @@
 
           <button
             class="btn btn-primary magnetic"
-            id="open-feedback-btn">
-
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2">
-
-              <path
-                d="M12 20l9-9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
-
-            </svg>
+            id="open-feedback-btn"
+            type="button">
 
             Leave Feedback
 
@@ -1293,11 +1303,11 @@
 
       <div class="feedback-carousel">
 
-
         <button
           class="fb-arrow fb-arrow-left"
           id="fb-scroll-left"
-          aria-label="Scroll feedback left">
+          aria-label="Scroll feedback left"
+          type="button">
 
           <svg
             width="18"
@@ -1324,7 +1334,8 @@
         <button
           class="fb-arrow fb-arrow-right"
           id="fb-scroll-right"
-          aria-label="Scroll feedback right">
+          aria-label="Scroll feedback right"
+          type="button">
 
           <svg
             width="18"
@@ -1359,16 +1370,15 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        CONTACT
-  ========================================== -->
+  ====================================================== -->
 
   <section id="contact">
 
     <div class="wrap">
 
       <div class="contact-grid">
-
 
         <div>
 
@@ -1398,7 +1408,6 @@
 
 
           <div class="contact-info-list reveal">
-
 
             <div class="ci-item">
 
@@ -1510,14 +1519,12 @@
 
             </div>
 
-
           </div>
 
 
           <!-- SOCIAL -->
 
           <div class="social-row reveal">
-
 
             <a
               href="#"
@@ -1600,7 +1607,6 @@
 
             </a>
 
-
           </div>
 
         </div>
@@ -1612,9 +1618,7 @@
 
           <form id="contact-form">
 
-
             <div class="f-row">
-
 
               <div class="f-group floating">
 
@@ -1702,18 +1706,6 @@
 
               Send Message
 
-              <svg
-                class="icon-send"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2">
-
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"/>
-
-              </svg>
-
             </button>
 
           </form>
@@ -1759,14 +1751,13 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        FOOTER
-  ========================================== -->
+  ====================================================== -->
 
   <footer>
 
     <div class="wrap">
-
 
       <div class="footer-top">
 
@@ -1789,19 +1780,6 @@
           class="btn btn-primary magnetic">
 
           Start a Project
-
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2">
-
-            <path
-              d="M7 17L17 7M17 7H7M17 7V17"/>
-
-          </svg>
 
         </a>
 
@@ -1847,9 +1825,9 @@
   </footer>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        IMAGE MODAL
-  ========================================== -->
+  ====================================================== -->
 
   <div id="modal-backdrop">
 
@@ -1858,19 +1836,10 @@
       <button
         class="modal-close"
         id="modal-close"
-        aria-label="Close">
+        aria-label="Close"
+        type="button">
 
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#111827"
-          stroke-width="2">
-
-          <path d="M6 6l12 12M18 6L6 18"/>
-
-        </svg>
+        ×
 
       </button>
 
@@ -1878,19 +1847,10 @@
       <button
         class="modal-nav modal-prev"
         id="modal-prev"
-        aria-label="Previous">
+        aria-label="Previous"
+        type="button">
 
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2">
-
-          <path d="M15 18l-6-6 6-6"/>
-
-        </svg>
+        ‹
 
       </button>
 
@@ -1898,19 +1858,10 @@
       <button
         class="modal-nav modal-next"
         id="modal-next"
-        aria-label="Next">
+        aria-label="Next"
+        type="button">
 
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2">
-
-          <path d="M9 18l6-6-6-6"/>
-
-        </svg>
+        ›
 
       </button>
 
@@ -1987,9 +1938,9 @@
   </div>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        FEEDBACK MODAL
-  ========================================== -->
+  ====================================================== -->
 
   <div id="fb-modal-backdrop">
 
@@ -1998,19 +1949,10 @@
       <button
         class="modal-close"
         id="fb-modal-close"
-        aria-label="Close">
+        aria-label="Close"
+        type="button">
 
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#111827"
-          stroke-width="2">
-
-          <path d="M6 6l12 12M18 6L6 18"/>
-
-        </svg>
+        ×
 
       </button>
 
@@ -2044,9 +1986,7 @@
 
       <form id="fb-form">
 
-
         <div class="f-row">
-
 
           <div class="f-group floating">
 
@@ -2209,18 +2149,6 @@
 
           Submit Feedback
 
-          <svg
-            class="icon-send"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2">
-
-            <path
-              d="M7 17L17 7M17 7H7M17 7V17"/>
-
-          </svg>
-
         </button>
 
       </form>
@@ -2264,31 +2192,21 @@
   </div>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        FEEDBACK VIEW MODAL
-  ========================================== -->
+  ====================================================== -->
 
   <div id="fb-view-backdrop">
 
     <div id="fb-view-modal">
 
-
       <button
         class="modal-close"
         id="fb-view-close"
-        aria-label="Close">
+        aria-label="Close"
+        type="button">
 
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#111827"
-          stroke-width="2">
-
-          <path d="M6 6l12 12M18 6L6 18"/>
-
-        </svg>
+        ×
 
       </button>
 
@@ -2336,20 +2254,8 @@
 
         <button
           class="fb-delete-trigger"
-          id="fb-delete-trigger">
-
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2">
-
-            <path
-              d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/>
-
-          </svg>
+          id="fb-delete-trigger"
+          type="button">
 
           Delete this feedback
 
@@ -2408,12 +2314,16 @@
   </div>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        THEME JAVASCRIPT
        HTML FILE-க்குள்ளேயே
-  ========================================== -->
+  ====================================================== -->
 
   <script>
+
+    /* =========================================
+       THEME ELEMENTS
+    ========================================= */
 
     const themeToggle =
       document.getElementById("theme-toggle");
@@ -2428,71 +2338,84 @@
       document.getElementById("mobile-theme-icon");
 
 
-    /* Check saved theme */
+    /* =========================================
+       APPLY THEME
+    ========================================= */
+
+    function applyTheme(theme) {
+
+      if (theme === "dark") {
+
+        document.body.classList.add("dark-theme");
+
+        if (themeIcon) {
+          themeIcon.textContent = "☀";
+        }
+
+        if (mobileThemeIcon) {
+          mobileThemeIcon.textContent = "☀";
+        }
+
+      } else {
+
+        document.body.classList.remove("dark-theme");
+
+        if (themeIcon) {
+          themeIcon.textContent = "☾";
+        }
+
+        if (mobileThemeIcon) {
+          mobileThemeIcon.textContent = "☾";
+        }
+
+      }
+
+    }
+
+
+    /* =========================================
+       LOAD SAVED THEME
+    ========================================= */
 
     const savedTheme =
       localStorage.getItem("theme");
 
-
-    /* Apply saved theme */
-
     if (savedTheme === "dark") {
 
-      document.body.classList.add("dark-theme");
+      applyTheme("dark");
 
-      if (themeIcon) {
-        themeIcon.textContent = "☀";
-      }
+    } else {
 
-      if (mobileThemeIcon) {
-        mobileThemeIcon.textContent = "☀";
-      }
+      applyTheme("light");
 
     }
 
 
-    /* Toggle Function */
+    /* =========================================
+       TOGGLE THEME
+    ========================================= */
 
     function toggleTheme() {
-
-      document.body.classList.toggle("dark-theme");
-
 
       const isDark =
         document.body.classList.contains("dark-theme");
 
+      const newTheme =
+        isDark ? "light" : "dark";
 
-      /* Save theme */
+      applyTheme(newTheme);
 
       localStorage.setItem(
         "theme",
-        isDark ? "dark" : "light"
+        newTheme
       );
-
-
-      /* Desktop icon */
-
-      if (themeIcon) {
-
-        themeIcon.textContent =
-          isDark ? "☀" : "☾";
-
-      }
-
-
-      /* Mobile icon */
-
-      if (mobileThemeIcon) {
-
-        mobileThemeIcon.textContent =
-          isDark ? "☀" : "☾";
-
-      }
 
     }
 
 
-    /* Desktop button */
+    /* =========================================
+       DESKTOP THEME BUTTON
+    ========================================= */
 
     if (themeToggle) {
 
@@ -2504,7 +2427,9 @@
     }
 
 
-    /* Mobile button */
+    /* =========================================
+       MOBILE THEME BUTTON
+    ========================================= */
 
     if (mobileThemeToggle) {
 
@@ -2516,7 +2441,9 @@
     }
 
 
-    /* Current year */
+    /* =========================================
+       CURRENT YEAR
+    ========================================= */
 
     const year =
       document.getElementById("year");
@@ -2534,7 +2461,6 @@
   <!-- YOUR EXISTING JAVASCRIPT -->
 
   <script src="script.js"></script>
-
 
 </body>
 
