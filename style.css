@@ -449,3 +449,613 @@ img{content-visibility:auto;}
 @media (prefers-reduced-motion: reduce){
   *{animation:none!important;transition:none!important;}
 }
+/* =========================================================
+   CINEMATIC PHOTOGRAPHY THEME
+   Theme Override Only
+   Existing HTML / JS functionality remains unchanged
+   ========================================================= */
+
+:root{
+  --bg:#0A0A0A;
+  --bg2:#111111;
+  --accent:#D4AF37;
+  --accent-2:#F0D98C;
+  --text:#F5F1E8;
+  --text-light:#A9A49A;
+  --border:rgba(255,255,255,.10);
+  --white:#171717;
+
+  --shadow-sm:0 4px 20px rgba(0,0,0,.35);
+  --shadow-md:0 15px 45px rgba(0,0,0,.45);
+  --shadow-lg:0 30px 90px rgba(0,0,0,.65);
+}
+
+/* ================= GLOBAL ================= */
+
+html{
+  background:#0A0A0A !important;
+}
+
+body{
+  background:
+    radial-gradient(circle at 80% 10%,rgba(212,175,55,.055),transparent 28%),
+    radial-gradient(circle at 10% 80%,rgba(212,175,55,.035),transparent 30%),
+    #0A0A0A !important;
+  color:var(--text) !important;
+}
+
+::selection{
+  background:var(--accent) !important;
+  color:#000 !important;
+}
+
+/* ================= TYPOGRAPHY ================= */
+
+h1,
+h2,
+h3,
+h4{
+  color:var(--text) !important;
+}
+
+.section-title{
+  color:#F5F1E8 !important;
+}
+
+.section-tag,
+.hero-desc,
+.badge-label,
+.counter-label{
+  color:#A9A49A !important;
+}
+
+.eyebrow,
+.hero-eyebrow{
+  color:var(--accent) !important;
+}
+
+.eyebrow::before{
+  background:var(--accent) !important;
+}
+
+/* ================= CUSTOM CURSOR ================= */
+
+#cursor-dot{
+  background:var(--accent) !important;
+}
+
+#cursor-ring{
+  border-color:rgba(212,175,55,.55) !important;
+}
+
+#cursor-ring.big{
+  background:rgba(212,175,55,.08) !important;
+  border-color:rgba(212,175,55,.30) !important;
+}
+
+#cursor-ring.view::after{
+  color:var(--accent) !important;
+}
+
+/* ================= LOADER ================= */
+
+#loader{
+  background:#080808 !important;
+}
+
+#loader .loader-label{
+  color:#A9A49A !important;
+}
+
+#loader .loader-pct{
+  color:var(--accent) !important;
+}
+
+.shutter svg circle{
+  stroke:var(--accent) !important;
+}
+
+.shutter svg path{
+  fill:#F5F1E8 !important;
+}
+
+/* ================= NAVBAR ================= */
+
+header{
+  background:transparent !important;
+}
+
+header.scrolled .nav-inner{
+  background:rgba(12,12,12,.78) !important;
+  border:1px solid rgba(212,175,55,.14) !important;
+  box-shadow:0 10px 40px rgba(0,0,0,.45) !important;
+}
+
+.nav-inner{
+  background:rgba(15,15,15,.35);
+  border:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.nav-links a{
+  color:#A9A49A !important;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:#F5F1E8 !important;
+}
+
+.nav-links a.active::after{
+  background:var(--accent) !important;
+}
+
+.logo span{
+  color:var(--accent) !important;
+}
+
+.nav-cta{
+  background:var(--accent) !important;
+  color:#090909 !important;
+}
+
+.nav-cta:hover{
+  background:#F0D98C !important;
+  color:#000 !important;
+}
+
+.burger{
+  background:#171717 !important;
+  border-color:rgba(212,175,55,.20) !important;
+}
+
+.burger span{
+  background:#F5F1E8 !important;
+}
+
+#mobile-menu{
+  background:#090909 !important;
+}
+
+#mobile-menu a{
+  color:#F5F1E8 !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+#mobile-menu .mm-close{
+  background:#171717 !important;
+  border-color:rgba(212,175,55,.20) !important;
+}
+
+/* ================= HERO ================= */
+
+#hero{
+  background:
+    linear-gradient(
+      115deg,
+      rgba(0,0,0,.98) 0%,
+      rgba(10,10,10,.90) 48%,
+      rgba(10,10,10,.55) 100%
+    ) !important;
+}
+
+.hero-bg-lines{
+  opacity:.25 !important;
+}
+
+.hero-bg-lines circle,
+.hero-bg-lines path,
+.hero-bg-lines rect{
+  stroke:var(--accent) !important;
+}
+
+.hero-role{
+  color:var(--accent) !important;
+}
+
+.hero-title{
+  color:#F5F1E8 !important;
+}
+
+.hero-desc{
+  color:#AAA59B !important;
+}
+
+/* ================= HERO IMAGE ================= */
+
+.hero-portrait-ring{
+  background:
+    conic-gradient(
+      from 90deg,
+      var(--accent),
+      transparent,
+      var(--accent),
+      transparent,
+      var(--accent)
+    ) !important;
+
+  opacity:.75 !important;
+}
+
+.hero-portrait-frame{
+  border:1px solid rgba(212,175,55,.45) !important;
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.75),
+    0 0 45px rgba(212,175,55,.08) !important;
+}
+
+.hero-portrait-frame img{
+  filter:saturate(.92) contrast(1.05);
+}
+
+.float-icon{
+  background:#151515 !important;
+  color:var(--accent) !important;
+  border:1px solid rgba(212,175,55,.20);
+  box-shadow:0 15px 40px rgba(0,0,0,.55) !important;
+}
+
+.fi-2{
+  color:#F0D98C !important;
+}
+
+.hero-scroll{
+  color:#8F8A82 !important;
+}
+
+.hero-scroll .line{
+  background:rgba(255,255,255,.12) !important;
+}
+
+.hero-scroll .line::after{
+  background:var(--accent) !important;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn-primary{
+  background:var(--accent) !important;
+  color:#090909 !important;
+  box-shadow:0 10px 35px rgba(212,175,55,.18) !important;
+}
+
+.btn-primary::before{
+  background:#F0D98C !important;
+}
+
+.btn-primary:hover{
+  box-shadow:0 15px 45px rgba(212,175,55,.28) !important;
+}
+
+.btn-outline{
+  background:transparent !important;
+  color:#F5F1E8 !important;
+  border-color:rgba(212,175,55,.35) !important;
+}
+
+.btn-outline:hover{
+  background:var(--accent) !important;
+  color:#090909 !important;
+  border-color:var(--accent) !important;
+}
+
+/* ================= SECTIONS ================= */
+
+section{
+  background:#0A0A0A !important;
+}
+
+#about{
+  background:#101010 !important;
+}
+
+#skills{
+  background:#0A0A0A !important;
+}
+
+#portfolio{
+  background:#0E0E0E !important;
+}
+
+#projects{
+  background:#0A0A0A !important;
+}
+
+#testimonials{
+  background:#101010 !important;
+}
+
+#contact{
+  background:#080808 !important;
+}
+
+/* ================= ABOUT ================= */
+
+.about-portrait-img{
+  border:1px solid rgba(212,175,55,.16);
+  box-shadow:0 25px 70px rgba(0,0,0,.65) !important;
+}
+
+.about-portrait-img:hover img{
+  transform:scale(1.05) !important;
+}
+
+.about-badge{
+  background:#171717 !important;
+  color:#F5F1E8 !important;
+  border-color:rgba(212,175,55,.18) !important;
+  box-shadow:0 20px 50px rgba(0,0,0,.55) !important;
+}
+
+.badge-ring circle:first-child{
+  stroke:#292929 !important;
+}
+
+.badge-ring circle:last-child{
+  stroke:var(--accent) !important;
+}
+
+.badge-num{
+  color:#F5F1E8 !important;
+}
+
+/* ================= ABOUT CARDS ================= */
+
+.a-card{
+  background:#151515 !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+.a-card:hover,
+.a-card[data-open="true"]{
+  border-color:rgba(212,175,55,.35) !important;
+}
+
+.a-num{
+  color:var(--accent) !important;
+}
+
+.a-title{
+  color:#F5F1E8 !important;
+}
+
+.a-body-in{
+  color:#A9A49A !important;
+}
+
+.a-plus{
+  border-color:rgba(212,175,55,.35) !important;
+}
+
+/* ================= COUNTERS ================= */
+
+.counter-num{
+  color:var(--accent) !important;
+}
+
+.counter-label{
+  color:#8F8A82 !important;
+}
+
+/* ================= SKILLS ================= */
+
+.skill-card,
+.skills-grid > div{
+  background:#141414 !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+.skill-card:hover,
+.skills-grid > div:hover{
+  border-color:rgba(212,175,55,.35) !important;
+  transform:translateY(-5px);
+}
+
+.skill-card h3,
+.skills-grid h3{
+  color:#F5F1E8 !important;
+}
+
+.skill-card p,
+.skills-grid p{
+  color:#99948B !important;
+}
+
+/* ================= PORTFOLIO FILTER ================= */
+
+.filter-bar button{
+  color:#99948B !important;
+  border-color:rgba(255,255,255,.10) !important;
+  background:#151515 !important;
+}
+
+.filter-bar button:hover,
+.filter-bar button.active{
+  color:#080808 !important;
+  background:var(--accent) !important;
+  border-color:var(--accent) !important;
+}
+
+/* ================= PHOTO GALLERY ================= */
+
+.masonry{
+  background:transparent !important;
+}
+
+.masonry-item{
+  background:#111 !important;
+  border:1px solid rgba(255,255,255,.06) !important;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+
+.masonry-item img{
+  transition:
+    transform .8s cubic-bezier(.16,.84,.44,1),
+    filter .8s ease !important;
+}
+
+.masonry-item:hover img{
+  transform:scale(1.045) !important;
+  filter:saturate(1.05) contrast(1.05) !important;
+}
+
+.masonry-item::after{
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.72),
+      transparent 55%
+    ) !important;
+}
+
+/* ================= PROJECTS ================= */
+
+.project-card{
+  background:#141414 !important;
+  border-color:rgba(255,255,255,.08) !important;
+  box-shadow:0 20px 60px rgba(0,0,0,.35) !important;
+}
+
+.project-card:hover{
+  border-color:rgba(212,175,55,.35) !important;
+}
+
+.project-card h3{
+  color:#F5F1E8 !important;
+}
+
+.project-card p{
+  color:#99948B !important;
+}
+
+/* ================= TESTIMONIALS ================= */
+
+.testimonial-card{
+  background:#151515 !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+.testimonial-card:hover{
+  border-color:rgba(212,175,55,.30) !important;
+}
+
+.testimonial-card p{
+  color:#AAA59B !important;
+}
+
+.testimonial-card strong,
+.testimonial-card h4{
+  color:#F5F1E8 !important;
+}
+
+/* ================= CONTACT ================= */
+
+.contact-card,
+.contact-form,
+.contact-info{
+  background:#141414 !important;
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+.contact-card input,
+.contact-card textarea,
+.contact-form input,
+.contact-form textarea{
+  background:#0D0D0D !important;
+  color:#F5F1E8 !important;
+  border-color:rgba(255,255,255,.10) !important;
+}
+
+.contact-card input:focus,
+.contact-card textarea:focus,
+.contact-form input:focus,
+.contact-form textarea:focus{
+  border-color:var(--accent) !important;
+  outline:none !important;
+}
+
+.contact-card input::placeholder,
+.contact-card textarea::placeholder,
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
+  color:#68645E !important;
+}
+
+/* ================= SOCIAL ICONS ================= */
+
+.social-links a{
+  background:#151515 !important;
+  border-color:rgba(255,255,255,.08) !important;
+  color:#F5F1E8 !important;
+}
+
+.social-links a:hover{
+  background:var(--accent) !important;
+  color:#080808 !important;
+  border-color:var(--accent) !important;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+  background:#050505 !important;
+  color:#8F8A82 !important;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+footer a:hover{
+  color:var(--accent) !important;
+}
+
+/* ================= GOLD DETAILS ================= */
+
+hr{
+  border-color:rgba(212,175,55,.15) !important;
+}
+
+svg{
+  transition:stroke .3s ease;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+  #hero{
+    background:#090909 !important;
+  }
+
+  .hero-title{
+    font-size:clamp(42px,13vw,72px) !important;
+  }
+
+  .hero-portrait-ring{
+    opacity:.45 !important;
+  }
+
+  .nav-inner{
+    background:rgba(12,12,12,.65) !important;
+  }
+
+}
+
+@media(max-width:640px){
+
+  section{
+    padding:90px 0 !important;
+  }
+
+  .about-badge{
+    background:#151515 !important;
+  }
+
+  .btn{
+    padding:14px 24px;
+  }
+
+}
+
+/* =========================================================
+   END CINEMATIC PHOTOGRAPHY THEME
+   ========================================================= */
