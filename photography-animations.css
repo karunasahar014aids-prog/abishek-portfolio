@@ -1,168 +1,105 @@
-/* ==========================================================
-   PHOTOGRAPHY CONTACT - CAMERA FLASH SEND EFFECT
-   Loaded by index.html after style.css.
-   This works with the existing #form-success.show state,
-   so no changes to the contact form JavaScript are required.
-========================================================== */
-
-/* Full-screen camera flash */
+/* PREMIUM CONTACT - SMOOTH SHUTTER SUCCESS ANIMATION */
 .form-success.show::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 99998;
-  background: #ffffff;
+  background: rgba(8,15,30,.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   pointer-events: none;
-  animation: contactCameraFlash 0.72s cubic-bezier(.16,.84,.44,1) forwards;
+  animation: contactBackdrop .55s ease-out forwards;
 }
 
-@keyframes contactCameraFlash {
-  0% {
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  22% {
-    opacity: .92;
-  }
-  38% {
-    opacity: .18;
-  }
-  48% {
-    opacity: .82;
-  }
-  64% {
-    opacity: .08;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Message appears at the same time as the flash */
 .form-success.show {
   position: fixed !important;
   left: 50% !important;
   top: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  transform: translate(-50%,-50%) !important;
   z-index: 99999 !important;
-  width: min(420px, calc(100vw - 40px));
-  padding: 30px 28px !important;
-  border-radius: 24px !important;
+  width: min(430px,calc(100vw - 36px));
+  padding: 32px 28px !important;
+  border-radius: 26px !important;
   text-align: center;
-  background: rgba(17, 24, 39, .94) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, .14);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  animation: messageSentPop .65s cubic-bezier(.16,.84,.44,1) both;
+  background: rgba(255,255,255,.96) !important;
+  color: #111827 !important;
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: 0 30px 100px rgba(0,0,0,.28);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: successCard .65s cubic-bezier(.2,.9,.25,1.2) both;
 }
 
 .form-success.show svg {
-  width: 54px !important;
-  height: 54px !important;
-  margin: 0 auto 14px !important;
-  color: #ffffff !important;
-  stroke: #ffffff !important;
-  animation: cameraCheck .7s .12s cubic-bezier(.16,.84,.44,1) both;
+  width: 58px !important;
+  height: 58px !important;
+  margin: 0 auto 15px !important;
+  color: #2962FF !important;
+  stroke: #2962FF !important;
+  animation: successIcon .7s .08s cubic-bezier(.2,.9,.25,1.2) both;
+  filter: drop-shadow(0 8px 18px rgba(41,98,255,.22));
 }
 
 .form-success.show h3 {
   margin: 0 0 7px !important;
-  color: #ffffff !important;
+  color: #111827 !important;
   font-size: 24px !important;
   letter-spacing: -.02em;
 }
 
 .form-success.show p {
   margin: 0 !important;
-  color: rgba(255, 255, 255, .72) !important;
+  color: #667085 !important;
   font-size: 13px;
   line-height: 1.6;
 }
 
-@keyframes messageSentPop {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(.72) !important;
-  }
-  45% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.04) !important;
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1) !important;
-  }
-}
-
-@keyframes cameraCheck {
-  0% {
-    opacity: 0;
-    transform: scale(.55) rotate(-12deg);
-  }
-  70% {
-    opacity: 1;
-    transform: scale(1.08) rotate(2deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-/* Camera-style focus rings behind the success card */
 .form-success.show::after {
   content: "";
   position: fixed;
   left: 50%;
   top: 50%;
-  width: 190px;
-  height: 190px;
-  border: 1px solid rgba(255, 255, 255, .55);
+  width: 170px;
+  height: 170px;
+  border: 2px solid rgba(41,98,255,.18);
   border-radius: 50%;
-  transform: translate(-50%, -50%) scale(.35);
+  transform: translate(-50%,-50%) scale(.55);
   pointer-events: none;
   z-index: -1;
-  animation: cameraFocusRing .8s .08s cubic-bezier(.16,.84,.44,1) forwards;
+  animation: focusPulse .8s .05s ease-out forwards;
 }
 
-@keyframes cameraFocusRing {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(.35);
-  }
-  35% {
-    opacity: .8;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.45);
-  }
+@keyframes contactBackdrop {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
-/* Mobile */
-@media (max-width: 640px) {
-  .form-success.show {
-    width: calc(100vw - 32px);
-    padding: 26px 22px !important;
-    border-radius: 20px !important;
-  }
-
-  .form-success.show h3 {
-    font-size: 21px !important;
-  }
+@keyframes successCard {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.72) translateY(18px) !important; }
+  65% { opacity: 1; transform: translate(-50%,-50%) scale(1.035) translateY(-2px) !important; }
+  100% { opacity: 1; transform: translate(-50%,-50%) scale(1) translateY(0) !important; }
 }
 
-/* Respect reduced-motion accessibility settings */
-@media (prefers-reduced-motion: reduce) {
-  .form-success.show::before,
-  .form-success.show::after,
-  .form-success.show,
-  .form-success.show svg {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
+@keyframes successIcon {
+  0% { opacity: 0; transform: scale(.35) rotate(-18deg); }
+  65% { opacity: 1; transform: scale(1.12) rotate(4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes focusPulse {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.55); }
+  35% { opacity: .8; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.7); }
+}
+
+@media (max-width:640px) {
+  .form-success.show { width: calc(100vw - 30px); padding: 27px 21px !important; border-radius: 21px !important; }
+  .form-success.show h3 { font-size: 21px !important; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .form-success.show::before,.form-success.show::after,.form-success.show,.form-success.show svg {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
   }
 }
