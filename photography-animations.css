@@ -5,25 +5,22 @@
 .form-success.show h3{margin:0 0 7px!important;color:#111827!important;font-size:24px!important}.form-success.show p{margin:0!important;color:#667085!important;font-size:13px;line-height:1.6}
 @keyframes contactBackdrop{from{opacity:0}to{opacity:1}}@keyframes successCard{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) translateY(18px)!important}65%{opacity:1;transform:translate(-50%,-50%) scale(1.035) translateY(-2px)!important}100%{opacity:1;transform:translate(-50%,-50%) scale(1) translateY(0)!important}}@keyframes successIcon{0%{opacity:0;transform:scale(.35) rotate(-18deg)}65%{opacity:1;transform:scale(1.12) rotate(4deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
 
-/* =========================================================
-   PREMIUM MINIMAL PORTFOLIO LOADER
-   Replaces the previous camera-flash style with a clean,
-   editorial loading experience that matches the portfolio.
-========================================================= */
-#loader{background:#f8fafc!important;overflow:hidden;gap:18px;isolation:isolate}
-#loader::before{content:"";position:absolute;left:50%;top:50%;width:min(42vw,360px);height:min(42vw,360px);transform:translate(-50%,-50%);border:1px solid rgba(17,24,39,.055);border-radius:50%;box-shadow:0 0 0 70px rgba(41,98,255,.018),0 0 0 140px rgba(17,24,39,.012);pointer-events:none}
-#loader .shutter{width:118px;height:118px;position:relative;display:flex;align-items:center;justify-content:center;z-index:2;animation:loaderMarkIn .9s cubic-bezier(.16,.84,.44,1) both}
-#loader .shutter::before{content:"";position:absolute;inset:-14px;border:1px solid rgba(41,98,255,.16);border-radius:50%;animation:loaderOrbit 2.2s linear infinite}
-#loader .shutter::after{content:"";position:absolute;width:7px;height:7px;top:-17px;left:50%;margin-left:-3.5px;border-radius:50%;background:#2962ff;box-shadow:0 0 18px rgba(41,98,255,.35);animation:loaderOrbit 2.2s linear infinite}
-#loader .shutter svg{width:74px;height:74px;position:relative;z-index:2;animation:loaderSpin 2.8s cubic-bezier(.4,0,.2,1) infinite}
-#loader .shutter .shutter-blade{fill:#111827!important;transform-origin:75px 75px;transition:none}
-#loader .loader-label{font-family:var(--f-display);font-size:11px!important;font-weight:600;letter-spacing:.42em!important;text-transform:uppercase;color:#111827!important;z-index:2;animation:loaderTextIn .8s .15s cubic-bezier(.16,.84,.44,1) both}
-#loader .loader-pct{font-family:var(--f-display);font-size:12px!important;font-weight:500;letter-spacing:.16em!important;font-variant-numeric:tabular-nums;color:#667085!important;z-index:2;min-width:42px;text-align:center;animation:loaderTextIn .8s .25s cubic-bezier(.16,.84,.44,1) both}
-#loader::after{content:"";position:absolute;left:50%;bottom:0;width:0;height:2px;background:#2962ff;transform:translateX(-50%);animation:loaderProgress 1.8s cubic-bezier(.16,.84,.44,1) infinite;z-index:3}
-@keyframes loaderMarkIn{from{opacity:0;transform:scale(.78) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes loaderTextIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@keyframes loaderSpin{0%{transform:rotate(0deg)}45%{transform:rotate(12deg)}100%{transform:rotate(360deg)}}
-@keyframes loaderOrbit{to{transform:rotate(360deg)}}
-@keyframes loaderProgress{0%{width:0;opacity:.35}25%{width:28%;opacity:.7}70%{width:72%;opacity:1}100%{width:100%;opacity:0}}
+/* NEW CAMERA FOCUS LOADER */
+#loader{background:#f8fafc!important;overflow:hidden}
+#loader .shutter{width:150px;height:150px;position:relative;display:flex;align-items:center;justify-content:center;animation:cameraFloat 1.8s ease-in-out infinite}
+#loader .shutter::before,#loader .shutter::after{content:"";position:absolute;left:50%;top:50%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+#loader .shutter::before{width:112px;height:112px;border:1px solid rgba(41,98,255,.18);box-shadow:0 0 0 18px rgba(41,98,255,.035),0 0 0 36px rgba(41,98,255,.02);animation:focusRing 1.35s ease-in-out infinite}
+#loader .shutter::after{width:42px;height:42px;border:2px solid #2962ff;box-shadow:inset 0 0 18px rgba(41,98,255,.12),0 0 22px rgba(41,98,255,.12);animation:lensFocus 1.35s cubic-bezier(.2,.8,.2,1) infinite}
+#loader .shutter svg{width:82px;height:82px;position:relative;z-index:2;animation:apertureFocus 1.35s cubic-bezier(.2,.8,.2,1) infinite}
+#loader .shutter .shutter-blade{fill:#111827!important;transform-origin:75px 75px}
+#loader .loader-label{letter-spacing:.38em!important;font-weight:600;font-size:11px;animation:labelReveal 1.1s ease both}
+#loader .loader-pct{font-variant-numeric:tabular-nums;letter-spacing:.12em;color:#667085;animation:labelReveal 1.1s .12s ease both}
+#loader::after{content:"";position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:20;animation:cameraFlash 1.9s ease-in-out infinite}
+@keyframes cameraFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.015)}}
+@keyframes focusRing{0%,100%{transform:translate(-50%,-50%) scale(.72);opacity:.25}45%{transform:translate(-50%,-50%) scale(1);opacity:1}75%{transform:translate(-50%,-50%) scale(.9);opacity:.55}}
+@keyframes lensFocus{0%,100%{transform:translate(-50%,-50%) scale(.7);opacity:.45}50%{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
+@keyframes apertureFocus{0%{transform:scale(.72) rotate(-12deg);opacity:.5}50%{transform:scale(1) rotate(0);opacity:1}100%{transform:scale(.9) rotate(8deg);opacity:.85}}
+@keyframes labelReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cameraFlash{0%,72%{opacity:0}78%{opacity:.9}82%,100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#loader .shutter,#loader .shutter::before,#loader .shutter::after,#loader .shutter svg,#loader .loader-label,#loader .loader-pct,#loader::after{animation:none!important}}
-@media (max-width:640px){#loader .shutter{width:100px;height:100px}#loader .shutter svg{width:64px;height:64px}#loader .loader-label{font-size:10px!important;letter-spacing:.34em!important}#loader::before{width:250px;height:250px}}
+@media (max-width:640px){#loader .shutter{transform:scale(.9)}#loader .loader-label{font-size:10px}}
