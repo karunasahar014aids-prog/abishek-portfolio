@@ -126,13 +126,13 @@ export default function PhotographyLoader({
             if (def === "exiting") finish()
           }}
         >
-          {/* Background photograph — starts blurred, sharpens with progress */}
+          {/* Background photograph — the star: starts blurred, sharpens with progress */}
           <motion.div
             aria-hidden
             className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{
-              opacity: phase === "loading" ? 0.28 + imageSharp * 0.32 : 0.72,
+              opacity: phase === "loading" ? 0.7 + imageSharp * 0.3 : 1,
               scale: prefersReduced ? 1 : 1.08 - imageSharp * 0.05,
             }}
             transition={{ duration: 0.4, ease: "easeOut" }}
@@ -145,13 +145,21 @@ export default function PhotographyLoader({
                 : `blur(${18 - imageSharp * 16}px) grayscale(${0.5 - imageSharp * 0.5})`,
             }}
           />
-          {/* Vignette + grain */}
+          {/* Light vignette + bottom scrim so the photo stays visible while text remains legible */}
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle at center, rgba(10,10,11,0.35) 0%, rgba(10,10,11,0.85) 55%, rgba(10,10,11,0.97) 100%)",
+                "radial-gradient(circle at center, rgba(10,10,11,0) 0%, rgba(10,10,11,0.15) 60%, rgba(10,10,11,0.5) 100%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-1/2"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(10,10,11,0.8) 0%, rgba(10,10,11,0) 100%)",
             }}
           />
           <div
