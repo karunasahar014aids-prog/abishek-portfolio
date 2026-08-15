@@ -11,6 +11,7 @@ export default function Page() {
     <main className="min-h-screen bg-background">
       <PhotographyLoader
         key={cycle}
+        imageSrc="/images/gallery/street-1.jpeg"
         duration={2700}
         onComplete={() => {
           // Brief pause on the finished frame, then replay from the top.
