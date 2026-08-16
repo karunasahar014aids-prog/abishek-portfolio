@@ -1,50 +1,32 @@
 /* ============================================================
-   LIVE ADMIN PHOTOGRAPHY GALLERY
-   Loads published photographs from the same Supabase project
-   used by admin.js and places them into the main Photography
-   section.
+   ABISHEK STUDIO — LIVE PHOTOGRAPHY GALLERY + MAIN PAGE UPLOAD
 ============================================================ */
 (function () {
   const SUPABASE_URL = 'https://jaryhmtzzassnzomtsch.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
   const gallery = () => document.getElementById('gallery');
   let liveItems = [];
+  let client = null;
 
   function escapeHTML(value) {
     return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
-
-  function category(value) {
-    const c = String(value || 'other').toLowerCase();
-    return c;
-  }
+  function category(value) { return String(value || 'other').toLowerCase(); }
 
   function createCard(item) {
     const card = document.createElement('div');
     card.className = 'g-card reveal live-admin-photo';
     card.dataset.livePhoto = 'true';
     card.dataset.category = category(item.category);
-    card.innerHTML = `
-      <div class="g-card-img">
-        <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.title || 'Photograph')}" loading="lazy">
-        <div class="g-overlay">
-          <div class="g-cat">${escapeHTML(item.category || 'Photography')}</div>
-          <div class="g-title">${escapeHTML(item.title || 'New Photograph')}</div>
-          <div class="g-loc">${escapeHTML(item.location || 'Studio')} · ${escapeHTML(item.date || '')}</div>
-        </div>
-      </div>`;
-
+    card.innerHTML = `<div class="g-card-img">
+      <img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.title || 'Photograph')}" loading="lazy">
+      <div class="g-overlay"><div class="g-cat">${escapeHTML(item.category || 'Photography')}</div>
+      <div class="g-title">${escapeHTML(item.title || 'New Photograph')}</div>
+      <div class="g-loc">${escapeHTML(item.location || 'Studio')} · ${escapeHTML(item.date || '')}</div></div></div>`;
     const img = card.querySelector('img');
-    img.addEventListener('error', () => {
-      img.style.display = 'none';
-      card.classList.add('live-photo-error');
-    });
-
+    img.addEventListener('error', () => { img.style.display = 'none'; card.classList.add('live-photo-error'); });
     card.addEventListener('click', () => openLiveViewer(item));
     return card;
   }
@@ -54,24 +36,12 @@
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'live-admin-photo-viewer';
-      modal.innerHTML = `
-        <div class="live-viewer-backdrop">
-          <button class="live-viewer-close" type="button" aria-label="Close">×</button>
-          <div class="live-viewer-box">
-            <img id="live-viewer-img" alt="">
-            <div class="live-viewer-info">
-              <span id="live-viewer-cat"></span>
-              <h3 id="live-viewer-title"></h3>
-              <p id="live-viewer-meta"></p>
-              <p id="live-viewer-desc"></p>
-            </div>
-          </div>
-        </div>`;
+      modal.innerHTML = `<div class="live-viewer-backdrop"><button class="live-viewer-close" type="button">×</button>
+        <div class="live-viewer-box"><img id="live-viewer-img" alt=""><div class="live-viewer-info">
+        <span id="live-viewer-cat"></span><h3 id="live-viewer-title"></h3><p id="live-viewer-meta"></p><p id="live-viewer-desc"></p></div></div></div>`;
       document.body.appendChild(modal);
-      modal.querySelector('.live-viewer-close').addEventListener('click', () => modal.remove());
-      modal.querySelector('.live-viewer-backdrop').addEventListener('click', e => {
-        if (e.target.classList.contains('live-viewer-backdrop')) modal.remove();
-      });
+      modal.querySelector('.live-viewer-close').onclick = () => modal.remove();
+      modal.querySelector('.live-viewer-backdrop').onclick = e => { if (e.target.classList.contains('live-viewer-backdrop')) modal.remove(); };
     }
     modal.querySelector('#live-viewer-img').src = item.image_url;
     modal.querySelector('#live-viewer-title').textContent = item.title || 'New Photograph';
@@ -84,87 +54,123 @@
   function renderLivePhotos() {
     const host = gallery();
     if (!host) return;
-
     host.querySelectorAll('.live-admin-photo').forEach(el => el.remove());
-
     const active = document.querySelector('.filter-btn.active');
     const filter = active ? active.dataset.cat : 'all';
-    const visible = filter === 'all'
-      ? liveItems
-      : liveItems.filter(item => category(item.category) === filter);
-
+    const visible = filter === 'all' ? liveItems : liveItems.filter(item => category(item.category) === filter);
     visible.forEach(item => host.appendChild(createCard(item)));
-
     if (typeof refreshRevealTargets === 'function') refreshRevealTargets();
     if (typeof bindMagnetic === 'function') bindMagnetic();
   }
 
   async function loadLivePhotos() {
-    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-      setTimeout(loadLivePhotos, 400);
-      return;
-    }
-
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') { setTimeout(loadLivePhotos, 400); return; }
     try {
-      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      const { data, error } = await client
-        .from('posters')
-        .select('id,title,category,location,date,description,image_url,display_order,published')
-        .eq('published', true)
-        .not('image_url', 'is', null)
-        .order('display_order', { ascending: true });
-
+      client = client || window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data, error } = await client.from('posters').select('id,title,category,location,date,description,image_url,display_order,published').eq('published', true).not('image_url', 'is', null).order('display_order', { ascending: true });
       if (error) throw error;
       liveItems = Array.isArray(data) ? data.filter(x => x.image_url) : [];
       renderLivePhotos();
       console.log(`Live photography gallery: ${liveItems.length} published photo(s) loaded.`);
-    } catch (error) {
-      console.warn('Live photography gallery could not load:', error);
-    }
+    } catch (error) { console.warn('Live photography gallery could not load:', error); }
+  }
+
+  function showToast(text, good = true) {
+    const old = document.getElementById('studio-upload-toast'); if (old) old.remove();
+    const t = document.createElement('div'); t.id = 'studio-upload-toast'; t.textContent = text;
+    t.style.cssText = `position:fixed;right:22px;bottom:22px;z-index:100002;padding:14px 18px;border-radius:12px;background:#111;color:#fff;border:1px solid ${good ? '#d4af37' : '#ef4444'};box-shadow:0 15px 45px #0008;font:600 13px/1.4 General Sans,Arial,sans-serif`;
+    document.body.appendChild(t); setTimeout(() => t.remove(), 4000);
+  }
+
+  function injectUploadStudio() {
+    if (document.getElementById('main-photo-studio')) return;
+    const section = document.getElementById('portfolio');
+    if (!section) return;
+    const studio = document.createElement('div');
+    studio.id = 'main-photo-studio';
+    studio.innerHTML = `<button id="studio-open-btn" type="button"><span>＋</span> Add Photograph</button>
+      <div id="studio-panel" aria-hidden="true"><div class="studio-box">
+      <button id="studio-close" type="button" aria-label="Close">×</button>
+      <div class="studio-kicker">ABISHEK STUDIO</div><h3>Add Photograph</h3><p class="studio-sub">Upload a photo directly from the main portfolio.</p>
+      <div class="studio-grid"><label>Photo Title<input id="studio-title" placeholder="Golden Hour Portrait"></label>
+      <label>Category<select id="studio-category"><option value="portrait">Portrait</option><option value="wedding">Wedding</option><option value="street">Street</option><option value="nature">Nature</option><option value="travel">Travel</option><option value="event">Event</option><option value="other">Other</option></select></label>
+      <label>Location<input id="studio-location" placeholder="Nagapattinam, Tamil Nadu"></label><label>Year<input id="studio-date" placeholder="2026"></label>
+      <label class="studio-full">Description<textarea id="studio-description" placeholder="Write something about this photograph..."></textarea></label>
+      <label class="studio-full studio-file">Choose Photograph<input id="studio-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif"></label></div>
+      <div id="studio-preview"></div><button id="studio-save" type="button">Publish Photograph →</button><div id="studio-status"></div>
+      </div></div>`;
+    section.appendChild(studio);
+
+    const panel = document.getElementById('studio-panel');
+    document.getElementById('studio-open-btn').onclick = () => { panel.style.display = 'flex'; panel.setAttribute('aria-hidden','false'); };
+    document.getElementById('studio-close').onclick = closeStudio;
+    panel.onclick = e => { if (e.target === panel) closeStudio(); };
+    document.getElementById('studio-image').onchange = previewStudioImage;
+    document.getElementById('studio-save').onclick = publishFromMain;
+  }
+
+  function closeStudio() {
+    const p = document.getElementById('studio-panel'); if (!p) return;
+    p.style.display = 'none'; p.setAttribute('aria-hidden','true');
+  }
+
+  function previewStudioImage() {
+    const input = document.getElementById('studio-image'); const box = document.getElementById('studio-preview');
+    box.innerHTML = '';
+    const file = input.files && input.files[0]; if (!file) return;
+    if (file.size > 15 * 1024 * 1024) { box.innerHTML = '<span>Image must be under 15 MB.</span>'; input.value=''; return; }
+    const url = URL.createObjectURL(file);
+    box.innerHTML = `<img src="${url}" alt="Preview"><span>${escapeHTML(file.name)}</span>`;
+  }
+
+  async function publishFromMain() {
+    const status = document.getElementById('studio-status'); const btn = document.getElementById('studio-save');
+    const title = document.getElementById('studio-title').value.trim(); const category = document.getElementById('studio-category').value;
+    const location = document.getElementById('studio-location').value.trim(); const date = document.getElementById('studio-date').value.trim();
+    const description = document.getElementById('studio-description').value.trim(); const input = document.getElementById('studio-image'); const file = input.files && input.files[0];
+    if (!title) return status.textContent = 'Please enter a photo title.';
+    if (!file) return status.textContent = 'Please choose a photograph.';
+    if (!client) client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    btn.disabled = true; btn.textContent = 'Publishing…'; status.textContent = 'Uploading photograph…';
+    try {
+      let uploadFile = file;
+      const extension = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      if (['heic','heif'].includes(extension)) throw new Error('HEIC/HEIF is not browser-safe. Please choose JPG, PNG or WebP.');
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-'); const fileName = `${Date.now()}-${safeName}`;
+      const { error: uploadError } = await client.storage.from('posters').upload(fileName, uploadFile, { cacheControl:'3600', upsert:false, contentType:file.type || undefined });
+      if (uploadError) throw uploadError;
+      const { data: publicData } = client.storage.from('posters').getPublicUrl(fileName); const imageUrl = publicData.publicUrl;
+      const { data: last, error: orderError } = await client.from('posters').select('display_order').order('display_order',{ascending:false}).limit(1);
+      if (orderError) throw orderError; const order = last && last.length ? Number(last[0].display_order) + 1 : 1;
+      const { error: insertError } = await client.from('posters').insert({ title, category, location, date, description, image_url:imageUrl, display_order:order, published:true });
+      if (insertError) throw insertError;
+      status.textContent = 'Published successfully ✓'; showToast('Photograph published to your portfolio.');
+      ['studio-title','studio-location','studio-date','studio-description'].forEach(id => document.getElementById(id).value=''); input.value=''; document.getElementById('studio-preview').innerHTML='';
+      await loadLivePhotos(); setTimeout(closeStudio, 700);
+    } catch (error) { console.error(error); status.textContent = error.message || 'Upload failed.'; showToast(error.message || 'Upload failed.', false); }
+    finally { btn.disabled=false; btn.textContent='Publish Photograph →'; }
   }
 
   function watchFilters() {
     document.addEventListener('click', event => {
-      if (event.target.closest('.filter-btn')) {
-        setTimeout(renderLivePhotos, 80);
-      }
-      if (event.target.closest('#load-more-btn')) {
-        setTimeout(renderLivePhotos, 80);
-      }
+      if (event.target.closest('.filter-btn')) setTimeout(renderLivePhotos, 80);
+      if (event.target.closest('#load-more-btn')) setTimeout(renderLivePhotos, 80);
     });
   }
 
   function injectStyles() {
     const style = document.createElement('style');
     style.textContent = `
-      .live-admin-photo{cursor:pointer;animation:livePhotoIn .7s ease both}
-      .live-admin-photo .g-card-img{position:relative;overflow:hidden}
-      .live-admin-photo img{width:100%;display:block;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
-      .live-admin-photo:hover img{transform:scale(1.035)}
-      .live-photo-error{background:#111;min-height:260px;display:flex;align-items:center;justify-content:center}
-      #live-admin-photo-viewer{display:none;position:fixed;inset:0;z-index:99999}
-      .live-viewer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px}
-      .live-viewer-box{width:min(1000px,96vw);max-height:92vh;overflow:auto;background:#101010;border:1px solid rgba(212,175,55,.28);border-radius:18px;box-shadow:0 30px 100px rgba(0,0,0,.55)}
-      .live-viewer-box>img{width:100%;max-height:68vh;object-fit:contain;background:#050505;display:block;border-radius:18px 18px 0 0}
-      .live-viewer-info{padding:20px 22px 24px;color:#fff}
-      .live-viewer-info span{color:#d4af37;text-transform:uppercase;letter-spacing:2px;font-size:10px}
-      .live-viewer-info h3{margin:7px 0;font-size:25px}
-      .live-viewer-info p{color:#aaa;line-height:1.6;margin:5px 0}
-      .live-viewer-close{position:fixed;right:24px;top:20px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,175,55,.45);background:#111;color:#f2cf5b;font-size:28px;cursor:pointer;z-index:2}
+      .live-admin-photo{cursor:pointer;animation:livePhotoIn .7s ease both}.live-admin-photo .g-card-img{position:relative;overflow:hidden}.live-admin-photo img{width:100%;display:block;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}.live-admin-photo:hover img{transform:scale(1.035)}.live-photo-error{background:#111;min-height:260px;display:flex;align-items:center;justify-content:center}
+      #live-admin-photo-viewer{display:none;position:fixed;inset:0;z-index:99999}.live-viewer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px}.live-viewer-box{width:min(1000px,96vw);max-height:92vh;overflow:auto;background:#101010;border:1px solid rgba(212,175,55,.28);border-radius:18px;box-shadow:0 30px 100px rgba(0,0,0,.55)}.live-viewer-box>img{width:100%;max-height:68vh;object-fit:contain;background:#050505;display:block;border-radius:18px 18px 0 0}.live-viewer-info{padding:20px 22px 24px;color:#fff}.live-viewer-info span{color:#d4af37;text-transform:uppercase;letter-spacing:2px;font-size:10px}.live-viewer-info h3{margin:7px 0;font-size:25px}.live-viewer-info p{color:#aaa;line-height:1.6;margin:5px 0}.live-viewer-close{position:fixed;right:24px;top:20px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,175,55,.45);background:#111;color:#f2cf5b;font-size:28px;cursor:pointer;z-index:2}
+      #main-photo-studio{display:flex;justify-content:center;margin:30px auto 0}.#main-photo-studio{}.#studio-open-btn{border:1px solid rgba(212,175,55,.55);background:#111;color:#f2cf5b;border-radius:999px;padding:12px 20px;font:600 13px General Sans,Arial,sans-serif;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.12);transition:.25s}.#studio-open-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,0,0,.2)}
+      #studio-panel{display:none;position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}.studio-box{position:relative;width:min(720px,96vw);max-height:92vh;overflow:auto;background:#111;color:#fff;border:1px solid rgba(212,175,55,.35);border-radius:22px;padding:28px;box-shadow:0 35px 100px rgba(0,0,0,.5)}#studio-close{position:absolute;right:18px;top:16px;border:0;background:transparent;color:#d4af37;font-size:30px;cursor:pointer}.studio-kicker{font-size:10px;letter-spacing:3px;color:#d4af37}.studio-box h3{font-size:28px;margin:7px 0}.studio-sub{color:#aaa;margin:0 0 20px}.studio-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.studio-grid label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#bbb}.studio-grid input,.studio-grid select,.studio-grid textarea{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:12px;border:1px solid #333;border-radius:10px;background:#0b0b0b;color:#fff;font:14px General Sans,Arial,sans-serif}.studio-grid textarea{min-height:90px;resize:vertical}.studio-full{grid-column:1/-1}.studio-file input{padding:10px}.studio-file input::file-selector-button{border:1px solid #d4af37;background:#d4af37;color:#111;border-radius:8px;padding:8px 12px;margin-right:10px;cursor:pointer}.#studio-preview{margin:16px 0;display:flex;align-items:center;gap:12px;color:#aaa;font-size:12px}.#studio-preview img{width:110px;height:80px;object-fit:cover;border-radius:10px;border:1px solid #333}.#studio-save{width:100%;border:0;border-radius:12px;background:#d4af37;color:#111;padding:14px;font-weight:800;cursor:pointer}.#studio-save:disabled{opacity:.6;cursor:wait}.#studio-status{min-height:20px;margin-top:10px;color:#d4af37;font-size:12px}
       @keyframes livePhotoIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+      @media(max-width:650px){.studio-grid{grid-template-columns:1fr}.studio-full{grid-column:auto}.studio-box{padding:22px}}
     `;
     document.head.appendChild(style);
   }
 
-  function start() {
-    injectStyles();
-    watchFilters();
-    setTimeout(loadLivePhotos, 500);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
-    start();
-  }
+  function start() { injectStyles(); injectUploadStudio(); watchFilters(); setTimeout(loadLivePhotos, 500); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
