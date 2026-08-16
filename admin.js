@@ -4,1837 +4,365 @@
    SUPABASE POWERED
 ===================================================== */
 
-
-/* =====================================================
-   SUPABASE CONFIG
-===================================================== */
-
 const SUPABASE_URL =
     "https://jaryhmtzzassnzomtsch.supabase.co";
 
 const SUPABASE_ANON_KEY =
     "sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA";
 
-
 let supabaseClient = null;
-
 let currentPosterId = null;
 
-
-/* =====================================================
-   LOAD SUPABASE
-===================================================== */
-
 function loadSupabase() {
-
     return new Promise((resolve, reject) => {
-
         if (window.supabase) {
-
             initializeSupabase();
-
             resolve();
-
             return;
         }
-
-
-        const script =
-            document.createElement("script");
-
-
-        script.src =
-            "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-
-
-        script.onload = function () {
-
-            initializeSupabase();
-
-            resolve();
-
-        };
-
-
-        script.onerror = function () {
-
-            reject(
-                new Error(
-                    "Supabase library failed to load."
-                )
-            );
-
-        };
-
-
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+        script.onload = function () { initializeSupabase(); resolve(); };
+        script.onerror = function () { reject(new Error("Supabase library failed to load.")); };
         document.head.appendChild(script);
-
     });
-
 }
-
-
-/* =====================================================
-   INITIALIZE SUPABASE
-===================================================== */
 
 function initializeSupabase() {
-
-    supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_ANON_KEY
-        );
-
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
 
 async function login() {
-
-    const email =
-        document
-            .getElementById("email")
-            .value
-            .trim();
-
-
-    const password =
-        document
-            .getElementById("password")
-            .value;
-
-
-    const message =
-        document.getElementById("message");
-
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
 
     if (!email || !password) {
-
-        message.textContent =
-            "Please enter email and password.";
-
+        message.textContent = "Please enter email and password.";
         return;
     }
-
-
     if (!supabaseClient) {
-
-        message.textContent =
-            "Supabase is not configured.";
-
+        message.textContent = "Supabase is not configured.";
         return;
     }
 
-
-    message.textContent =
-        "Authenticating...";
-
-
+    message.textContent = "Authenticating...";
     try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-                .signInWithPassword({
-
-                    email: email,
-
-                    password: password
-
-                });
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        message.textContent =
-            "Login successful.";
-
-
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        message.textContent = "Login successful.";
         showDashboard();
-
         await loadPosters();
-
-    }
-
-
-    catch (error) {
-
+    } catch (error) {
         console.error(error);
-
-        message.textContent =
-            error.message ||
-            "Login failed.";
-
+        message.textContent = error.message || "Login failed.";
     }
-
 }
-
-
-/* =====================================================
-   PASSWORD TOGGLE
-===================================================== */
 
 function togglePassword() {
-
-    const password =
-        document.getElementById(
-            "password"
-        );
-
-
-    if (!password) {
-
-        return;
-    }
-
-
-    password.type =
-        password.type === "password"
-            ? "text"
-            : "password";
-
+    const password = document.getElementById("password");
+    if (!password) return;
+    password.type = password.type === "password" ? "text" : "password";
 }
-
-
-/* =====================================================
-   SHOW DASHBOARD
-===================================================== */
 
 function showDashboard() {
+    const main = document.querySelector(".admin-main");
+    if (!main) return;
 
-    const main =
-        document.querySelector(
-            ".admin-main"
-        );
-
-
-    if (!main) {
-
-        console.error(
-            "Admin main container not found."
-        );
-
-        return;
-    }
-
-
-    const oldDashboard =
-        document.querySelector(
-            ".dashboard"
-        );
-
-
+    const oldDashboard = document.querySelector(".dashboard");
     if (oldDashboard) {
-
-        oldDashboard.style.display =
-            "block";
-
+        oldDashboard.style.display = "block";
         return;
     }
 
+    const login = document.querySelector(".login-wrapper");
+    if (login) login.style.display = "none";
 
-    const login =
-        document.querySelector(
-            ".login-wrapper"
-        );
-
-
-    if (login) {
-
-        login.style.display =
-            "none";
-
-    }
-
-
-    const dashboard =
-        document.createElement(
-            "section"
-        );
-
-
-    dashboard.className =
-        "dashboard";
-
-
+    const dashboard = document.createElement("section");
+    dashboard.className = "dashboard";
     dashboard.innerHTML = `
-
         <div class="dashboard-top">
-
             <div>
-
-                <span class="dashboard-eyebrow">
-                    ABISHEK STUDIO
-                </span>
-
-                <h1>
-                    Photography Dashboard
-                </h1>
-
-                <p>
-                    Manage your photography portfolio,
-                    photographs and published work.
-                </p>
-
+                <span class="dashboard-eyebrow">ABISHEK STUDIO</span>
+                <h1>Photography Dashboard</h1>
+                <p>Manage your photography portfolio, photographs and published work.</p>
             </div>
-
-
-            <button
-                class="logout-btn"
-                onclick="logout()">
-
-                ↪ Logout
-
-            </button>
-
+            <button class="logout-btn" onclick="logout()">↪ Logout</button>
         </div>
-
 
         <div class="stats">
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    📷
-                </div>
-
-                <div>
-
-                    <span>
-                        TOTAL PHOTOS
-                    </span>
-
-                    <strong id="totalPosters">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    ✓
-                </div>
-
-                <div>
-
-                    <span>
-                        PUBLISHED
-                    </span>
-
-                    <strong id="publishedPosters">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
-                    ◇
-                </div>
-
-                <div>
-
-                    <span>
-                        DRAFTS
-                    </span>
-
-                    <strong id="draftPosters">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
+            <div class="stat-card"><div class="stat-icon">📷</div><div><span>TOTAL PHOTOS</span><strong id="totalPosters">0</strong></div></div>
+            <div class="stat-card"><div class="stat-icon">✓</div><div><span>PUBLISHED</span><strong id="publishedPosters">0</strong></div></div>
+            <div class="stat-card"><div class="stat-icon">◇</div><div><span>DRAFTS</span><strong id="draftPosters">0</strong></div></div>
         </div>
-
 
         <div class="dashboard-grid">
-
-
-            <!-- ADD PHOTO -->
-
             <section class="add-poster">
-
                 <div class="panel-heading">
-
-                    <div>
-
-                        <span>
-                            PHOTOGRAPHY
-                        </span>
-
-                        <h2 id="formTitle">
-                            Add New Photograph
-                        </h2>
-
-                    </div>
-
-                    <div class="heading-symbol">
-                        +
-                    </div>
-
+                    <div><span>PHOTOGRAPHY</span><h2 id="formTitle">Add New Photograph</h2></div>
+                    <div class="heading-symbol">+</div>
                 </div>
-
 
                 <div class="form-grid">
-
-
-                    <div class="form-field full">
-
-                        <label>
-                            PHOTO TITLE
-                        </label>
-
-                        <input
-                            type="text"
-                            id="posterTitle"
-                            placeholder="Golden Hour Portrait"
-                        >
-
-                    </div>
-
-
-                    <div class="form-field">
-
-                        <label>
-                            CATEGORY
-                        </label>
-
-                        <select id="posterCategory">
-
-                            <option value="portrait">
-                                Portrait
-                            </option>
-
-                            <option value="wedding">
-                                Wedding
-                            </option>
-
-                            <option value="street">
-                                Street
-                            </option>
-
-                            <option value="nature">
-                                Nature
-                            </option>
-
-                            <option value="travel">
-                                Travel
-                            </option>
-
-                            <option value="event">
-                                Event
-                            </option>
-
-                            <option value="other">
-                                Other
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-field">
-
-                        <label>
-                            LOCATION
-                        </label>
-
-                        <input
-                            type="text"
-                            id="posterLocation"
-                            placeholder="Nagapattinam, Tamil Nadu"
-                        >
-
-                    </div>
-
-
-                    <div class="form-field">
-
-                        <label>
-                            YEAR
-                        </label>
-
-                        <input
-                            type="text"
-                            id="posterDate"
-                            placeholder="2026"
-                        >
-
-                    </div>
-
-
-                    <div class="form-field">
-
-                        <label>
-                            PHOTOGRAPH
-                        </label>
-
-                        <input
-                            type="file"
-                            id="posterImage"
-                            accept="image/*"
-                        >
-
-                    </div>
-
-
-                    <div class="form-field full">
-
-                        <label>
-                            DESCRIPTION
-                        </label>
-
-                        <textarea
-                            id="posterDescription"
-                            placeholder="Write something about this photograph..."
-                        ></textarea>
-
-                    </div>
-
+                    <div class="form-field full"><label>PHOTO TITLE</label><input type="text" id="posterTitle" placeholder="Golden Hour Portrait"></div>
+                    <div class="form-field"><label>CATEGORY</label><select id="posterCategory">
+                        <option value="portrait">Portrait</option><option value="wedding">Wedding</option><option value="street">Street</option><option value="nature">Nature</option><option value="travel">Travel</option><option value="event">Event</option><option value="other">Other</option>
+                    </select></div>
+                    <div class="form-field"><label>LOCATION</label><input type="text" id="posterLocation" placeholder="Nagapattinam, Tamil Nadu"></div>
+                    <div class="form-field"><label>YEAR</label><input type="text" id="posterDate" placeholder="2026"></div>
+                    <div class="form-field"><label>PHOTOGRAPH</label><input type="file" id="posterImage" accept="image/*"></div>
+                    <div class="form-field full"><label>DESCRIPTION</label><textarea id="posterDescription" placeholder="Write something about this photograph..."></textarea></div>
                 </div>
 
-
-                <div
-                    id="imagePreview"
-                    class="image-preview">
-                </div>
-
-
+                <div id="imagePreview" class="image-preview"></div>
                 <div class="form-actions">
-
-                    <button
-                        class="save-btn"
-                        onclick="savePoster()">
-
-                        Save Photograph →
-                        
-                    </button>
-
-
-                    <button
-                        class="cancel-btn"
-                        onclick="cancelEdit()"
-                        id="cancelEditBtn"
-                        style="display:none;">
-
-                        Cancel
-
-                    </button>
-
+                    <button class="save-btn" onclick="savePoster()">Save Photograph →</button>
+                    <button class="cancel-btn" onclick="cancelEdit()" id="cancelEditBtn" style="display:none;">Cancel</button>
                 </div>
-
             </section>
-
-
-            <!-- MANAGE PHOTOS -->
 
             <section class="poster-list">
-
                 <div class="panel-heading">
-
-                    <div>
-
-                        <span>
-                            COLLECTION
-                        </span>
-
-                        <h2>
-                            Manage Photographs
-                        </h2>
-
-                    </div>
-
-                    <div class="collection-count">
-                        LIVE
-                    </div>
-
+                    <div><span>COLLECTION</span><h2>Manage Photographs</h2></div>
+                    <div class="collection-count">LIVE</div>
                 </div>
-
-
-                <div id="posterList">
-
-                    <div class="loading-state">
-                        Loading photographs...
-                    </div>
-
-                </div>
-
+                <div id="posterList"><div class="loading-state">Loading photographs...</div></div>
             </section>
-
-        </div>
-
-    `;
-
+        </div>`;
 
     main.appendChild(dashboard);
-
 }
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
 
 async function logout() {
-
-    if (supabaseClient) {
-
-        await supabaseClient.auth.signOut();
-
-    }
-
-
+    if (supabaseClient) await supabaseClient.auth.signOut();
     location.reload();
-
 }
-
-
-/* =====================================================
-   LOAD PHOTOS
-===================================================== */
 
 async function loadPosters() {
-
-    if (!supabaseClient) {
-
-        return;
-    }
-
-
-    const posterList =
-        document.getElementById(
-            "posterList"
-        );
-
-
+    if (!supabaseClient) return;
+    const posterList = document.getElementById("posterList");
     try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("posters")
-                .select("*")
-                .order(
-                    "display_order",
-                    {
-                        ascending: true
-                    }
-                );
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        displayPosters(data);
-
-        updateStats(data);
-
-    }
-
-
-    catch (error) {
-
+        const { data, error } = await supabaseClient.from("posters").select("*").order("display_order", { ascending: true });
+        if (error) throw error;
+        displayPosters(data || []);
+        updateStats(data || []);
+    } catch (error) {
         console.error(error);
-
-
-        if (posterList) {
-
-            posterList.innerHTML = `
-
-                <div class="empty-state">
-
-                    <strong>
-                        Unable to load photographs
-                    </strong>
-
-                    <p>
-                        ${escapeHTML(
-                            error.message
-                        )}
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
+        if (posterList) posterList.innerHTML = `<div class="empty-state"><strong>Unable to load photographs</strong><p>${escapeHTML(error.message)}</p></div>`;
     }
-
 }
-
-
-/* =====================================================
-   DISPLAY PHOTOS
-===================================================== */
 
 function displayPosters(posters) {
-
-    const posterList =
-        document.getElementById(
-            "posterList"
-        );
-
-
-    if (!posterList) {
-
+    const posterList = document.getElementById("posterList");
+    if (!posterList) return;
+    if (!posters || posters.length === 0) {
+        posterList.innerHTML = `<div class="empty-state"><strong>No photographs yet</strong><p>Add your first photograph.</p></div>`;
         return;
     }
-
-
-    if (
-        !posters ||
-        posters.length === 0
-    ) {
-
-        posterList.innerHTML = `
-
-            <div class="empty-state">
-
-                <strong>
-                    No photographs yet
-                </strong>
-
-                <p>
-                    Add your first photograph.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
 
     posterList.innerHTML = "";
-
-
     posters.forEach(poster => {
-
-        const item =
-            document.createElement(
-                "div"
-            );
-
-
-        item.className =
-            "poster-item";
-
-
-        const image =
-            poster.image_url || "";
-
-
-        const title =
-            poster.title ||
-            "Untitled";
-
-
-        const category =
-            poster.category ||
-            "Other";
-
-
+        const item = document.createElement("div");
+        item.className = "poster-item";
+        const image = poster.image_url || "";
+        const title = poster.title || "Untitled";
+        const category = poster.category || "Other";
         item.innerHTML = `
-
-            <div class="poster-image">
-
-                ${
-                    image
-
-                    ?
-
-                    `
-                        <img
-                            src="${escapeHTML(image)}"
-                            alt="${escapeHTML(title)}"
-                        >
-                    `
-
-                    :
-
-                    `
-                        <div class="no-image">
-                            No Image
-                        </div>
-                    `
-                }
-
-            </div>
-
-
+            <div class="poster-image">${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(title)}">` : `<div class="no-image">No Image</div>`}</div>
             <div class="poster-info">
-
-                <div class="poster-category">
-
-                    ${escapeHTML(category)}
-
-                </div>
-
-
-                <h3>
-
-                    ${escapeHTML(title)}
-
-                </h3>
-
-
-                <p>
-
-                    ${escapeHTML(
-                        poster.location ||
-                        "Location not added"
-                    )}
-
-                </p>
-
-
-                <div class="poster-meta">
-
-                    <span>
-
-                        ${escapeHTML(
-                            poster.date ||
-                            "—"
-                        )}
-
-                    </span>
-
-                    <span>
-
-                        Order:
-                        ${poster.display_order ?? 0}
-
-                    </span>
-
-                </div>
-
-
-                <div class="status">
-
-                    <span
-                        class="${
-                            poster.published
-                                ? "published"
-                                : "draft"
-                        }">
-
-                        ${
-                            poster.published
-                                ? "Published"
-                                : "Draft"
-                        }
-
-                    </span>
-
-                </div>
-
+                <div class="poster-category">${escapeHTML(category)}</div>
+                <h3>${escapeHTML(title)}</h3>
+                <p>${escapeHTML(poster.location || "Location not added")}</p>
+                <div class="poster-meta"><span>${escapeHTML(poster.date || "—")}</span><span>Order: ${poster.display_order ?? 0}</span></div>
+                <div class="status"><span class="${poster.published ? "published" : "draft"}">${poster.published ? "Published" : "Draft"}</span></div>
             </div>
-
-
             <div class="poster-actions">
-
-                <button
-                    class="edit-btn"
-                    onclick="editPoster('${poster.id}')">
-
-                    Edit
-
-                </button>
-
-
-                <button
-                    class="publish-btn"
-                    onclick="togglePublish(
-                        '${poster.id}',
-                        ${poster.published}
-                    )">
-
-                    ${
-                        poster.published
-                            ? "Unpublish"
-                            : "Publish"
-                    }
-
-                </button>
-
-
-                <button
-                    class="delete-btn"
-                    onclick="deletePoster('${poster.id}')">
-
-                    Delete
-
-                </button>
-
-            </div>
-
-        `;
-
-
+                <button class="edit-btn" onclick="editPoster('${poster.id}')">Edit</button>
+                <button class="publish-btn" onclick="togglePublish('${poster.id}', ${poster.published})">${poster.published ? "Unpublish" : "Publish"}</button>
+                <button class="delete-btn" onclick="deletePoster('${poster.id}')">Delete</button>
+            </div>`;
         posterList.appendChild(item);
-
     });
-
 }
-
-
-/* =====================================================
-   SAVE PHOTO
-===================================================== */
 
 async function savePoster() {
+    if (!supabaseClient) return alert("Supabase is not configured.");
 
-    if (!supabaseClient) {
+    const title = document.getElementById("posterTitle").value.trim();
+    const category = document.getElementById("posterCategory").value;
+    const location = document.getElementById("posterLocation").value.trim();
+    const date = document.getElementById("posterDate").value.trim();
+    const description = document.getElementById("posterDescription").value.trim();
+    const imageInput = document.getElementById("posterImage");
 
-        alert(
-            "Supabase is not configured."
-        );
-
-        return;
-    }
-
-
-    const title =
-        document.getElementById(
-            "posterTitle"
-        ).value.trim();
-
-
-    const category =
-        document.getElementById(
-            "posterCategory"
-        ).value;
-
-
-    const location =
-        document.getElementById(
-            "posterLocation"
-        ).value.trim();
-
-
-    const date =
-        document.getElementById(
-            "posterDate"
-        ).value.trim();
-
-
-    const description =
-        document.getElementById(
-            "posterDescription"
-        ).value.trim();
-
-
-    const imageInput =
-        document.getElementById(
-            "posterImage"
-        );
-
-
-    if (!title) {
-
-        alert(
-            "Please enter photo title."
-        );
-
-        return;
-    }
-
+    if (!title) return alert("Please enter photo title.");
 
     try {
-
         let imageUrl = null;
 
+        if (imageInput.files && imageInput.files.length > 0) {
+            const file = imageInput.files[0];
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+            const fileName = `${Date.now()}-${safeName}`;
 
-        /* IMAGE UPLOAD */
+            const { error: uploadError } = await supabaseClient.storage.from("posters").upload(fileName, file, { cacheControl: "3600", upsert: false });
+            if (uploadError) throw uploadError;
 
-        if (
-            imageInput.files &&
-            imageInput.files.length > 0
-        ) {
-
-            const file =
-                imageInput.files[0];
-
-
-            const fileName =
-                Date.now() +
-                "-" +
-                file.name
-                    .replace(
-                        /\s+/g,
-                        "-"
-                    );
-
-
-            const {
-                error: uploadError
-            } =
-                await supabaseClient
-                    .storage
-                    .from("posters")
-                    .upload(
-                        fileName,
-                        file,
-                        {
-                            cacheControl: "3600",
-                            upsert: false
-                        }
-                    );
-
-
-            if (uploadError) {
-
-                throw uploadError;
-
-            }
-
-
-            const {
-                data: publicData
-            } =
-                supabaseClient
-                    .storage
-                    .from("posters")
-                    .getPublicUrl(
-                        fileName
-                    );
-
-
-            imageUrl =
-                publicData.publicUrl;
-
+            const { data: publicData } = supabaseClient.storage.from("posters").getPublicUrl(fileName);
+            imageUrl = publicData.publicUrl;
         }
-
-
-        /* EDIT */
 
         if (currentPosterId) {
-
-            const updateData = {
-
-                title: title,
-
-                category: category,
-
-                location: location,
-
-                date: date,
-
-                description: description,
-
-                updated_at:
-                    new Date().toISOString()
-
-            };
-
-
-            if (imageUrl) {
-
-                updateData.image_url =
-                    imageUrl;
-
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient
-                    .from("posters")
-                    .update(updateData)
-                    .eq(
-                        "id",
-                        currentPosterId
-                    );
-
-
-            if (error) {
-
-                throw error;
-
-            }
-
-
-            alert(
-                "Photograph updated successfully."
-            );
-
-        }
-
-
-        /* ADD */
-
-        else {
-
-            const {
-                data: lastPoster,
-                error: orderError
-            } =
-                await supabaseClient
-                    .from("posters")
-                    .select(
-                        "display_order"
-                    )
-                    .order(
-                        "display_order",
-                        {
-                            ascending: false
-                        }
-                    )
-                    .limit(1);
-
-
-            if (orderError) {
-
-                throw orderError;
-
-            }
-
+            const updateData = { title, category, location, date, description, updated_at: new Date().toISOString() };
+            if (imageUrl) updateData.image_url = imageUrl;
+            const { error } = await supabaseClient.from("posters").update(updateData).eq("id", currentPosterId);
+            if (error) throw error;
+            alert("Photograph updated successfully.");
+        } else {
+            const { data: lastPoster, error: orderError } = await supabaseClient.from("posters").select("display_order").order("display_order", { ascending: false }).limit(1);
+            if (orderError) throw orderError;
 
             let order = 1;
+            if (lastPoster && lastPoster.length) order = Number(lastPoster[0].display_order) + 1;
 
-
-            if (
-                lastPoster &&
-                lastPoster.length > 0
-            ) {
-
-                order =
-                    Number(
-                        lastPoster[0]
-                            .display_order
-                    ) + 1;
-
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient
-                    .from("posters")
-                    .insert({
-
-                        title: title,
-
-                        category: category,
-
-                        location: location,
-
-                        date: date,
-
-                        description: description,
-
-                        image_url: imageUrl,
-
-                        display_order: order,
-
-                        published: false
-
-                    });
-
-
-            if (error) {
-
-                throw error;
-
-            }
-
-
-            alert(
-                "Photograph added successfully."
-            );
-
+            const { error } = await supabaseClient.from("posters").insert({
+                title,
+                category,
+                location,
+                date,
+                description,
+                image_url: imageUrl,
+                display_order: order,
+                /* New photographs are live immediately. */
+                published: true
+            });
+            if (error) throw error;
+            alert("Photograph added successfully and published to the portfolio.");
         }
-
 
         cancelEdit();
-
         await loadPosters();
-
-    }
-
-
-    catch (error) {
-
+    } catch (error) {
         console.error(error);
-
-
-        alert(
-            "Error saving photograph: " +
-            error.message
-        );
-
+        alert("Error saving photograph: " + error.message);
     }
-
 }
-
-
-/* =====================================================
-   EDIT PHOTO
-===================================================== */
 
 async function editPoster(id) {
-
-    if (!supabaseClient) {
-
-        return;
-    }
-
-
+    if (!supabaseClient) return;
     try {
+        const { data, error } = await supabaseClient.from("posters").select("*").eq("id", id).single();
+        if (error) throw error;
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .from("posters")
-                .select("*")
-                .eq(
-                    "id",
-                    id
-                )
-                .single();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        currentPosterId =
-            id;
-
-
-        document.getElementById(
-            "posterTitle"
-        ).value =
-            data.title || "";
-
-
-        document.getElementById(
-            "posterCategory"
-        ).value =
-            data.category || "other";
-
-
-        document.getElementById(
-            "posterLocation"
-        ).value =
-            data.location || "";
-
-
-        document.getElementById(
-            "posterDate"
-        ).value =
-            data.date || "";
-
-
-        document.getElementById(
-            "posterDescription"
-        ).value =
-            data.description || "";
-
-
-        document.getElementById(
-            "formTitle"
-        ).textContent =
-            "Edit Photograph";
-
-
-        document.getElementById(
-            "cancelEditBtn"
-        ).style.display =
-            "inline-block";
-
+        currentPosterId = id;
+        document.getElementById("posterTitle").value = data.title || "";
+        document.getElementById("posterCategory").value = data.category || "other";
+        document.getElementById("posterLocation").value = data.location || "";
+        document.getElementById("posterDate").value = data.date || "";
+        document.getElementById("posterDescription").value = data.description || "";
+        document.getElementById("formTitle").textContent = "Edit Photograph";
+        document.getElementById("cancelEditBtn").style.display = "inline-block";
 
         if (data.image_url) {
-
-            document.getElementById(
-                "imagePreview"
-            ).innerHTML = `
-
-                <div class="current-image">
-
-                    <img
-                        src="${escapeHTML(
-                            data.image_url
-                        )}"
-                        alt="Current photograph"
-                    >
-
-                    <span>
-                        Current Photograph
-                    </span>
-
-                </div>
-
-            `;
-
+            document.getElementById("imagePreview").innerHTML = `<div class="current-image"><img src="${escapeHTML(data.image_url)}" alt="Current photograph"><span>Current Photograph</span></div>`;
         }
-
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-
-    catch (error) {
-
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
         console.error(error);
-
-
-        alert(
-            "Unable to edit photograph."
-        );
-
+        alert("Unable to edit photograph.");
     }
-
 }
-
-
-/* =====================================================
-   CANCEL EDIT
-===================================================== */
 
 function cancelEdit() {
-
     currentPosterId = null;
-
-
-    const fields = [
-
-        "posterTitle",
-
-        "posterLocation",
-
-        "posterDate",
-
-        "posterDescription"
-
-    ];
-
-
-    fields.forEach(id => {
-
-        const element =
-            document.getElementById(id);
-
-
-        if (element) {
-
-            element.value = "";
-
-        }
-
+    ["posterTitle", "posterLocation", "posterDate", "posterDescription"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
     });
-
-
-    const category =
-        document.getElementById(
-            "posterCategory"
-        );
-
-
-    if (category) {
-
-        category.value =
-            "portrait";
-
-    }
-
-
-    const image =
-        document.getElementById(
-            "posterImage"
-        );
-
-
-    if (image) {
-
-        image.value = "";
-
-    }
-
-
-    const preview =
-        document.getElementById(
-            "imagePreview"
-        );
-
-
-    if (preview) {
-
-        preview.innerHTML = "";
-
-    }
-
-
-    const formTitle =
-        document.getElementById(
-            "formTitle"
-        );
-
-
-    if (formTitle) {
-
-        formTitle.textContent =
-            "Add New Photograph";
-
-    }
-
-
-    const cancelButton =
-        document.getElementById(
-            "cancelEditBtn"
-        );
-
-
-    if (cancelButton) {
-
-        cancelButton.style.display =
-            "none";
-
-    }
-
+    const category = document.getElementById("posterCategory");
+    if (category) category.value = "portrait";
+    const image = document.getElementById("posterImage");
+    if (image) image.value = "";
+    const preview = document.getElementById("imagePreview");
+    if (preview) preview.innerHTML = "";
+    const formTitle = document.getElementById("formTitle");
+    if (formTitle) formTitle.textContent = "Add New Photograph";
+    const cancelButton = document.getElementById("cancelEditBtn");
+    if (cancelButton) cancelButton.style.display = "none";
 }
-
-
-/* =====================================================
-   DELETE PHOTO
-===================================================== */
 
 async function deletePoster(id) {
-
-    if (!supabaseClient) {
-
-        return;
-    }
-
-
-    const confirmDelete =
-        confirm(
-            "Are you sure you want to delete this photograph?"
-        );
-
-
-    if (!confirmDelete) {
-
-        return;
-    }
-
-
+    if (!supabaseClient) return;
+    if (!confirm("Are you sure you want to delete this photograph?")) return;
     try {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("posters")
-                .delete()
-                .eq(
-                    "id",
-                    id
-                );
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        alert(
-            "Photograph deleted successfully."
-        );
-
-
+        const { error } = await supabaseClient.from("posters").delete().eq("id", id);
+        if (error) throw error;
+        alert("Photograph deleted successfully.");
         await loadPosters();
-
-    }
-
-
-    catch (error) {
-
+    } catch (error) {
         console.error(error);
-
-
-        alert(
-            "Delete failed: " +
-            error.message
-        );
-
+        alert("Delete failed: " + error.message);
     }
-
 }
 
-
-/* =====================================================
-   IMAGE PREVIEW
-===================================================== */
-
-document.addEventListener(
-    "change",
-    function(event) {
-
-        if (
-            event.target.id !==
-            "posterImage"
-        ) {
-
-            return;
-        }
-
-
-        const file =
-            event.target.files[0];
-
-
-        if (!file) {
-
-            return;
-        }
-
-
-        const reader =
-            new FileReader();
-
-
-        reader.onload =
-            function(e) {
-
-                const preview =
-                    document.getElementById(
-                        "imagePreview"
-                    );
-
-
-                if (!preview) {
-
-                    return;
-                }
-
-
-                preview.innerHTML = `
-
-                    <div class="current-image">
-
-                        <img
-                            src="${e.target.result}"
-                            alt="Image preview"
-                        >
-
-                        <span>
-                            Image Preview
-                        </span>
-
-                    </div>
-
-                `;
-
-            };
-
-
-        reader.readAsDataURL(file);
-
-    }
-);
-
-
-/* =====================================================
-   STATISTICS
-===================================================== */
+document.addEventListener("change", function(event) {
+    if (event.target.id !== "posterImage") return;
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById("imagePreview");
+        if (!preview) return;
+        preview.innerHTML = `<div class="current-image"><img src="${e.target.result}" alt="Image preview"><span>Image Preview</span></div>`;
+    };
+    reader.readAsDataURL(file);
+});
 
 function updateStats(posters) {
-
-    const total =
-        posters.length;
-
-
-    const published =
-        posters.filter(
-            poster =>
-                poster.published === true
-        ).length;
-
-
-    const drafts =
-        total - published;
-
-
-    const totalElement =
-        document.getElementById(
-            "totalPosters"
-        );
-
-
-    const publishedElement =
-        document.getElementById(
-            "publishedPosters"
-        );
-
-
-    const draftElement =
-        document.getElementById(
-            "draftPosters"
-        );
-
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            total;
-
-    }
-
-
-    if (publishedElement) {
-
-        publishedElement.textContent =
-            published;
-
-    }
-
-
-    if (draftElement) {
-
-        draftElement.textContent =
-            drafts;
-
-    }
-
+    const total = posters.length;
+    const published = posters.filter(poster => poster.published === true).length;
+    const totalElement = document.getElementById("totalPosters");
+    const publishedElement = document.getElementById("publishedPosters");
+    const draftElement = document.getElementById("draftPosters");
+    if (totalElement) totalElement.textContent = total;
+    if (publishedElement) publishedElement.textContent = published;
+    if (draftElement) draftElement.textContent = total - published;
 }
 
-
-/* =====================================================
-   PUBLISH / UNPUBLISH
-===================================================== */
-
-async function togglePublish(
-    id,
-    currentStatus
-) {
-
-    if (!supabaseClient) {
-
-        return;
-    }
-
-
+async function togglePublish(id, currentStatus) {
+    if (!supabaseClient) return;
     try {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from("posters")
-                .update({
-
-                    published:
-                        !currentStatus,
-
-                    updated_at:
-                        new Date().toISOString()
-
-                })
-                .eq(
-                    "id",
-                    id
-                );
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
+        const { error } = await supabaseClient.from("posters").update({ published: !currentStatus, updated_at: new Date().toISOString() }).eq("id", id);
+        if (error) throw error;
         await loadPosters();
-
-    }
-
-
-    catch (error) {
-
+    } catch (error) {
         console.error(error);
-
-
-        alert(
-            "Unable to change publish status."
-        );
-
+        alert("Unable to change publish status.");
     }
-
 }
-
-
-/* =====================================================
-   SECURITY
-===================================================== */
 
 function escapeHTML(value) {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-
-        return "";
-    }
-
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+    if (value === null || value === undefined) return "";
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
-
-
-/* =====================================================
-   CHECK SESSION
-===================================================== */
 
 async function checkSession() {
-
-    if (!supabaseClient) {
-
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .auth
-            .getSession();
-
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-
-    }
-
-
-    if (
-        data &&
-        data.session
-    ) {
-
+    if (!supabaseClient) return;
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) return console.error(error);
+    if (data && data.session) {
         showDashboard();
-
         await loadPosters();
-
     }
-
 }
 
-
-/* =====================================================
-   START
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async function() {
-
-        try {
-
-            await loadSupabase();
-
-            await checkSession();
-
-        }
-
-
-        catch (error) {
-
-            console.error(error);
-
-
-            const message =
-                document.getElementById(
-                    "message"
-                );
-
-
-            if (message) {
-
-                message.textContent =
-                    "Unable to initialize admin panel.";
-
-            }
-
-        }
-
+document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        await loadSupabase();
+        await checkSession();
+    } catch (error) {
+        console.error(error);
+        const message = document.getElementById("message");
+        if (message) message.textContent = "Unable to initialize admin panel.";
     }
-);
+});
