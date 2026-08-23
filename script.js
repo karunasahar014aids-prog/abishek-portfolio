@@ -987,7 +987,7 @@ window.addEventListener('mousemove', e=>{
 
       data.forEach((item, index) => {
         if(!item.image_url || existing.has(item.image_url)) return;
-        galleryData.push({
+        galleryData.unshift({
           cat: categories.includes(String(item.category || '').toLowerCase()) ? String(item.category).toLowerCase() : 'posters',
           title: item.title || 'New Photograph',
           loc: item.location || 'Studio',
