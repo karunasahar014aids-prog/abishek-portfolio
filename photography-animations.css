@@ -4,8 +4,6 @@
 .form-success.show svg{width:58px!important;height:58px!important;margin:0 auto 15px!important;color:#2962FF!important;stroke:#2962FF!important;animation:successIcon .7s .08s cubic-bezier(.2,.9,.25,1.2) both}
 .form-success.show h3{margin:0 0 7px!important;color:#111827!important;font-size:24px!important}.form-success.show p{margin:0!important;color:#667085!important;font-size:13px;line-height:1.6}
 @keyframes contactBackdrop{from{opacity:0}to{opacity:1}}@keyframes successCard{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) translateY(18px)!important}65%{opacity:1;transform:translate(-50%,-50%) scale(1.035) translateY(-2px)!important}100%{opacity:1;transform:translate(-50%,-50%) scale(1) translateY(0)!important}}@keyframes successIcon{0%{opacity:0;transform:scale(.35) rotate(-18deg)}65%{opacity:1;transform:scale(1.12) rotate(4deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
-
-/* BLACK + GOLD PREMIUM CAMERA LOADER */
 #loader{background:#050505!important;color:#D4AF37!important;overflow:hidden}
 #loader .shutter{width:150px;height:150px;position:relative;display:flex;align-items:center;justify-content:center;animation:cameraFloat 1.8s ease-in-out infinite}
 #loader .shutter::before,#loader .shutter::after{content:"";position:absolute;left:50%;top:50%;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
@@ -24,131 +22,29 @@
 @keyframes cameraFlash{0%,72%{opacity:0}78%{opacity:.9}82%,100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#loader .shutter,#loader .shutter::before,#loader .shutter::after,#loader .shutter svg,#loader .loader-label,#loader .loader-pct,#loader::after{animation:none!important}}
 @media (max-width:640px){#loader .shutter{transform:scale(.9)}#loader .loader-label{font-size:10px}}
-
-/* ==========================================================
-   PROFESSIONAL PHOTOGRAPHY GALLERY MOTION
-   Scoped only to the Photography section (#portfolio)
-   ========================================================== */
 #portfolio{overflow:hidden;isolation:isolate}
 #portfolio .section-head{position:relative}
 #portfolio .section-head::after{content:"";position:absolute;left:0;bottom:-22px;width:72px;height:1px;background:linear-gradient(90deg,#D4AF37,transparent);opacity:.65}
-
-/* Cinematic image treatment */
 #portfolio img{transition:transform .9s cubic-bezier(.16,.84,.44,1),filter .7s ease}
-#portfolio .gallery-item,
-#portfolio .portfolio-item,
-#portfolio .work-item,
-#portfolio .masonry-item,
-#portfolio .gallery-card,
-#portfolio .portfolio-card,
-#portfolio .work-card{
-  position:relative;
-  overflow:hidden;
-  transform:translateZ(0);
-  backface-visibility:hidden;
-  transition:transform .55s cubic-bezier(.16,.84,.44,1),box-shadow .55s ease,border-color .4s ease;
-  animation:photoReveal .9s cubic-bezier(.16,.84,.44,1) both;
-  animation-timeline:view();
-  animation-range:entry 0% cover 28%;
+#portfolio .gallery-item,#portfolio .portfolio-item,#portfolio .work-item,#portfolio .masonry-item,#portfolio .gallery-card,#portfolio .portfolio-card,#portfolio .work-card{position:relative;overflow:hidden;transform:translateZ(0);backface-visibility:hidden;transition:transform .55s cubic-bezier(.16,.84,.44,1),box-shadow .55s ease,border-color .4s ease;animation:photoReveal .9s cubic-bezier(.16,.84,.44,1) both;animation-timeline:view();animation-range:entry 0% cover 28%}
+#portfolio .gallery-item:hover,#portfolio .portfolio-item:hover,#portfolio .work-item:hover,#portfolio .masonry-item:hover,#portfolio .gallery-card:hover,#portfolio .portfolio-card:hover,#portfolio .work-card:hover{transform:translateY(-8px) scale(1.012);box-shadow:0 28px 65px rgba(0,0,0,.18),0 0 0 1px rgba(212,175,55,.18);z-index:4}
+#portfolio .gallery-item:hover img,#portfolio .portfolio-item:hover img,#portfolio .work-item:hover img,#portfolio .masonry-item:hover img,#portfolio .gallery-card:hover img,#portfolio .portfolio-card:hover img,#portfolio .work-card:hover img{transform:scale(1.055);filter:saturate(1.05) contrast(1.03)}
+#portfolio .gallery-item::after,#portfolio .portfolio-item::after,#portfolio .work-item::after,#portfolio .masonry-item::after,#portfolio .gallery-card::after,#portfolio .portfolio-card::after,#portfolio .work-card::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 28%,rgba(255,255,255,.16) 48%,transparent 66%);transform:translateX(-130%);transition:transform 1s cubic-bezier(.16,.84,.44,1);z-index:3}
+#portfolio .gallery-item:hover::after,#portfolio .portfolio-item:hover::after,#portfolio .work-item:hover::after,#portfolio .masonry-item:hover::after,#portfolio .gallery-card:hover::after,#portfolio .portfolio-card:hover::after,#portfolio .work-card:hover::after{transform:translateX(130%)}
+@media (min-width:901px){#portfolio .gallery-item:hover,#portfolio .portfolio-item:hover,#portfolio .work-item:hover,#portfolio .masonry-item:hover,#portfolio .gallery-card:hover,#portfolio .portfolio-card:hover,#portfolio .work-card:hover{cursor:none}}
+
+/* Gold active photography category */
+#portfolio .filter-btn,#portfolio .filter-button,#portfolio [data-filter]{transition:color .3s ease,background .3s ease,border-color .3s ease,transform .3s ease!important}
+#portfolio .filter-btn:hover,#portfolio .filter-button:hover,#portfolio [data-filter]:hover{transform:translateY(-2px)}
+#portfolio .filter-btn.active,#portfolio .filter-button.active,#portfolio [data-filter].active,
+#portfolio .filter-btn[aria-selected="true"],#portfolio .filter-button[aria-selected="true"],#portfolio [data-filter][aria-selected="true"]{
+  color:#D4AF37!important;
+  border-color:rgba(212,175,55,.65)!important;
+  background:rgba(212,175,55,.08)!important;
+  box-shadow:0 6px 22px rgba(212,175,55,.14)!important;
+  text-shadow:0 0 12px rgba(212,175,55,.18);
 }
 
-/* Elegant hover lift + image zoom */
-#portfolio .gallery-item:hover,
-#portfolio .portfolio-item:hover,
-#portfolio .work-item:hover,
-#portfolio .masonry-item:hover,
-#portfolio .gallery-card:hover,
-#portfolio .portfolio-card:hover,
-#portfolio .work-card:hover{
-  transform:translateY(-8px) scale(1.012);
-  box-shadow:0 28px 65px rgba(0,0,0,.18),0 0 0 1px rgba(212,175,55,.18);
-  z-index:4;
-}
-#portfolio .gallery-item:hover img,
-#portfolio .portfolio-item:hover img,
-#portfolio .work-item:hover img,
-#portfolio .masonry-item:hover img,
-#portfolio .gallery-card:hover img,
-#portfolio .portfolio-card:hover img,
-#portfolio .work-card:hover img{transform:scale(1.055);filter:saturate(1.05) contrast(1.03)}
-
-/* Subtle cinematic light sweep */
-#portfolio .gallery-item::after,
-#portfolio .portfolio-item::after,
-#portfolio .work-item::after,
-#portfolio .masonry-item::after,
-#portfolio .gallery-card::after,
-#portfolio .portfolio-card::after,
-#portfolio .work-card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:linear-gradient(115deg,transparent 28%,rgba(255,255,255,.16) 48%,transparent 66%);
-  transform:translateX(-130%);
-  transition:transform 1s cubic-bezier(.16,.84,.44,1);
-  z-index:3;
-}
-#portfolio .gallery-item:hover::after,
-#portfolio .portfolio-item:hover::after,
-#portfolio .work-item:hover::after,
-#portfolio .masonry-item:hover::after,
-#portfolio .gallery-card:hover::after,
-#portfolio .portfolio-card:hover::after,
-#portfolio .work-card:hover::after{transform:translateX(130%)}
-
-/* Camera-focus cursor feel on desktop */
-@media (min-width:901px){
-  #portfolio .gallery-item:hover,
-  #portfolio .portfolio-item:hover,
-  #portfolio .work-item:hover,
-  #portfolio .masonry-item:hover,
-  #portfolio .gallery-card:hover,
-  #portfolio .portfolio-card:hover,
-  #portfolio .work-card:hover{cursor:none}
-}
-
-/* Gold micro-accent for filter/category controls */
-#portfolio .filter-btn,
-#portfolio .filter-button,
-#portfolio [data-filter]{transition:color .3s ease,background .3s ease,border-color .3s ease,transform .3s ease}
-#portfolio .filter-btn:hover,
-#portfolio .filter-button:hover,
-#portfolio [data-filter]:hover{transform:translateY(-2px)}
-#portfolio .filter-btn.active,
-#portfolio .filter-button.active,
-#portfolio [data-filter].active{color:#D4AF37!important;border-color:rgba(212,175,55,.45)!important;box-shadow:0 6px 22px rgba(212,175,55,.10)}
-
-@keyframes photoReveal{
-  from{opacity:0;transform:translateY(38px) scale(.975);filter:blur(3px)}
-  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
-}
-
-/* Mobile: keep movement refined, never exaggerated */
-@media (max-width:640px){
-  #portfolio .gallery-item:hover,
-  #portfolio .portfolio-item:hover,
-  #portfolio .work-item:hover,
-  #portfolio .masonry-item:hover,
-  #portfolio .gallery-card:hover,
-  #portfolio .portfolio-card:hover,
-  #portfolio .work-card:hover{transform:translateY(-4px) scale(1.005)}
-}
-
-@media (prefers-reduced-motion:reduce){
-  #portfolio .gallery-item,
-  #portfolio .portfolio-item,
-  #portfolio .work-item,
-  #portfolio .masonry-item,
-  #portfolio .gallery-card,
-  #portfolio .portfolio-card,
-  #portfolio .work-card{animation:none!important;transition:none!important}
-  #portfolio img{transition:none!important}
-  #portfolio .gallery-item::after,
-  #portfolio .portfolio-item::after,
-  #portfolio .work-item::after,
-  #portfolio .masonry-item::after,
-  #portfolio .gallery-card::after,
-  #portfolio .portfolio-card::after,
-  #portfolio .work-card::after{display:none}
-}
+@keyframes photoReveal{from{opacity:0;transform:translateY(38px) scale(.975);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@media (max-width:640px){#portfolio .gallery-item:hover,#portfolio .portfolio-item:hover,#portfolio .work-item:hover,#portfolio .masonry-item:hover,#portfolio .gallery-card:hover,#portfolio .portfolio-card:hover,#portfolio .work-card:hover{transform:translateY(-4px) scale(1.005)}}
+@media (prefers-reduced-motion:reduce){#portfolio .gallery-item,#portfolio .portfolio-item,#portfolio .work-item,#portfolio .masonry-item,#portfolio .gallery-card,#portfolio .portfolio-card,#portfolio .work-card{animation:none!important;transition:none!important}#portfolio img{transition:none!important}#portfolio .gallery-item::after,#portfolio .portfolio-item::after,#portfolio .work-item::after,#portfolio .masonry-item::after,#portfolio .gallery-card::after,#portfolio .portfolio-card::after,#portfolio .work-card::after{display:none}}
