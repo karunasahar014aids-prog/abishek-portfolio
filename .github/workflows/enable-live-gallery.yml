@@ -1,4 +1,4 @@
-name: Enable live admin gallery sync
+name: Enable live photography gallery
 
 on:
   push:
@@ -9,89 +9,40 @@ permissions:
   contents: write
 
 jobs:
-  patch-gallery:
+  enable-gallery:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Install live gallery sync
+      - name: Ensure photography plugin is loaded by the main page
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-          path = Path('script.js')
-          text = path.read_text(encoding='utf-8')
-          marker = '/* LIVE ADMIN GALLERY SYNC v2 */'
-          if marker in text:
-              print('Live gallery sync already installed')
-              raise SystemExit(0)
-          addition = r'''
-
-/* LIVE ADMIN GALLERY SYNC v2 */
-(function(){
-  const URL = 'https://jaryhmtzzassnzomtsch.supabase.co';
-  const KEY = 'sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
-
-  async function syncAdminGallery(){
-    if(!window.supabase || typeof window.supabase.createClient !== 'function') return;
-    try{
-      const client = window.supabase.createClient(URL, KEY);
-      const { data, error } = await client
-        .from('posters')
-        .select('id,title,category,location,date,description,image_url,display_order,published')
-        .eq('published', true)
-        .not('image_url', 'is', null)
-        .order('display_order', { ascending: true });
-      if(error) throw error;
-      if(!Array.isArray(data) || !data.length) return;
-
-      const existing = new Set(galleryData.map(x => x.img));
-      const allowed = ['street','covers','picsarts','posters'];
-      data.forEach((item, index) => {
-        if(!item.image_url || existing.has(item.image_url)) return;
-        galleryData.push({
-          cat: allowed.includes(String(item.category || '').toLowerCase()) ? String(item.category).toLowerCase() : 'posters',
-          title: item.title || 'New Photograph',
-          loc: item.location || 'Studio',
-          date: item.date || new Date().getFullYear(),
-          desc: item.description || 'Photography portfolio work.',
-          story: '',
-          img: item.image_url,
-          h: 520,
-          liveId: item.id || ('live-' + index)
-        });
-      });
-
-      const active = document.querySelector('.filter-btn.active');
-      const filter = active ? active.dataset.cat : 'all';
-      if(typeof renderGallery === 'function') renderGallery(filter);
-      if(typeof refreshRevealTargets === 'function') refreshRevealTargets();
-      if(typeof bindMagnetic === 'function') bindMagnetic();
-    }catch(err){
-      console.warn('Live admin gallery sync failed:', err);
-    }
-  }
-
-  if(document.readyState === 'loading') window.addEventListener('DOMContentLoaded', () => setTimeout(syncAdminGallery, 300));
-  else setTimeout(syncAdminGallery, 300);
-})();
-'''
-          path.write_text(text.rstrip() + addition, encoding='utf-8')
-          print('Live gallery sync appended')
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          tag = '<script src="photography-animations.js"></script>'
+          if tag not in s:
+              marker = '</body>'
+              if marker not in s:
+                  raise SystemExit('index.html does not contain </body>')
+              s = s.replace(marker, f'  {tag}\n\n{marker}', 1)
+              p.write_text(s, encoding='utf-8')
+              print('Added photography-animations.js to index.html')
+          else:
+              print('Photography plugin is already loaded')
           PY
 
-      - name: Commit patch
+      - name: Commit change if needed
         shell: bash
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add script.js
-          if git diff --cached --quiet; then
-            echo 'No changes to commit'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes needed"
           else
-            git commit -m 'Connect admin uploads to live photography gallery'
+            git add index.html
+            git commit -m "fix: load live photography plugin on main page"
             git push
           fi
