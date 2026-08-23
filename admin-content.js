@@ -1,0 +1,49 @@
+/* ABISHEK STUDIO — PORTFOLIO CONTENT MANAGER */
+(function(){
+  const URL='https://jaryhmtzzassnzomtsch.supabase.co';
+  const KEY='sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
+  let sb, current={};
+  const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function css(){if(document.getElementById('content-manager-css'))return;const s=document.createElement('style');s.id='content-manager-css';s.textContent=`.cm-wrap{margin-top:28px}.cm-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.cm-tab{border:1px solid rgba(255,255,255,.12);background:#111827;color:#cbd5e1;padding:10px 14px;border-radius:10px;cursor:pointer}.cm-tab.active{background:#2962ff;color:#fff}.cm-panel{display:none;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:24px}.cm-panel.active{display:block}.cm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.cm-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:7px;color:#667085}.cm-field input,.cm-field textarea,.cm-field select{width:100%;box-sizing:border-box;border:1px solid #dbe1ea;border-radius:10px;padding:12px;font:inherit}.cm-field textarea{min-height:100px;resize:vertical}.cm-full{grid-column:1/-1}.cm-actions{display:flex;gap:10px;margin-top:18px}.cm-save{border:0;background:#2962ff;color:#fff;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer}.cm-add{border:1px solid #dbe1ea;background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}.cm-project{border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin-top:12px}.cm-project-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.cm-remove{border:0;background:#fee2e2;color:#b91c1c;border-radius:8px;padding:7px 10px;cursor:pointer}.cm-status{font-size:13px;color:#667085;margin-left:8px}.cm-note{font-size:13px;color:#667085;line-height:1.6;margin:0 0 16px}.cm-photo{display:flex;gap:14px;align-items:center}.cm-photo img{width:90px;height:90px;object-fit:cover;border-radius:12px;background:#f1f5f9}.cm-upload{border:1px dashed #cbd5e1;padding:12px;border-radius:10px;background:#f8fafc}`;document.head.appendChild(s)}
+  function field(label,id,value,type='text',full=false){return `<div class="cm-field ${full?'cm-full':''}"><label>${label}</label>${type==='textarea'?`<textarea id="${id}">${esc(value)}</textarea>`:`<input id="${id}" type="${type}" value="${esc(value)}">`}</div>`}
+  function get(id){return document.getElementById(id)?.value?.trim()||''}
+  async function init(){
+    if(!window.supabase)return;
+    sb=window.supabase.createClient(URL,KEY);css();
+    const {data}=await sb.auth.getSession();
+    if(!data?.session)return;
+    waitDashboard();
+  }
+  function waitDashboard(){
+    if(document.querySelector('.dashboard')){mount();return}
+    setTimeout(waitDashboard,250);
+  }
+  function mount(){
+    if(document.getElementById('content-manager'))return;
+    const main=document.querySelector('.dashboard');
+    const wrap=document.createElement('section');wrap.id='content-manager';wrap.className='cm-wrap';
+    wrap.innerHTML=`<div class="panel-heading"><div><span>PORTFOLIO CONTROL</span><h2>Manage Main Website</h2></div><div class="collection-count">LIVE SYNC</div></div><p class="cm-note">Edit the main portfolio from one place. Changes are stored in Supabase and are ready for the public portfolio sync.</p><div class="cm-tabs"><button class="cm-tab active" data-tab="home">Home</button><button class="cm-tab" data-tab="about">About</button><button class="cm-tab" data-tab="contact">Contact</button><button class="cm-tab" data-tab="projects">Projects</button><button class="cm-tab" data-tab="settings">Settings</button></div><div id="cm-home" class="cm-panel active"></div><div id="cm-about" class="cm-panel"></div><div id="cm-contact" class="cm-panel"></div><div id="cm-projects" class="cm-panel"></div><div id="cm-settings" class="cm-panel"></div>`;
+    main.appendChild(wrap);
+    wrap.querySelectorAll('.cm-tab').forEach(b=>b.onclick=()=>{wrap.querySelectorAll('.cm-tab').forEach(x=>x.classList.remove('active'));wrap.querySelectorAll('.cm-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('cm-'+b.dataset.tab).classList.add('active')});
+    load();
+  }
+  async function load(){
+    const {data}=await sb.from('portfolio_settings').select('content').limit(1).maybeSingle();current=data?.content||{};render();
+  }
+  function render(){
+    document.getElementById('cm-home').innerHTML=`<div class="cm-grid">${field('Eyebrow','cm-heroEyebrow',current.heroEyebrow||'Photography & Digital Art Studio')}${field('Hero Title','cm-heroTitle',current.heroTitle||'ABISHEK')}${field('Hero Role','cm-heroRole',current.heroRole||'Professional Photographer & Digital Artist')}${field('Hero Image URL','cm-heroImage',current.heroImage||'')}${field('Hero Description','cm-heroDescription',current.heroDescription||'', 'textarea',true)}</div><div class="cm-actions"><button class="cm-save" onclick="window.cmSaveHome()">Save Home</button><span class="cm-status" id="cm-status-home"></span></div>`;
+    document.getElementById('cm-about').innerHTML=`<div class="cm-grid">${field('About Title','cm-aboutTitle',current.aboutTitle||'About Me')}${field('Footer Title','cm-footerTitle',current.footerTitle||'Let’s create something meaningful.')}${field('About Description','cm-aboutDescription',current.aboutDescription||'','textarea',true)}${field('Footer Description','cm-footerDescription',current.footerDescription||'','textarea',true)}</div><div class="cm-actions"><button class="cm-save" onclick="window.cmSaveAbout()">Save About</button><span class="cm-status" id="cm-status-about"></span></div>`;
+    document.getElementById('cm-contact').innerHTML=`<div class="cm-grid">${field('Email','cm-email',current.contactEmail||'')}${field('Phone','cm-phone',current.contactPhone||'')}${field('Location','cm-location',current.contactLocation||'')}${field('Instagram URL','cm-instagram',current.socials?.instagram||'')}${field('Facebook URL','cm-facebook',current.socials?.facebook||'')}${field('YouTube URL','cm-youtube',current.socials?.youtube||'')}</div><div class="cm-actions"><button class="cm-save" onclick="window.cmSaveContact()">Save Contact</button><span class="cm-status" id="cm-status-contact"></span></div>`;
+    const projects=current.projects||[];document.getElementById('cm-projects').innerHTML=`<div id="cm-project-list">${projects.map((p,i)=>projectHTML(p,i)).join('')}</div><button class="cm-add" onclick="window.cmAddProject()">+ Add Project</button><div class="cm-actions"><button class="cm-save" onclick="window.cmSaveProjects()">Save Projects</button><span class="cm-status" id="cm-status-projects"></span></div>`;
+    document.getElementById('cm-settings').innerHTML=`<p class="cm-note">This panel uses your existing Supabase authentication. Public visitors can read the portfolio settings, while only authenticated admins can update them.</p><button class="cm-save" onclick="window.cmReload()">Reload Saved Content</button>`;
+  }
+  function projectHTML(p,i){return `<div class="cm-project" data-project="${i}"><div class="cm-project-head"><strong>Project ${i+1}</strong><button class="cm-remove" onclick="this.closest('.cm-project').remove()">Remove</button></div><div class="cm-grid">${field('Title',`cm-p-title-${i}`,p.title||'')}${field('Role',`cm-p-role-${i}`,p.role||'')}${field('Image URL',`cm-p-image-${i}`,p.image||'')}${field('Software',`cm-p-software-${i}`,p.software||'')}${field('Duration',`cm-p-duration-${i}`,p.duration||'')}${field('Case Study URL',`cm-p-link-${i}`,p.link||'')}${field('Description',`cm-p-desc-${i}`,p.description||'','textarea',true)}</div></div>`}
+  window.cmAddProject=function(){const list=document.getElementById('cm-project-list');const i=list.children.length;list.insertAdjacentHTML('beforeend',projectHTML({},i));};
+  async function save(p,status){const {data}=await sb.from('portfolio_settings').select('id').limit(1).maybeSingle();let r;if(data?.id)r=await sb.from('portfolio_settings').update({content:p,updated_at:new Date().toISOString()}).eq('id',data.id);else r=await sb.from('portfolio_settings').insert({content:p});if(r.error){alert(r.error.message);return}current=p;document.getElementById(status).textContent='Saved ✓';setTimeout(()=>{const e=document.getElementById(status);if(e)e.textContent=''},2500)}
+  window.cmSaveHome=()=>save({...current,heroEyebrow:get('cm-heroEyebrow'),heroTitle:get('cm-heroTitle'),heroRole:get('cm-heroRole'),heroImage:get('cm-heroImage'),heroDescription:get('cm-heroDescription')},'cm-status-home');
+  window.cmSaveAbout=()=>save({...current,aboutTitle:get('cm-aboutTitle'),aboutDescription:get('cm-aboutDescription'),footerTitle:get('cm-footerTitle'),footerDescription:get('cm-footerDescription')},'cm-status-about');
+  window.cmSaveContact=()=>save({...current,contactEmail:get('cm-email'),contactPhone:get('cm-phone'),contactLocation:get('cm-location'),socials:{instagram:get('cm-instagram'),facebook:get('cm-facebook'),youtube:get('cm-youtube')}},'cm-status-contact');
+  window.cmSaveProjects=()=>{const arr=[...document.querySelectorAll('#cm-project-list .cm-project')].map((el,i)=>({title:get(`cm-p-title-${i}`),role:get(`cm-p-role-${i}`),image:get(`cm-p-image-${i}`),software:get(`cm-p-software-${i}`),duration:get(`cm-p-duration-${i}`),link:get(`cm-p-link-${i}`),description:get(`cm-p-desc-${i}`}));save({...current,projects:arr},'cm-status-projects')};
+  window.cmReload=load;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
