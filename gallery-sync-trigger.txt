@@ -1,1 +1,0 @@
-This file triggers the live gallery loader workflow. The workflow adds photography-animations.js to index.html when needed.
