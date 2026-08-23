@@ -15,73 +15,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install live gallery sync
+      - name: Patch live gallery
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-          path = Path('script.js')
-          text = path.read_text(encoding='utf-8')
-          marker = '/* ABISHEK LIVE ADMIN GALLERY FIX v3 */'
-          if marker in text:
-              print('Gallery fix already installed')
-              raise SystemExit(0)
-          addition = r'''
 
-          /* ABISHEK LIVE ADMIN GALLERY FIX v3 */
-          (function(){
-            const SUPABASE_URL = 'https://jaryhmtzzassnzomtsch.supabase.co';
-            const SUPABASE_KEY = 'sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
+          # Ensure the plugin loader is actually loaded by the main page.
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+          tag = '<script src="photography-animations.js"></script>'
+          if tag not in html:
+              html = html.replace('</body>', f'  {tag}\n\n</body>', 1)
+              index.write_text(html, encoding='utf-8')
+              print('Added photography-animations.js to index.html')
 
-            async function loadAdminPhotos(){
-              if(!window.supabase || typeof window.supabase.createClient !== 'function') return;
-              try{
-                const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                const { data, error } = await client
-                  .from('posters')
-                  .select('id,title,category,location,date,description,image_url,display_order,published')
-                  .eq('published', true)
-                  .not('image_url', 'is', null)
-                  .order('display_order', { ascending: true });
-                if(error) throw error;
-                if(!Array.isArray(data) || !data.length) return;
-
-                const existing = new Set(galleryData.map(item => item.img));
-                const categories = ['street','covers','picsarts','posters'];
-
-                data.forEach((item, index) => {
-                  if(!item.image_url || existing.has(item.image_url)) return;
-                  galleryData.push({
-                    cat: categories.includes(String(item.category || '').toLowerCase()) ? String(item.category).toLowerCase() : 'posters',
-                    title: item.title || 'New Photograph',
-                    loc: item.location || 'Studio',
-                    date: item.date || new Date().getFullYear(),
-                    desc: item.description || 'Photography portfolio work.',
-                    story: '',
-                    img: item.image_url,
-                    h: 520,
-                    liveId: item.id || ('admin-' + index)
-                  });
-                });
-
-                const active = document.querySelector('.filter-btn.active');
-                const filter = active ? active.dataset.cat : 'all';
-                if(typeof renderGallery === 'function') renderGallery(filter);
-                if(typeof refreshRevealTargets === 'function') refreshRevealTargets();
-                if(typeof bindMagnetic === 'function') bindMagnetic();
-              }catch(err){
-                console.warn('Admin gallery sync failed:', err);
-              }
-            }
-
-            if(document.readyState === 'loading'){
-              document.addEventListener('DOMContentLoaded', () => setTimeout(loadAdminPhotos, 300));
-            }else{
-              setTimeout(loadAdminPhotos, 300);
-            }
-          })();
-          '''
-          path.write_text(text.rstrip() + addition, encoding='utf-8')
+          # The live admin photo was being appended after the large static
+          # gallery, so it could be hidden behind Load More. Put live photos first.
+          js = Path('script.js')
+          text = js.read_text(encoding='utf-8')
+          text = text.replace('galleryData.push({', 'galleryData.unshift({', 1)
+          js.write_text(text, encoding='utf-8')
+          print('Patched admin gallery insertion order')
           PY
 
       - name: Commit gallery fix
@@ -89,10 +44,10 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add script.js
+          git add index.html script.js
           if git diff --cached --quiet; then
             echo 'No gallery changes needed'
           else
-            git commit -m 'fix: load published admin photos in portfolio'
+            git commit -m 'fix: show published admin photos first in portfolio'
             git push
           fi
