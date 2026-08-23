@@ -963,3 +963,56 @@ window.addEventListener('mousemove', e=>{
       duration: Math.random()*4+3, repeat:-1, yoyo:true, ease:'sine.inOut', delay: Math.random()*2 });
   }
 })();
+
+/* ABISHEK LIVE ADMIN GALLERY FIX v3 */
+(function(){
+  const SUPABASE_URL = 'https://jaryhmtzzassnzomtsch.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
+
+  async function loadAdminPhotos(){
+    if(!window.supabase || typeof window.supabase.createClient !== 'function') return;
+    try{
+      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data, error } = await client
+        .from('posters')
+        .select('id,title,category,location,date,description,image_url,display_order,published')
+        .eq('published', true)
+        .not('image_url', 'is', null)
+        .order('display_order', { ascending: true });
+      if(error) throw error;
+      if(!Array.isArray(data) || !data.length) return;
+
+      const existing = new Set(galleryData.map(item => item.img));
+      const categories = ['street','covers','picsarts','posters'];
+
+      data.forEach((item, index) => {
+        if(!item.image_url || existing.has(item.image_url)) return;
+        galleryData.push({
+          cat: categories.includes(String(item.category || '').toLowerCase()) ? String(item.category).toLowerCase() : 'posters',
+          title: item.title || 'New Photograph',
+          loc: item.location || 'Studio',
+          date: item.date || new Date().getFullYear(),
+          desc: item.description || 'Photography portfolio work.',
+          story: '',
+          img: item.image_url,
+          h: 520,
+          liveId: item.id || ('admin-' + index)
+        });
+      });
+
+      const active = document.querySelector('.filter-btn.active');
+      const filter = active ? active.dataset.cat : 'all';
+      if(typeof renderGallery === 'function') renderGallery(filter);
+      if(typeof refreshRevealTargets === 'function') refreshRevealTargets();
+      if(typeof bindMagnetic === 'function') bindMagnetic();
+    }catch(err){
+      console.warn('Admin gallery sync failed:', err);
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => setTimeout(loadAdminPhotos, 300));
+  }else{
+    setTimeout(loadAdminPhotos, 300);
+  }
+})();
