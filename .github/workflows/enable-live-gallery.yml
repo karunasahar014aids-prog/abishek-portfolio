@@ -15,23 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure photography plugin is loaded by the main page
+      - name: Fix live admin photo loading and visibility
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
+
+          # 1) Make sure the dedicated photography plugin is loaded by index.html.
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
           tag = '<script src="photography-animations.js"></script>'
-          if tag not in s:
-              marker = '</body>'
-              if marker not in s:
-                  raise SystemExit('index.html does not contain </body>')
-              s = s.replace(marker, f'  {tag}\n\n{marker}', 1)
-              p.write_text(s, encoding='utf-8')
-              print('Added photography-animations.js to index.html')
+          if tag not in html:
+              html = html.replace('</body>', f'  {tag}\n\n</body>', 1)
+              index.write_text(html, encoding='utf-8')
+              print('Added photography plugin to index.html')
+
+          # 2) Admin photos must be inserted at the beginning of galleryData,
+          #    otherwise the existing static gallery can hide them behind Load More.
+          js = Path('script.js')
+          text = js.read_text(encoding='utf-8')
+          old = "galleryData.push({"
+          new = "galleryData.unshift({"
+          if old in text:
+              text = text.replace(old, new, 1)
+              print('Changed live admin photo insertion to unshift()')
           else:
-              print('Photography plugin is already loaded')
+              print('Live admin insertion is already patched or not present')
+          js.write_text(text, encoding='utf-8')
           PY
 
       - name: Commit change if needed
@@ -39,10 +49,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then
+          git add index.html script.js
+          if git diff --cached --quiet; then
             echo "No changes needed"
           else
-            git add index.html
-            git commit -m "fix: load live photography plugin on main page"
+            git commit -m "fix: show admin photos first in portfolio gallery"
             git push
           fi
