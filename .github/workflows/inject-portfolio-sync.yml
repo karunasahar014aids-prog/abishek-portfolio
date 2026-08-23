@@ -1,0 +1,45 @@
+name: Load Portfolio Sync
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  inject-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject portfolio sync script
+        shell: bash
+        run: |
+          set -e
+          if ! grep -q 'portfolio-sync.js' index.html; then
+            python - <<'PY'
+from pathlib import Path
+p = Path('index.html')
+s = p.read_text(encoding='utf-8')
+needle = '</body>'
+script = '  <script src="portfolio-sync.js"></script>\n'
+if needle in s:
+    s = s.replace(needle, script + needle, 1)
+    p.write_text(s, encoding='utf-8')
+PY
+          fi
+
+      - name: Commit injected script tag
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "portfolio-sync.js already loaded"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Load portfolio sync plugin"
+          git push
