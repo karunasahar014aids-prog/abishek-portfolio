@@ -1,4 +1,4 @@
-/* ABISHEK STUDIO — PHOTOGRAPHY FILTER + GALLERY FIX */
+/* ABISHEK STUDIO — PHOTOGRAPHY FILTER + CATEGORY VIEW MORE FIX */
 (function(){
   const labels={all:'All',street:'Street',covers:'Covers',picsarts:'Picsarts',posters:'Posters'};
   const order=['street','covers','picsarts','posters'];
@@ -6,13 +6,26 @@
   let activeCategory='all';
   let visibleLimit=PAGE_SIZE;
 
+  const normalize=(value)=>String(value||'').trim().toLowerCase().replace(/[\s_-]+/g,'');
+  const categoryMatches=(itemCat,selected)=>{
+    const c=normalize(itemCat), s=normalize(selected);
+    if(s==='all')return true;
+    const aliases={
+      street:['street','streetphotography','streetphoto'],
+      covers:['cover','covers','coverphoto','coverphotos'],
+      picsarts:['picsart','picsarts','picsartphoto','picsartphotos'],
+      posters:['poster','posters','posterphoto','posterphotos']
+    };
+    return (aliases[s]||[s]).includes(c);
+  };
+
   function setup(){
     const bar=document.getElementById('filter-bar');
     if(!bar)return;
     bar.style.display='flex';bar.style.visibility='visible';bar.style.opacity='1';
     bar.querySelectorAll('.filter-btn').forEach(btn=>{
-      const key=String(btn.dataset.cat||'all').toLowerCase();
-      btn.textContent=labels[key]||key;
+      const key=normalize(btn.dataset.cat||'all');
+      btn.textContent=labels[key]||btn.textContent||key;
       btn.style.display='inline-flex';btn.style.visibility='visible';btn.style.opacity='1';
       btn.setAttribute('aria-label',labels[key]||key);
     });
@@ -22,16 +35,16 @@
     if(typeof galleryData==='undefined')return [];
     const rank={};order.forEach((c,i)=>rank[c]=i);
     return galleryData.map((item,index)=>({item,index})).sort((a,b)=>{
-      const ca=String(a.item.cat||'').toLowerCase(), cb=String(b.item.cat||'').toLowerCase();
-      const ra=ca==='all'?-1:(rank[ca]??99), rb=cb==='all'?-1:(rank[cb]??99);
+      const ca=normalize(a.item.cat), cb=normalize(b.item.cat);
+      const ra=rank[ca]??99, rb=rank[cb]??99;
       return ra-rb || a.index-b.index;
     }).map(x=>x.item);
   }
 
   function categoryList(cat){
-    const key=String(cat||'all').toLowerCase();
+    const selected=normalize(cat||'all');
     const source=orderedData();
-    return key==='all'?source:source.filter(item=>String(item.cat||'').toLowerCase()===key);
+    return source.filter(item=>categoryMatches(item.cat,selected));
   }
 
   function makeCard(g,index){
@@ -48,22 +61,20 @@
     let more=document.getElementById('load-more-btn');
     if(!more){
       more=document.createElement('button');
-      more.id='load-more-btn';
-      more.className='btn-outline load-more-btn';
-      more.type='button';
+      more.id='load-more-btn';more.className='btn-outline load-more-btn';more.type='button';
       more.textContent='View More';
       const wrap=document.getElementById('gallery')?.parentElement;
       if(wrap)wrap.appendChild(more);
     }
-    const remaining=total-visibleLimit;
+    const remaining=Math.max(0,total-visibleLimit);
     more.style.display=remaining>0?'inline-flex':'none';
     more.textContent=remaining>0?'View More':'View More';
-    more.setAttribute('aria-label',`View more photos (${remaining} remaining)`);
+    more.setAttribute('aria-label',`View more ${activeCategory==='all'?'photos':activeCategory+' photos'} (${remaining} remaining)`);
   }
 
   function renderCategory(cat){
     if(typeof galleryData==='undefined'||typeof gallery==='undefined')return;
-    activeCategory=String(cat||'all').toLowerCase();
+    activeCategory=normalize(cat||'all');
     const list=categoryList(activeCategory);
     if(typeof currentFilteredList!=='undefined')currentFilteredList=list;
     gallery.innerHTML='';
@@ -80,7 +91,7 @@
     bar.addEventListener('click',function(e){
       const btn=e.target.closest('.filter-btn');if(!btn)return;
       e.preventDefault();e.stopImmediatePropagation();
-      const cat=String(btn.dataset.cat||'all').toLowerCase();
+      const cat=normalize(btn.dataset.cat||'all');
       bar.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b===btn));
       visibleLimit=PAGE_SIZE;
       renderCategory(cat);
@@ -89,8 +100,7 @@
 
   function bindMore(){
     document.addEventListener('click',function(e){
-      const btn=e.target.closest('#load-more-btn');
-      if(!btn)return;
+      const btn=e.target.closest('#load-more-btn');if(!btn)return;
       e.preventDefault();
       const list=categoryList(activeCategory);
       if(visibleLimit<list.length){
