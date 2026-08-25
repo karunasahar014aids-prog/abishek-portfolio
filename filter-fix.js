@@ -2,9 +2,7 @@
 (function(){
   'use strict';
   const LABELS={all:'All',street:'Street',covers:'Covers',picsarts:'Picsarts',posters:'Posters'};
-  const PAGE_SIZE=4;
   let active='all';
-  let limit=PAGE_SIZE;
 
   const normalize=v=>String(v??'').toLowerCase().trim().replace(/[\s_-]+/g,'');
   const canonical=v=>{
@@ -45,46 +43,28 @@
     card.dataset.gid=String(gid);
     card.dataset.category=canonical(item.cat);
     card.dataset.idx=String(index);
-    card.innerHTML=`
-      <div class="g-card-img">
-        <img src="${src}" alt="${item.title||''}" loading="lazy" style="height:${item.h||520}px;object-fit:cover;display:block;width:100%;">
-        <button class="g-fav-badge${fav?' favorited':''}" data-act="favorite" aria-label="Favorite this photo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="${fav?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5 5 0 00-7.1 0L12 6.3l-1.7-1.7a5 5 0 00-7.1 7.1L12 21l8.8-9.3a5 5 0 000-7.1z"/></svg>
-        </button>
-        <div class="g-overlay"><div class="g-cat">${item.cat||''}</div><div class="g-title">${item.title||''}</div><div class="g-loc">${item.loc||''} · ${item.date||''}</div></div>
-      </div>
-      <div class="g-dots" aria-label="Photo menu" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>
-      <div class="g-menu"><button data-act="view">View Details</button><button data-act="share">Share</button><button data-act="download">Download</button><button class="fav-menu-item${fav?' favorited':''}" data-act="favorite">${fav?'Favorited':'Favorite'}</button></div>`;
+    card.innerHTML=`<div class="g-card-img"><img src="${src}" alt="${item.title||''}" loading="lazy" style="height:${item.h||520}px;object-fit:cover;display:block;width:100%;"><button class="g-fav-badge${fav?' favorited':''}" data-act="favorite" aria-label="Favorite this photo"><svg width="16" height="16" viewBox="0 0 24 24" fill="${fav?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5 5 0 00-7.1 0L12 6.3l-1.7-1.7a5 5 0 00-7.1 7.1L12 21l8.8-9.3a5 5 0 000-7.1z"/></svg></button><div class="g-overlay"><div class="g-cat">${item.cat||''}</div><div class="g-title">${item.title||''}</div><div class="g-loc">${item.loc||''} · ${item.date||''}</div></div></div><div class="g-dots" aria-label="Photo menu" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div><div class="g-menu"><button data-act="view">View Details</button><button data-act="share">Share</button><button data-act="download">Download</button><button class="fav-menu-item${fav?' favorited':''}" data-act="favorite">${fav?'Favorited':'Favorite'}</button></div>`;
     const img=card.querySelector('img');
     if(typeof withFallback==='function')withFallback(img,'gal-'+gid);
     return card;
   }
 
-  function updateMore(total){
-    let btn=document.getElementById('load-more-btn');
-    if(!btn){
-      btn=document.createElement('button');
-      btn.id='load-more-btn';btn.type='button';btn.className='btn-outline load-more-btn';btn.textContent='View More';
-      const wrap=document.querySelector('.view-more-wrap')||galleryEl()?.parentElement;
-      if(wrap)wrap.appendChild(btn);
-    }
-    btn.style.display=limit<total?'inline-flex':'none';
-    btn.dataset.category=active;
+  function removeViewMore(){
+    document.querySelectorAll('#load-more-btn,.view-more-wrap').forEach(el=>el.remove());
   }
 
   function render(){
     const g=galleryEl();if(!g)return;
     const selected=listFor(active);
     g.innerHTML='';
-    selected.slice(0,limit).forEach((item,i)=>g.appendChild(makeCard(item,i)));
-    updateMore(selected.length);
+    selected.forEach((item,i)=>g.appendChild(makeCard(item,i)));
+    removeViewMore();
     if(typeof refreshRevealTargets==='function')refreshRevealTargets();
     if(typeof bindMagnetic==='function')bindMagnetic();
   }
 
   function choose(cat){
     active=canonical(cat||'all');
-    limit=PAGE_SIZE;
     const bar=barEl();
     bar?.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.toggle('active',canonical(btn.dataset.cat)===active));
     render();
@@ -92,6 +72,7 @@
 
   function bind(){
     setupButtons();
+    removeViewMore();
     const bar=barEl();
     if(bar&&!bar.dataset.stablePhotographyFilter){
       bar.dataset.stablePhotographyFilter='1';
@@ -99,15 +80,6 @@
         const btn=e.target.closest('.filter-btn');if(!btn)return;
         e.preventDefault();e.stopImmediatePropagation();
         choose(btn.dataset.cat||'all');
-      },true);
-    }
-    if(!document.documentElement.dataset.stablePhotographyMore){
-      document.documentElement.dataset.stablePhotographyMore='1';
-      document.addEventListener('click',e=>{
-        const btn=e.target.closest('#load-more-btn');if(!btn)return;
-        e.preventDefault();e.stopImmediatePropagation();
-        const total=listFor(active).length;
-        if(limit<total){limit=Math.min(limit+PAGE_SIZE,total);render();}
       },true);
     }
     const initial=bar?.querySelector('.filter-btn.active')?.dataset.cat||'all';
