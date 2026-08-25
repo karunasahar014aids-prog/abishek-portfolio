@@ -1,11 +1,11 @@
 /* ABISHEK STUDIO — PHOTOGRAPHY FILTER + CATEGORY VIEW MORE FIX */
 (function(){
   const labels={all:'All',street:'Street',covers:'Covers',picsarts:'Picsarts',posters:'Posters'};
-  const order=['street','covers','picsarts','posters'];
   const PAGE_SIZE=8;
   let activeCategory='all';
   let visibleLimit=PAGE_SIZE;
 
+  /* Never sort or shuffle galleryData. The original order is preserved. */
   const normalize=(value)=>String(value||'').trim().toLowerCase().replace(/[\s_-]+/g,'');
   const categoryMatches=(itemCat,selected)=>{
     const c=normalize(itemCat), s=normalize(selected);
@@ -25,6 +25,7 @@
     bar.style.display='flex';bar.style.visibility='visible';bar.style.opacity='1';
     bar.querySelectorAll('.filter-btn').forEach(btn=>{
       const key=normalize(btn.dataset.cat||'all');
+      btn.dataset.cat=key;
       btn.textContent=labels[key]||btn.textContent||key;
       btn.style.display='inline-flex';btn.style.visibility='visible';btn.style.opacity='1';
       btn.setAttribute('aria-label',labels[key]||key);
@@ -32,19 +33,12 @@
   }
 
   function orderedData(){
-    if(typeof galleryData==='undefined')return [];
-    const rank={};order.forEach((c,i)=>rank[c]=i);
-    return galleryData.map((item,index)=>({item,index})).sort((a,b)=>{
-      const ca=normalize(a.item.cat), cb=normalize(b.item.cat);
-      const ra=rank[ca]??99, rb=rank[cb]??99;
-      return ra-rb || a.index-b.index;
-    }).map(x=>x.item);
+    return typeof galleryData==='undefined' ? [] : galleryData.slice();
   }
 
   function categoryList(cat){
     const selected=normalize(cat||'all');
-    const source=orderedData();
-    return source.filter(item=>categoryMatches(item.cat,selected));
+    return orderedData().filter(item=>categoryMatches(item.cat,selected));
   }
 
   function makeCard(g,index){
@@ -60,15 +54,12 @@
   function updateMoreButton(total){
     let more=document.getElementById('load-more-btn');
     if(!more){
-      more=document.createElement('button');
-      more.id='load-more-btn';more.className='btn-outline load-more-btn';more.type='button';
-      more.textContent='View More';
-      const wrap=document.getElementById('gallery')?.parentElement;
-      if(wrap)wrap.appendChild(more);
+      more=document.createElement('button');more.id='load-more-btn';more.className='btn-outline load-more-btn';more.type='button';more.textContent='View More';
+      const wrap=document.getElementById('gallery')?.parentElement;if(wrap)wrap.appendChild(more);
     }
     const remaining=Math.max(0,total-visibleLimit);
     more.style.display=remaining>0?'inline-flex':'none';
-    more.textContent=remaining>0?'View More':'View More';
+    more.textContent='View More';
     more.setAttribute('aria-label',`View more ${activeCategory==='all'?'photos':activeCategory+' photos'} (${remaining} remaining)`);
   }
 
@@ -85,8 +76,7 @@
   }
 
   function bind(){
-    const bar=document.getElementById('filter-bar');
-    if(!bar||bar.dataset.repaired)return;
+    const bar=document.getElementById('filter-bar');if(!bar||bar.dataset.repaired)return;
     bar.dataset.repaired='1';
     bar.addEventListener('click',function(e){
       const btn=e.target.closest('.filter-btn');if(!btn)return;
