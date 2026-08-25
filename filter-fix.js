@@ -17,15 +17,13 @@
     const c=normalize(cat),s=normalize(selected);
     return s==='all'||(aliases[s]||[s]).includes(c);
   };
-
   function list(cat){
     if(typeof galleryData==='undefined')return [];
     return galleryData.filter(x=>matches(x.cat,cat));
   }
 
   function setup(){
-    const bar=document.getElementById('filter-bar');
-    if(!bar)return;
+    const bar=document.getElementById('filter-bar');if(!bar)return;
     bar.style.display='flex';bar.style.visibility='visible';bar.style.opacity='1';
     bar.querySelectorAll('.filter-btn').forEach(b=>{
       const k=normalize(b.dataset.cat||'all');
@@ -35,12 +33,33 @@
   }
 
   function buildCard(g,index){
-    const gid=galleryData.indexOf(g);
-    const card=document.createElement('div');
-    card.className='g-card reveal';card.dataset.idx=index;card.dataset.gid=gid;
+    const gid=galleryData.indexOf(g),card=document.createElement('div');
+    card.className='g-card reveal';card.dataset.idx=index;card.dataset.gid=gid;card.dataset.category=normalize(g.cat);
     card.innerHTML=`<div class="g-card-img"><img src="${typeof IMG==='function'?IMG(g.img,700):g.img}" style="height:${g.h||520}px;object-fit:cover" alt="${g.title||''}" loading="lazy"><div class="g-overlay"><div class="g-cat">${g.cat||''}</div><div class="g-title">${g.title||''}</div><div class="g-loc">${g.loc||''} · ${g.date||''}</div></div></div><div class="g-dots" aria-label="Photo menu" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div><div class="g-menu"><button data-act="view">View Details</button><button data-act="share">Share</button><button data-act="download">Download</button></div>`;
     if(typeof withFallback==='function')withFallback(card.querySelector('img'),'gal-'+gid);
     return card;
+  }
+
+  function categoryOfCard(card){
+    const gid=Number(card.dataset.gid);
+    if(Number.isInteger(gid)&&gid>=0&&typeof galleryData!=='undefined'&&galleryData[gid])return normalize(galleryData[gid].cat);
+    const declared=normalize(card.dataset.category||'');if(declared)return declared;
+    const label=normalize(card.querySelector('.g-cat')?.textContent||'');if(label)return label;
+    const src=(card.querySelector('img')?.getAttribute('src')||'').toLowerCase();
+    if(src.includes('/street-'))return 'street';
+    if(src.includes('/covers-'))return 'covers';
+    if(src.includes('/picsart'))return 'picsarts';
+    if(src.includes('/posters/')||src.includes('/poster-'))return 'posters';
+    return '';
+  }
+
+  function applyStrictFilter(){
+    const target=document.getElementById('gallery');if(!target)return;
+    target.querySelectorAll('.g-card').forEach(card=>{
+      const allowed=matches(categoryOfCard(card),activeCategory);
+      card.hidden=!allowed;
+      card.style.display=allowed?'':'none';
+    });
   }
 
   function render(){
@@ -50,31 +69,14 @@
     const items=list(activeCategory);
     target.innerHTML='';
     items.slice(0,visibleLimit).forEach((g,i)=>target.appendChild(buildCard(g,i)));
-    const old=document.getElementById('load-more-btn');
-    const more=old||document.createElement('button');
+    const old=document.getElementById('load-more-btn'),more=old||document.createElement('button');
     more.id='load-more-btn';more.type='button';more.className='btn btn-outline magnetic';more.textContent='View More';
     if(!old){const wrap=document.querySelector('.view-more-wrap');if(wrap)wrap.appendChild(more);}
-    more.style.display=visibleLimit<items.length?'inline-flex':'none';
-    more.setAttribute('data-category',activeCategory);
+    more.style.display=visibleLimit<items.length?'inline-flex':'none';more.setAttribute('data-category',activeCategory);
     syncing=false;
+    applyStrictFilter();
     if(typeof refreshRevealTargets==='function')refreshRevealTargets();
     if(typeof bindMagnetic==='function')bindMagnetic();
-  }
-
-  function applyStrictFilter(){
-    const target=document.getElementById('gallery');if(!target)return;
-    [...target.querySelectorAll('.g-card')].forEach(card=>{
-      const img=card.querySelector('img');
-      const src=(img?.getAttribute('src')||'').toLowerCase();
-      let cat='';
-      if(src.includes('/street-'))cat='street';
-      else if(src.includes('/covers-'))cat='covers';
-      else if(src.includes('/picsart'))cat='picsarts';
-      else if(src.includes('/posters/')||src.includes('/poster-'))cat='posters';
-      else { const t=card.querySelector('.g-cat')?.textContent||'';cat=t; }
-      const allowed=matches(cat,activeCategory);
-      card.style.display=allowed?'':'none';
-    });
   }
 
   function choose(cat){
@@ -82,8 +84,6 @@
     const bar=document.getElementById('filter-bar');
     bar?.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',normalize(b.dataset.cat)===activeCategory));
     render();
-    setTimeout(applyStrictFilter,0);
-    setTimeout(applyStrictFilter,80);
   }
 
   function start(){
@@ -93,25 +93,20 @@
       bar.dataset.strictFilter='1';
       bar.addEventListener('click',e=>{
         const b=e.target.closest('.filter-btn');if(!b)return;
-        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-        choose(b.dataset.cat||'all');
+        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();choose(b.dataset.cat||'all');
       },true);
     }
     document.addEventListener('click',e=>{
       const more=e.target.closest('#load-more-btn');if(!more)return;
       e.preventDefault();e.stopImmediatePropagation();
-      const total=list(activeCategory).length;
-      visibleLimit=Math.min(visibleLimit+PAGE_SIZE,total);
-      render();
+      const total=list(activeCategory).length;visibleLimit=Math.min(visibleLimit+PAGE_SIZE,total);render();
     },true);
     const galleryEl=document.getElementById('gallery');
     if(galleryEl&&!galleryEl.dataset.strictObserver){
       galleryEl.dataset.strictObserver='1';
       new MutationObserver(()=>{if(!syncing)applyStrictFilter()}).observe(galleryEl,{childList:true,subtree:true});
     }
-    const active=bar?.querySelector('.filter-btn.active');
-    choose(active?.dataset.cat||'all');
+    const active=bar?.querySelector('.filter-btn.active');choose(active?.dataset.cat||'all');
   }
-
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
