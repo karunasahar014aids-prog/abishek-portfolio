@@ -40,25 +40,35 @@
     return card;
   }
 
+  /* Detect the card category from the card itself. Never trust a filtered-list
+     index as the category, because the original gallery renderer may reuse
+     indexes and can otherwise make a Poster look like a Street photo. */
   function categoryOfCard(card){
-    const gid=Number(card.dataset.gid);
-    if(Number.isInteger(gid)&&gid>=0&&typeof galleryData!=='undefined'&&galleryData[gid])return normalize(galleryData[gid].cat);
-    const declared=normalize(card.dataset.category||'');if(declared)return declared;
-    const label=normalize(card.querySelector('.g-cat')?.textContent||'');if(label)return label;
     const src=(card.querySelector('img')?.getAttribute('src')||'').toLowerCase();
-    if(src.includes('/street-'))return 'street';
-    if(src.includes('/covers-'))return 'covers';
-    if(src.includes('/picsart'))return 'picsarts';
-    if(src.includes('/posters/')||src.includes('/poster-'))return 'posters';
+    const text=normalize(card.querySelector('.g-cat')?.textContent||'');
+    const declared=normalize(card.dataset.category||'');
+
+    if(src.includes('/street/')||src.includes('/street-')||src.includes('streetphoto'))return 'street';
+    if(src.includes('/covers/')||src.includes('/cover-')||src.includes('covers-'))return 'covers';
+    if(src.includes('/picsarts/')||src.includes('/picsart-')||src.includes('picsart'))return 'picsarts';
+    if(src.includes('/posters/')||src.includes('/poster-')||src.includes('posters-'))return 'posters';
+
+    if(text.includes('street'))return 'street';
+    if(text.includes('cover'))return 'covers';
+    if(text.includes('picsart'))return 'picsarts';
+    if(text.includes('poster'))return 'posters';
+    if(['street','covers','picsarts','posters'].includes(declared))return declared;
     return '';
   }
 
   function applyStrictFilter(){
     const target=document.getElementById('gallery');if(!target)return;
     target.querySelectorAll('.g-card').forEach(card=>{
-      const allowed=matches(categoryOfCard(card),activeCategory);
+      const detected=categoryOfCard(card);
+      const allowed=activeCategory==='all'||detected===activeCategory;
       card.hidden=!allowed;
       card.style.display=allowed?'':'none';
+      card.setAttribute('aria-hidden',allowed?'false':'true');
     });
   }
 
@@ -72,7 +82,8 @@
     const old=document.getElementById('load-more-btn'),more=old||document.createElement('button');
     more.id='load-more-btn';more.type='button';more.className='btn btn-outline magnetic';more.textContent='View More';
     if(!old){const wrap=document.querySelector('.view-more-wrap');if(wrap)wrap.appendChild(more);}
-    more.style.display=visibleLimit<items.length?'inline-flex':'none';more.setAttribute('data-category',activeCategory);
+    more.style.display=visibleLimit<items.length?'inline-flex':'none';
+    more.setAttribute('data-category',activeCategory);
     syncing=false;
     applyStrictFilter();
     if(typeof refreshRevealTargets==='function')refreshRevealTargets();
