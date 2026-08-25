@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   const LABELS={all:'All',street:'Street',covers:'Covers',picsarts:'Picsarts',posters:'Posters'};
-  const PAGE_SIZE=8;
+  const PAGE_SIZE=4;
   let active='all';
   let limit=PAGE_SIZE;
 
