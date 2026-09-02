@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+<title id="title">Vision By Abishek</title><desc id="desc">Premium black, gold and blue Vision By Abishek photography logo.</desc>
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff08a"/><stop offset=".28" stop-color="#ffd400"/><stop offset=".72" stop-color="#ffb300"/><stop offset="1" stop-color="#fff08a"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#55b7ff"/><stop offset=".5" stop-color="#005cff"/><stop offset="1" stop-color="#00d9ff"/></linearGradient>
+ <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".5" stop-color="#d9e1ed"/><stop offset="1" stop-color="#8e9bad"/></linearGradient>
+ <filter id="glowG"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="glowB"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow"><feGaussianBlur in="SourceAlpha" stdDeviation="8"/><feOffset dy="8"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect x="24" y="28" width="1152" height="344" rx="172" fill="#05070d" stroke="url(#gold)" stroke-width="7" filter="url(#shadow)"/>
+<rect x="39" y="43" width="1122" height="314" rx="157" fill="none" stroke="url(#blue)" stroke-width="5" opacity=".95" filter="url(#glowB)"/>
+<rect x="48" y="52" width="1104" height="296" rx="148" fill="none" stroke="#ffd400" stroke-width="1.5" opacity=".7"/>
+<!-- left design medallion -->
+<circle cx="205" cy="200" r="145" fill="#070b17" stroke="url(#gold)" stroke-width="8"/>
+<circle cx="205" cy="200" r="130" fill="none" stroke="#006dff" stroke-width="5" filter="url(#glowB)"/>
+<circle cx="205" cy="200" r="102" fill="none" stroke="#ffd400" stroke-width="3" opacity=".85"/>
+<!-- pen/nib icon -->
+<path d="M170 116 L242 185 L223 278 L185 290 L162 210 Z" fill="url(#silver)" stroke="#fff" stroke-width="3"/>
+<path d="M170 116 L205 200 L185 290" fill="none" stroke="#0a0d13" stroke-width="5"/>
+<circle cx="205" cy="200" r="11" fill="#07070a"/>
+<path d="M162 210 L118 154 M242 185 L286 139 M185 290 L224 307" stroke="#ffd400" stroke-width="5" stroke-linecap="round"/>
+<circle cx="112" cy="148" r="8" fill="#fff" stroke="#ffd400" stroke-width="3"/><circle cx="292" cy="133" r="8" fill="#fff" stroke="#ffd400" stroke-width="3"/><circle cx="230" cy="312" r="8" fill="#fff" stroke="#ffd400" stroke-width="3"/>
+<!-- top title -->
+<line x1="370" y1="119" x2="470" y2="119" stroke="#ffd400" stroke-width="4"/>
+<text x="500" y="142" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="800" fill="url(#silver)" letter-spacing="2">Vision</text>
+<text x="818" y="142" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="900" fill="url(#gold)">By</text>
+<line x1="962" y1="119" x2="1080" y2="119" stroke="#ffd400" stroke-width="4"/>
+<!-- name plate -->
+<path d="M355 164 H1040 L1090 200 L1040 236 H355 L325 200 Z" fill="url(#gold)" stroke="#00b8ff" stroke-width="4" filter="url(#glowB)"/>
+<text x="705" y="222" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="900" fill="#071126" letter-spacing="10">ABISHEK</text>
+<!-- accent slashes -->
+<path d="M1070 170 L1038 230" stroke="#ffd400" stroke-width="12"/><path d="M1093 170 L1061 230" stroke="#1684ff" stroke-width="8"/>
+<!-- tagline -->
+<rect x="480" y="266" width="520" height="58" rx="29" fill="#080b12" stroke="#ffd400" stroke-width="3"/>
+<text x="740" y="305" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="26" font-style="italic" font-weight="700" fill="#f7f4ea" letter-spacing="3">Design <tspan fill="#ffd400">•</tspan> Create <tspan fill="#ffd400">•</tspan> Inspire</text>
+<line x1="360" y1="295" x2="445" y2="295" stroke="#ffd400" stroke-width="4"/><line x1="1015" y1="295" x2="1090" y2="295" stroke="#ffd400" stroke-width="4"/>
+</svg>
