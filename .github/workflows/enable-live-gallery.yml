@@ -15,22 +15,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fix live admin photo loading and visibility
+      - name: Fix live admin photo loading and photography filters
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          # 1) Make sure the dedicated photography plugin is loaded by index.html.
+          # 1) Make sure the dedicated photography controller is loaded by index.html.
           index = Path('index.html')
           html = index.read_text(encoding='utf-8')
           tag = '<script src="photography-animations.js"></script>'
           if tag not in html:
               html = html.replace('</body>', f'  {tag}\n\n</body>', 1)
-              index.write_text(html, encoding='utf-8')
               print('Added photography plugin to index.html')
 
-          # 2) Admin photos must be inserted at the beginning of galleryData,
+          # 2) Remove the obsolete duplicate filter script. The final controller
+          #    in photography-animations-core.js is now the only filter owner.
+          obsolete = '<script src="filter-fix.js"></script>'
+          if obsolete in html:
+              html = html.replace(obsolete, '')
+              print('Removed obsolete filter-fix.js from index.html')
+
+          index.write_text(html, encoding='utf-8')
+
+          # 3) Admin photos must be inserted at the beginning of galleryData,
           #    otherwise the existing static gallery can hide them behind Load More.
           js = Path('script.js')
           text = js.read_text(encoding='utf-8')
@@ -53,6 +61,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes needed"
           else
-            git commit -m "fix: show admin photos first in portfolio gallery"
+            git commit -m "fix: remove duplicate photography filter script"
             git push
           fi
