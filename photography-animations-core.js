@@ -12,11 +12,9 @@
 
   const gallery=()=>document.getElementById('gallery');
   const filterBar=()=>document.getElementById('filter-bar');
+  const loadMore=()=>document.getElementById('load-more-btn');
 
-  function clean(v){
-    return String(v??'').trim().toLowerCase().replace(/[\\_-]+/g,' ').replace(/\s+/g,' ');
-  }
-
+  function clean(v){return String(v??'').trim().toLowerCase().replace(/[\\_-]+/g,' ').replace(/\s+/g,' ');}
   function categoryKey(v){
     const c=clean(v);
     if(c==='all')return'all';
@@ -27,9 +25,6 @@
     return c.replace(/ /g,'');
   }
 
-  /* For static portfolio photos the file path is the strongest source of
-     truth. This prevents a wrong visible label from moving a photo into
-     another category. */
   function categoryFromImage(card){
     const src=String(card.querySelector('img')?.getAttribute('src')||card.querySelector('img')?.currentSrc||'').toLowerCase().replace(/\\/g,'/');
     if(src.includes('/street/'))return'street';
@@ -37,7 +32,6 @@
     if(src.includes('/covers/'))return'covers';
     if(src.includes('/picsarts/')||src.includes('/picsart/'))return'picsarts';
     if(src.includes('/posters/'))return'posters';
-
     const dataCat=card.dataset.category||card.dataset.cat||card.getAttribute('data-filter');
     const label=card.querySelector('.g-cat')?.textContent||'';
     return categoryKey(dataCat||label);
@@ -62,21 +56,25 @@
       bar.innerHTML='';
       CATEGORIES.forEach(([value,text])=>{
         const b=document.createElement('button');
-        b.type='button';
-        b.className='filter-btn';
-        b.dataset.cat=value;
-        b.textContent=text;
+        b.type='button'; b.className='filter-btn'; b.dataset.cat=value; b.textContent=text;
         bar.appendChild(b);
       });
-
       bar.addEventListener('click',e=>{
         const b=e.target.closest('.filter-btn');
         if(!b)return;
         e.preventDefault();
         e.stopImmediatePropagation();
         activeFilter=categoryKey(b.dataset.cat);
+        /* The original script owns the real card renderer and View More state.
+           The old controller used to stop that renderer, leaving only one card
+           per category. Tell it exactly which category to render now. */
+        try{ activeCat=activeFilter; visibleCount=PAGE_SIZE; }catch(_e){}
+        if(typeof window.renderGallery==='function'){
+          window.renderGallery(activeFilter);
+        }
         updateButtons();
         applyFilter();
+        updateLoadMore();
       },true);
     }
     updateButtons();
@@ -95,35 +93,40 @@
     applying=true;
     try{
       ensureFilterButtons();
-
       staticCards().forEach(card=>{
         const key=categoryFromImage(card);
         const show=activeFilter==='all'||key===activeFilter;
         card.dataset.category=key;
         card.style.display=show?'':'none';
-        /* Some reveal/animation rules can leave newly filtered cards invisible. */
-        if(show){
-          card.style.visibility='visible';
-          card.style.opacity='1';
-        }
+        if(show){card.style.visibility='visible';card.style.opacity='1';}
       });
-
       g.querySelectorAll('.live-admin-photo').forEach(card=>{
         const key=categoryKey(card.dataset.category||'');
         const show=activeFilter==='all'||key===activeFilter;
         card.style.display=show?'':'none';
         if(show){card.style.visibility='visible';card.style.opacity='1';}
       });
-
       updateButtons();
-    }finally{
-      applying=false;
-    }
+      updateLoadMore();
+    }finally{applying=false;}
   }
 
-  function esc(v){
-    return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  function updateLoadMore(){
+    const btn=loadMore();
+    if(!btn)return;
+    /* script.js already calculates whether more static items exist. Keep its
+       button behavior; only make sure the button is not hidden by a stale
+       category state from the old filter controller. */
+    const total=activeFilter==='all'
+      ? (Array.isArray(window.galleryData)?window.galleryData.length:0)
+      : (Array.isArray(window.galleryData)?window.galleryData.filter(x=>categoryKey(x.cat)===activeFilter).length:0);
+    try{
+      const current=Number(visibleCount)||0;
+      btn.style.display=(total>current)?'inline-flex':'none';
+    }catch(_e){}
   }
+
+  function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');}
 
   function createLiveCard(item){
     const card=document.createElement('div');
@@ -153,15 +156,8 @@
 
   function style(){
     if(document.getElementById('final-gallery-style'))return;
-    const s=document.createElement('style');
-    s.id='final-gallery-style';
-    s.textContent=`
-      #filter-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-      #filter-bar .filter-btn{cursor:pointer;}
-      #filter-bar .filter-btn.active{font-weight:700;}
-      #gallery .g-card{visibility:visible;}
-      #gallery .g-card img{display:block;width:100%;}
-    `;
+    const s=document.createElement('style'); s.id='final-gallery-style';
+    s.textContent=`#filter-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}#filter-bar .filter-btn{cursor:pointer}#filter-bar .filter-btn.active{font-weight:700}#gallery .g-card{visibility:visible}#gallery .g-card img{display:block;width:100%}`;
     document.head.appendChild(s);
   }
 
@@ -173,19 +169,14 @@
       if(r.error)throw r.error;
       liveItems=(r.data||[]).filter(x=>x.image_url);
       renderLiveCards();
-    }catch(e){
-      console.warn('[Abishek Studio] Live photography data unavailable; keeping static gallery.',e);
-    }
+    }catch(e){console.warn('[Abishek Studio] Live photography data unavailable; keeping static gallery.',e);}
   }
 
   function start(){
-    const bar=filterBar();
-    const g=gallery();
+    const bar=filterBar(); const g=gallery();
     if(!bar||!g){setTimeout(start,100);return;}
-    style();
-    ensureFilterButtons();
-    observeGallery();
-    applyFilter();
+    style(); ensureFilterButtons(); observeGallery();
+    setTimeout(()=>{if(typeof window.renderGallery==='function'){try{window.renderGallery('all');}catch(_e){}} applyFilter();},150);
     setTimeout(()=>applyFilter(),500);
     setTimeout(()=>applyFilter(),1500);
     loadLive();
