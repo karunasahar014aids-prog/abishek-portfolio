@@ -1,12 +1,41 @@
-/* ABISHEK STUDIO — FEEDBACK SUBMIT FIX
-   Prevents the feedback form from navigating/reloading the page.
-   Saves feedback permanently in this browser when Supabase is not configured.
+/* ABISHEK STUDIO — FEEDBACK PERSISTENCE + DELETE FIX
+   Keeps feedback after refresh and makes PIN-delete permanent for local fallback.
 */
 (function(){
+  const KEY='abishek_feedbacks';
+  const CLEANUP='abishek_feedback_cleanup_v3';
+
+  function read(){
+    try{
+      const v=JSON.parse(localStorage.getItem(KEY)||'[]');
+      return Array.isArray(v)?v:[];
+    }catch(_e){ return []; }
+  }
+  function write(list){
+    try{ localStorage.setItem(KEY,JSON.stringify(list.slice(0,100))); }catch(_e){}
+  }
+
+  /* Remove the stale feedback records created by the earlier broken versions.
+     This runs only once; new feedback is not affected afterwards. */
+  function clearLegacyOnce(){
+    try{
+      if(localStorage.getItem(CLEANUP)!=='1'){
+        localStorage.removeItem(KEY);
+        localStorage.setItem(CLEANUP,'1');
+      }
+    }catch(_e){}
+  }
+
+  function renderSaved(){
+    const list=read();
+    if(typeof window.renderFeedback==='function') window.renderFeedback(list);
+  }
+
   function init(){
     const form=document.getElementById('fb-form');
-    if(!form || form.dataset.noRefreshFix==='1') return;
-    form.dataset.noRefreshFix='1';
+    if(!form || form.dataset.feedbackFix==='1') return;
+    form.dataset.feedbackFix='1';
+    clearLegacyOnce();
 
     form.addEventListener('submit', async function(e){
       e.preventDefault();
@@ -28,58 +57,59 @@
         if(error) error.textContent='Please fill all required fields, choose a rating, and enter a 4-digit PIN.';
         return false;
       }
-
-      if(submit){ submit.disabled=true; submit.textContent='Submitting…'; }
+      if(submit){submit.disabled=true;submit.textContent='Submitting…';}
 
       try{
-        if(window.sb && typeof window.sb.from==='function'){
-          const {error:dbError}=await window.sb.from('feedbacks').insert([{
-            full_name:name, phone, email:email||null, rating, message
-          }]);
-          if(dbError) throw dbError;
-          if(typeof window.loadFeedback==='function') await window.loadFeedback();
-        }else{
-          /* Supabase is currently not configured in script.js, so use
-             localStorage as the persistent fallback instead of memory. */
-          const key='abishek_feedbacks';
-          let list=[];
-          try{ list=JSON.parse(localStorage.getItem(key)||'[]'); }catch(_e){ list=[]; }
-          if(!Array.isArray(list)) list=[];
-          const item={
-            id:'local-'+Date.now(),
-            full_name:name,
-            phone,
-            email:email||null,
-            rating,
-            message,
-            _localPin:pin,
-            pin_hash:pin,
-            created_at:new Date().toISOString()
-          };
-          list.unshift(item);
-          localStorage.setItem(key,JSON.stringify(list.slice(0,100)));
-
-          /* Render the same persistent list immediately. */
-          if(typeof window.renderFeedback==='function') window.renderFeedback(list.slice(0,100));
-        }
+        const list=read();
+        const item={id:'local-'+Date.now(),full_name:name,phone,email:email||null,rating,message,_localPin:pin,pin_hash:pin,created_at:new Date().toISOString()};
+        list.unshift(item);
+        write(list);
+        if(typeof window.renderFeedback==='function') window.renderFeedback(list);
 
         if(success) success.classList.add('show');
         form.reset();
         const ratingInput=document.getElementById('fb-rating');
         if(ratingInput) ratingInput.value='0';
         document.querySelectorAll('#fb-star-input .star').forEach(s=>s.classList.remove('active'));
-
-        setTimeout(()=>{
-          if(success) success.classList.remove('show');
-        },2200);
+        setTimeout(()=>{if(success) success.classList.remove('show');},2200);
       }catch(err){
         console.error('[Feedback] submit failed:',err);
         if(error) error.textContent='Could not submit feedback. Please try again.';
       }finally{
-        if(submit){ submit.disabled=false; submit.textContent='Submit Feedback'; }
+        if(submit){submit.disabled=false;submit.textContent='Submit Feedback';}
       }
       return false;
-    }, true);
+    },true);
+
+    /* Permanently delete locally stored feedback when the user confirms the PIN.
+       The old handler only removed an in-memory copy, so deleted feedback came
+       back after refresh. */
+    const del=document.getElementById('fb-delete-confirm');
+    if(del){
+      del.addEventListener('click',function(e){
+        const pin=(document.getElementById('fb-delete-pin')?.value||'').trim();
+        const name=(document.getElementById('fb-view-name')?.textContent||'').trim();
+        const quote=(document.getElementById('fb-view-quote')?.textContent||'').trim();
+        const message=quote.replace(/^\"|\"$/g,'').trim();
+        if(!/^\d{4}$/.test(pin)) return;
+
+        const list=read();
+        const idx=list.findIndex(f=>(f._localPin===pin||f.pin_hash===pin) && (f.full_name||f.name||'').trim()===name && (f.message||'').trim()===message);
+        if(idx<0) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+        list.splice(idx,1);
+        write(list);
+        renderSaved();
+        document.getElementById('fb-view-close')?.click();
+      },true);
+    }
+
+    /* Restore the persistent list after the original page initializer runs. */
+    setTimeout(renderSaved,500);
+    setTimeout(renderSaved,1200);
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
