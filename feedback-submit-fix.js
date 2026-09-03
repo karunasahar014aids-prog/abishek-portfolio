@@ -1,6 +1,6 @@
 /* ABISHEK STUDIO — FEEDBACK SUBMIT FIX
    Prevents the feedback form from navigating/reloading the page.
-   Runs in capture phase so the original submit handler cannot trigger a refresh.
+   Saves feedback permanently in this browser when Supabase is not configured.
 */
 (function(){
   function init(){
@@ -32,19 +32,35 @@
       if(submit){ submit.disabled=true; submit.textContent='Submitting…'; }
 
       try{
-        /* Reuse the existing Supabase client when the portfolio has one. */
         if(window.sb && typeof window.sb.from==='function'){
           const {error:dbError}=await window.sb.from('feedbacks').insert([{
             full_name:name, phone, email:email||null, rating, message
           }]);
           if(dbError) throw dbError;
+          if(typeof window.loadFeedback==='function') await window.loadFeedback();
         }else{
-          /* Keep the feedback available for this browser session when Supabase
-             is not configured, matching the portfolio's existing fallback. */
+          /* Supabase is currently not configured in script.js, so use
+             localStorage as the persistent fallback instead of memory. */
           const key='abishek_feedbacks';
-          const list=JSON.parse(localStorage.getItem(key)||'[]');
-          list.unshift({id:'local-'+Date.now(),full_name:name,phone,email,rating,message,created_at:new Date().toISOString()});
-          localStorage.setItem(key,JSON.stringify(list));
+          let list=[];
+          try{ list=JSON.parse(localStorage.getItem(key)||'[]'); }catch(_e){ list=[]; }
+          if(!Array.isArray(list)) list=[];
+          const item={
+            id:'local-'+Date.now(),
+            full_name:name,
+            phone,
+            email:email||null,
+            rating,
+            message,
+            _localPin:pin,
+            pin_hash:pin,
+            created_at:new Date().toISOString()
+          };
+          list.unshift(item);
+          localStorage.setItem(key,JSON.stringify(list.slice(0,100)));
+
+          /* Render the same persistent list immediately. */
+          if(typeof window.renderFeedback==='function') window.renderFeedback(list.slice(0,100));
         }
 
         if(success) success.classList.add('show');
@@ -52,13 +68,6 @@
         const ratingInput=document.getElementById('fb-rating');
         if(ratingInput) ratingInput.value='0';
         document.querySelectorAll('#fb-star-input .star').forEach(s=>s.classList.remove('active'));
-
-        /* Refresh only the feedback list in-place, never the whole page. */
-        if(typeof window.loadFeedback==='function'){
-          try{ await window.loadFeedback(); }catch(_e){}
-        }else if(typeof window.renderFeedback==='function'){
-          try{ window.renderFeedback(); }catch(_e){}
-        }
 
         setTimeout(()=>{
           if(success) success.classList.remove('show');
