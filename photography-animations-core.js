@@ -10,34 +10,38 @@
   function clean(v){return String(v??'').trim().toLowerCase().replace(/[\\_-]+/g,' ').replace(/\s+/g,' ');}
   function categoryKey(v){const c=clean(v);if(c==='all')return'all';if(c.includes('street'))return'street';if(c.includes('cover'))return'covers';if(c.includes('picsart')||c.includes('pics art'))return'picsarts';if(c.includes('poster'))return'posters';return c.replace(/ /g,'');}
   function categoryFromImage(card){
-    const src=String(card.querySelector('img')?.getAttribute('src')||card.querySelector('img')?.currentSrc||'').toLowerCase().replace(/\\/g,'/');
-    if(src.includes('/street/'))return'street'; if(src.includes('/gallery/street-'))return'street';
-    if(src.includes('/covers/'))return'covers'; if(src.includes('/picsarts/')||src.includes('/picsart/'))return'picsarts'; if(src.includes('/posters/'))return'posters';
     const dataCat=card.dataset.category||card.dataset.cat||card.getAttribute('data-filter');
-    const label=card.querySelector('.g-cat')?.textContent||''; return categoryKey(dataCat||label);
+    const label=card.querySelector('.g-cat')?.textContent||'';
+    const src=String(card.querySelector('img')?.getAttribute('src')||card.querySelector('img')?.currentSrc||'').toLowerCase().replace(/\\/g,'/');
+    if(src.includes('/street/')||src.includes('/gallery/street-'))return'street';
+    if(src.includes('/covers/'))return'covers';
+    if(src.includes('/picsarts/')||src.includes('/picsart/'))return'picsarts';
+    if(src.includes('/posters/'))return'posters';
+    return categoryKey(dataCat||label);
   }
   function updateButtons(){const bar=filterBar();if(!bar)return;bar.querySelectorAll('.filter-btn').forEach(b=>{const key=categoryKey(b.dataset.cat||b.textContent);b.dataset.cat=key;b.classList.toggle('active',key===activeFilter);b.setAttribute('aria-selected',key===activeFilter?'true':'false');});}
   function ensureFilterButtons(){
-    const bar=filterBar(); if(!bar)return false;
+    const bar=filterBar();if(!bar)return false;
     if(!bar.dataset.finalGalleryController){
-      bar.dataset.finalGalleryController='1'; bar.innerHTML='';
+      bar.dataset.finalGalleryController='1';bar.innerHTML='';
       CATEGORIES.forEach(([value,text])=>{const b=document.createElement('button');b.type='button';b.className='filter-btn';b.dataset.cat=value;b.textContent=text;bar.appendChild(b);});
       bar.addEventListener('click',e=>{
-        const b=e.target.closest('.filter-btn'); if(!b)return; e.preventDefault(); e.stopImmediatePropagation();
+        const b=e.target.closest('.filter-btn');if(!b)return;
+        e.preventDefault();e.stopImmediatePropagation();
         activeFilter=categoryKey(b.dataset.cat);
-        /* Important: the old handler was stopped here without rendering the
-           selected category. That caused every category to show only the few
-           cards from the initial All view. Render the selected category first. */
         try{activeCat=activeFilter;visibleCount=PAGE_SIZE;}catch(_e){}
+        /* renderGallery() clears the gallery DOM, so restore the Supabase
+           photographs immediately after rendering the selected static category. */
         if(typeof window.renderGallery==='function')window.renderGallery(activeFilter);
-        updateButtons(); applyFilter();
+        renderLiveCards();
+        updateButtons();
       },true);
     }
-    updateButtons(); return true;
+    updateButtons();return true;
   }
   function staticCards(){const g=gallery();return g?Array.from(g.querySelectorAll('.g-card:not(.live-admin-photo)')):[];}
   function applyFilter(){
-    const g=gallery(); if(!g||applying)return; applying=true;
+    const g=gallery();if(!g||applying)return;applying=true;
     try{
       ensureFilterButtons();
       staticCards().forEach(card=>{const key=categoryFromImage(card);const show=activeFilter==='all'||key===activeFilter;card.dataset.category=key;card.style.display=show?'':'none';if(show){card.style.visibility='visible';card.style.opacity='1';}});
@@ -57,7 +61,7 @@
   }
   function start(){
     const bar=filterBar(),g=gallery();if(!bar||!g){setTimeout(start,100);return;}style();ensureFilterButtons();observeGallery();
-    setTimeout(()=>{if(typeof window.renderGallery==='function'){try{window.renderGallery('all');}catch(_e){}}applyFilter();},150);
+    setTimeout(()=>{if(typeof window.renderGallery==='function'){try{window.renderGallery('all');}catch(_e){}}renderLiveCards();applyFilter();},150);
     setTimeout(()=>applyFilter(),500);setTimeout(()=>applyFilter(),1500);loadLive();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
