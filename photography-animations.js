@@ -16,5 +16,6 @@
     .then(()=>load('portfolio-sync.js'))
     .then(()=>load('feedback-submit-fix.js'))
     .then(()=>load('feedback-persistence-fix.js'))
+    .then(()=>load('hire-me-scroll-fix.js'))
     .catch(err=>console.error('Photography plugin load failed:',err));
 })();
