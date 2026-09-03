@@ -3,6 +3,20 @@
 */
 (function(){
   const KEY='abishek_feedbacks';
+  const RESET_KEY='abishek_feedback_reset_v1';
+
+  /* One-time cleanup of the old test feedback that was stored in browsers
+     before the persistence fix. New feedback is not removed after this. */
+  function clearOldTestFeedbackOnce(){
+    try{
+      if(localStorage.getItem(RESET_KEY)!=='1'){
+        localStorage.removeItem(KEY);
+        localStorage.setItem(RESET_KEY,'1');
+      }
+    }catch(err){
+      console.warn('[Feedback] cleanup failed:',err);
+    }
+  }
 
   function readSaved(){
     try{
@@ -18,7 +32,6 @@
   function restoreAndRender(){
     const saved=readSaved();
     try{
-      /* localFeedbacks is declared by script.js. */
       if(typeof localFeedbacks!=='undefined'){
         localFeedbacks.splice(0,localFeedbacks.length,...saved);
       }
@@ -26,8 +39,6 @@
       console.warn('[Feedback] restore failed:',err);
     }
 
-    /* Important: restoring the array alone is not enough. The old page
-       rendered before this helper loaded, so explicitly redraw the cards. */
     try{
       if(typeof window.renderFeedback==='function') window.renderFeedback(saved);
     }catch(err){
@@ -36,6 +47,7 @@
   }
 
   function init(){
+    clearOldTestFeedbackOnce();
     restoreAndRender();
     setTimeout(restoreAndRender,250);
     setTimeout(restoreAndRender,800);
