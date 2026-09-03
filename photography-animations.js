@@ -14,5 +14,6 @@
      filter/render logic and could make categories fight over the gallery. */
   load('photography-animations-core.js')
     .then(()=>load('portfolio-sync.js'))
+    .then(()=>load('feedback-submit-fix.js'))
     .catch(err=>console.error('Photography plugin load failed:',err));
 })();
