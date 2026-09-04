@@ -67,10 +67,12 @@
   }
   function renderLiveCards(){
     const g=gallery();if(!g)return;
-    /* Keep every original/static photograph. Live admin uploads are added
-       into the same gallery and are filtered by the category selected in Admin. */
+    /* Keep every original/static photograph. Put current Admin uploads FIRST
+       so the exact newly uploaded image is immediately visible in its chosen
+       category, while all previous photographs remain below it. */
     g.querySelectorAll('.live-admin-photo').forEach(x=>x.remove());
-    liveItems.forEach(item=>g.appendChild(createLiveCard(item)));
+    const liveCards=liveItems.map(createLiveCard);
+    liveCards.reverse().forEach(card=>g.insertBefore(card,g.firstChild));
     applyFilter();
   }
   function observeGallery(){const g=gallery();if(!g||g.dataset.finalObserver)return;g.dataset.finalObserver='1';new MutationObserver(()=>{if(!applying)requestAnimationFrame(applyFilter);}).observe(g,{childList:true,subtree:true});}
@@ -92,7 +94,6 @@
     const bar=filterBar(),g=gallery();if(!bar||!g){setTimeout(start,100);return;}style();ensureFilterButtons();observeGallery();observeModal();
     setTimeout(()=>{if(typeof window.renderGallery==='function'){try{window.renderGallery('all');}catch(_e){}}renderLiveCards();applyFilter();},150);
     setTimeout(()=>applyFilter(),500);setTimeout(()=>applyFilter(),1500);loadLive();
-    /* Refresh live admin photos so an upload/edit made in Admin appears on an already-open website. */
     setInterval(loadLive,5000);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadLive();});
   }
