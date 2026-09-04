@@ -85,14 +85,9 @@
   }
   function renderLiveCards(){
     const g=gallery();if(!g)return;
-    if(liveItems.length){
-      /* Supabase is the live/admin source of truth. Remove the bundled
-         placeholder gallery so an uploaded photograph is never replaced
-         by an old static image or appears mixed with it. */
-      g.querySelectorAll('.g-card').forEach(x=>x.remove());
-    }else{
-      g.querySelectorAll('.live-admin-photo').forEach(x=>x.remove());
-    }
+    /* Keep every bundled/static photograph. Admin/Supabase photographs are
+       additional gallery items, not replacements for the existing images. */
+    g.querySelectorAll('.live-admin-photo').forEach(x=>x.remove());
     liveItems.forEach(item=>g.appendChild(createLiveCard(item)));
     applyFilter();
   }
