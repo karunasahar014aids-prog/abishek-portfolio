@@ -638,3 +638,27 @@ footer .footer-top > a.btn.btn-primary:focus-visible {
   outline: 2px solid #00d9ff !important;
   outline-offset: 4px !important;
 }
+
+
+/* NEON BLUE CTA — high contrast so the footer logo/button label stays visible */
+footer .footer-top > a.btn.btn-primary {
+  color: #03121c !important;
+  -webkit-text-fill-color: #03121c !important;
+  background: linear-gradient(110deg, #00eaff 0%, #00bfff 55%, #1687ff 100%) !important;
+  border: 1px solid #64f5ff !important;
+  box-shadow: 0 0 10px rgba(0,234,255,.85), 0 0 26px rgba(0,191,255,.55), inset 0 0 10px rgba(255,255,255,.18) !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+footer .footer-top > a.btn.btn-primary:hover,
+footer .footer-top > a.btn.btn-primary:focus-visible {
+  color: #001018 !important;
+  -webkit-text-fill-color: #001018 !important;
+  background: #8ffaff !important;
+  border-color: #b9fcff !important;
+  box-shadow: 0 0 14px #00eaff, 0 0 34px rgba(0,191,255,.8) !important;
+  outline: 2px solid #00eaff !important;
+  outline-offset: 4px !important;
+}
