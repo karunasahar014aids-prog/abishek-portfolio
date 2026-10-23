@@ -237,11 +237,21 @@ let visibleCount = 8;
 let currentFilteredList = galleryData.slice();
 let currentModalIndex = -1; // index within currentFilteredList
 
+function normalizeGalleryCategory(value){
+  const v = String(value || '').trim().toLowerCase().replace(/[ _-]+/g,'');
+  if(v === 'street' || v === 'streetphoto' || v === 'streetphotography') return 'street';
+  if(v === 'cover' || v === 'covers' || v === 'coverpage' || v === 'coverpages') return 'covers';
+  if(v === 'picsart' || v === 'picsarts' || v === 'digitalart' || v === 'picsartdesign') return 'picsarts';
+  if(v === 'poster' || v === 'posters' || v === 'posterdesign') return 'posters';
+  return v;
+}
+
 function renderGallery(filter){
   gallery.innerHTML = '';
-  currentFilteredList = filter==='all'
-  ? categories.filter(c=>c!=='all').map(c=> galleryData.find(g=>g.cat===c)).filter(Boolean)
-  : galleryData.filter(g => g.cat===filter);
+  const selectedCategory = normalizeGalleryCategory(filter);
+  currentFilteredList = selectedCategory === 'all'
+    ? galleryData.slice()
+    : galleryData.filter(g => normalizeGalleryCategory(g.cat) === selectedCategory);
   const items = currentFilteredList.slice(0, visibleCount);
   items.forEach((g)=>{
     const gid = galleryData.indexOf(g); // stable id — never changes across filters/reloads
@@ -285,7 +295,7 @@ filterBar.addEventListener('click', e=>{
   filterBar.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   visibleCount = 8;
-  renderGallery(btn.dataset.cat);
+  renderGallery(normalizeGalleryCategory(btn.dataset.cat));
 });
 document.getElementById('load-more-btn').addEventListener('click', ()=>{
   visibleCount += 8;
