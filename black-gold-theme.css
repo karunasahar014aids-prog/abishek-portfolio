@@ -259,3 +259,16 @@ html,body{background:#080808!important;color:#F7F4EA!important}body{color-scheme
     padding:24px !important;
   }
 }
+
+
+/* User preference: remove the decorative gold checkmark and its pulse/ring */
+#fb-modal #fb-success.show::before,
+#fb-modal #fb-success.show::after{
+  content:none !important;
+  display:none !important;
+  animation:none !important;
+  box-shadow:none !important;
+}
+#fb-modal #fb-success.show{
+  gap:12px !important;
+}
