@@ -258,3 +258,71 @@ body.page-ready #site-header {
 @media(prefers-reduced-motion:reduce) {
   #site-header { transition:none !important; }
 }
+
+
+/* 3D PREMIUM PORTFOLIO — restore the original cinematic hero treatment */
+#hero-visual {
+  position:relative !important;
+  isolation:isolate !important;
+  perspective:1200px !important;
+  transform-style:preserve-3d !important;
+  overflow:visible !important;
+}
+#hero-visual::before {
+  content:"";
+  position:absolute;
+  width:82%;
+  aspect-ratio:1;
+  left:9%;
+  top:9%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,245,255,.16) 0%,rgba(168,85,247,.10) 38%,transparent 72%);
+  filter:blur(16px);
+  pointer-events:none;
+  z-index:0;
+  animation:premiumAura 7s ease-in-out infinite alternate;
+}
+.three-portfolio-canvas {
+  position:absolute !important;
+  inset:-5% !important;
+  width:110% !important;
+  height:110% !important;
+  z-index:1 !important;
+  display:block !important;
+  opacity:1 !important;
+  pointer-events:none !important;
+  filter:drop-shadow(0 0 24px rgba(0,220,255,.15)) !important;
+}
+#hero-visual .hero-portrait-ring {
+  z-index:2 !important;
+  box-shadow:0 0 22px rgba(0,245,255,.22),0 0 70px rgba(168,85,247,.15) !important;
+  animation:premiumRing 12s linear infinite;
+}
+#hero-visual .hero-portrait-frame {
+  z-index:3 !important;
+  transform-style:preserve-3d !important;
+  box-shadow:0 0 28px rgba(0,245,255,.22),0 0 80px rgba(168,85,247,.17) !important;
+  border:1px solid rgba(0,245,255,.72) !important;
+}
+#hero-visual .hero-portrait-frame img {
+  transform:translateZ(24px) !important;
+  backface-visibility:hidden;
+}
+#hero-visual .float-icon {
+  z-index:4 !important;
+  text-shadow:0 0 16px rgba(0,245,255,.8) !important;
+  filter:drop-shadow(0 0 10px rgba(168,85,247,.6));
+}
+#hero-visual .hero-particle { z-index:2 !important; pointer-events:none !important; }
+@keyframes premiumAura {
+  from { transform:scale(.92) translate3d(-2%,1%,0); opacity:.65; }
+  to { transform:scale(1.08) translate3d(2%,-1%,0); opacity:1; }
+}
+@keyframes premiumRing { to { rotate:360deg; } }
+@media(max-width:700px) {
+  #hero-visual::before { width:100%; left:0; top:8%; }
+  .three-portfolio-canvas { opacity:.78 !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #hero-visual::before, #hero-visual .hero-portrait-ring { animation:none !important; }
+}
