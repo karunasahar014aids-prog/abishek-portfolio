@@ -172,3 +172,22 @@ a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
   color:#070914 !important;
   border:1px solid rgba(0,245,255,.72) !important;
 }
+
+/* Cursor visibility fix: custom cursor above all layers on desktop, native cursor on touch/small screens. */
+@media (hover:hover) and (pointer:fine) and (min-width:901px) {
+  body, body * { cursor:none !important; }
+  #cursor-dot, #cursor-ring {
+    display:block !important;
+    position:fixed !important;
+    z-index:2147483647 !important;
+    pointer-events:none !important;
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+  #cursor-dot { width:6px !important; height:6px !important; }
+  #cursor-ring { width:38px !important; height:38px !important; }
+}
+@media (hover:none), (pointer:coarse), (max-width:900px) {
+  body, body * { cursor:auto !important; }
+  #cursor-dot, #cursor-ring { display:none !important; }
+}
