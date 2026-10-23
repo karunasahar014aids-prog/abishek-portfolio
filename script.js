@@ -297,11 +297,31 @@ filterBar.addEventListener('click', e=>{
   visibleCount = 8;
   renderGallery(normalizeGalleryCategory(btn.dataset.cat));
 });
-document.getElementById('load-more-btn').addEventListener('click', ()=>{
-  visibleCount += 8;
-  const active = filterBar.querySelector('.filter-btn.active').dataset.cat;
-  renderGallery(active);
-});
+const loadMoreButton = document.getElementById('load-more-btn');
+if (loadMoreButton) {
+  loadMoreButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    const activeButton = filterBar.querySelector('.filter-btn.active');
+    const activeCategory = activeButton ? activeButton.dataset.cat : 'all';
+    const previousCount = visibleCount;
+    visibleCount = Math.min(visibleCount + 8, currentFilteredList.length);
+    renderGallery(activeCategory || 'all');
+    // Keep the newly revealed cards visible even when scroll-reveal animations are active.
+    if (visibleCount > previousCount) {
+      requestAnimationFrame(() => {
+        const cards = gallery.querySelectorAll('.g-card');
+        cards.forEach((card, index) => {
+          if (index >= previousCount) {
+            card.classList.add('is-visible');
+            card.style.opacity = '1';
+            card.style.visibility = 'visible';
+            card.style.transform = 'none';
+          }
+        });
+      });
+    }
+  });
+}
 
 function setFavUI(card, active){
   const badge = card.querySelector('.g-fav-badge');
