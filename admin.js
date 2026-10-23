@@ -12,6 +12,7 @@ const SUPABASE_ANON_KEY =
 
 let supabaseClient = null;
 let currentPosterId = null;
+const ADMIN_EMAIL = "abia38909@gmail.com";
 
 function loadSupabase() {
     return new Promise((resolve, reject) => {
@@ -30,6 +31,27 @@ function loadSupabase() {
 
 function initializeSupabase() {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+async function loginWithEmail(event) {
+    if (event) event.preventDefault();
+    const message = document.getElementById("message");
+    const email = (document.getElementById("email")?.value || "").trim().toLowerCase();
+    const password = document.getElementById("password")?.value || "";
+    if (!supabaseClient) { message.textContent = "Supabase is not configured."; return; }
+    if (email !== ADMIN_EMAIL.toLowerCase()) {
+        message.textContent = "This email is not authorized for admin access.";
+        return;
+    }
+    message.textContent = "Signing in...";
+    try {
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await checkSession();
+    } catch (error) {
+        console.error(error);
+        message.textContent = error.message || "Email/password sign-in failed.";
+    }
 }
 
 async function loginWithGoogle() {
@@ -347,6 +369,13 @@ async function checkSession() {
     const { data, error } = await supabaseClient.auth.getSession();
     if (error) return console.error(error);
     if (data && data.session) {
+        const email = (data.session.user?.email || "").toLowerCase();
+        if (email !== ADMIN_EMAIL.toLowerCase()) {
+            await supabaseClient.auth.signOut();
+            const message = document.getElementById("message");
+            if (message) message.textContent = "Access denied. This account is not authorized as an admin.";
+            return;
+        }
         showDashboard();
         await loadPosters();
     }
