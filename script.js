@@ -753,31 +753,60 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
    -- no public "select" policy on purpose: only you (via the Supabase
    -- dashboard / service role) can read submitted leads.
 ============================================================ */
-let localContacts = [];
-async function submitContact(payload){
-  if(sb){
-    try{
-      const { error } = await sb.from('contacts').insert([payload]);
-      if(error) throw error;
-      return true;
-    }catch(err){ console.warn('Supabase insert failed, saving locally for this session instead.', err); }
-  }
-  localContacts.push({ ...payload, created_at: new Date().toISOString() });
-  return true;
-}
+/*
+CONTACT EMAIL SETUP
+For automatic sending, create an EmailJS account and replace the three
+placeholder values below with your EmailJS Public Key, Service ID, and
+Template ID. In the EmailJS template, set the recipient to
+abia38909@gmail.com and map from_name, reply_to, project_type, and message.
+Until configured, the form opens a prefilled email draft instead of falsely
+claiming that an email was sent.
+*/
+const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
 
 document.getElementById('contact-form').addEventListener('submit', async function(e){
   e.preventDefault();
+  const form = this;
   const name = document.getElementById('cf-name').value.trim();
   const email = document.getElementById('cf-email').value.trim();
   const type = document.getElementById('cf-type').value;
   const message = document.getElementById('cf-message').value.trim();
+  const status = document.getElementById('form-success');
+  const button = form.querySelector('button[type="submit"]');
   if(!name || !email || !message) return;
 
-  await submitContact({ name, email, project_type:type, message });
+  const configured = ![EMAILJS_PUBLIC_KEY, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID]
+    .some(value => !value || value.startsWith('YOUR_'));
 
-  this.style.display = 'none';
-  document.getElementById('form-success').classList.add('show');
+  if(configured && window.emailjs) {
+    button.disabled = true;
+    button.textContent = 'Sending...';
+    try {
+      await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: 'abia38909@gmail.com',
+        from_name: name,
+        reply_to: email,
+        project_type: type,
+        message: message
+      });
+      form.style.display = 'none';
+      status.innerHTML = '<h3>Message sent successfully</h3><p>Thank you! Your message has been emailed.</p>';
+      status.classList.add('show');
+      return;
+    } catch(error) {
+      console.error('EmailJS send failed:', error);
+      button.disabled = false;
+      button.textContent = 'Send Message';
+    }
+  }
+
+  const subject = encodeURIComponent('Portfolio enquiry — ' + type);
+  const body = encodeURIComponent('Name: ' + name + '\\nEmail: ' + email + '\\nProject Type: ' + type + '\\n\\nMessage:\\n' + message);
+  window.location.href = 'mailto:abia38909@gmail.com?subject=' + subject + '&body=' + body;
+  status.innerHTML = '<h3>Email draft opened</h3><p>Your email app should open with the message prepared. Please press Send in your email app. For direct website sending, EmailJS setup is required.</p>';
+  status.classList.add('show');
 });
 
 /* ============================================================
