@@ -1,0 +1,110 @@
+/* ABISHEK STUDIO — DARK NEON CYBER GALLERY
+   Additive theme: preserves existing HTML, forms, gallery and modal logic. */
+:root {
+  --bg: #050611;
+  --bg2: #0b1020;
+  --accent: #00f5ff;
+  --accent-2: #a855f7;
+  --text: #f4f7ff;
+  --text-light: #a5b2cc;
+  --border: rgba(0,245,255,.22);
+  --white: #0c1020;
+  --shadow-sm: 0 2px 14px rgba(0,0,0,.35);
+  --shadow-md: 0 14px 44px rgba(0,0,0,.45);
+  --shadow-lg: 0 26px 80px rgba(0,0,0,.62);
+  --neon-cyan: #00f5ff;
+  --neon-purple: #a855f7;
+}
+html, body { background:#050611 !important; color:#f4f7ff !important; }
+body {
+  color-scheme: dark;
+  background-image:
+    radial-gradient(ellipse at 82% 10%, rgba(0,245,255,.08), transparent 38%),
+    radial-gradient(ellipse at 12% 48%, rgba(168,85,247,.09), transparent 42%) !important;
+}
+::selection { background:#00f5ff; color:#050611; }
+#site-header { z-index:1000; }
+header .nav-inner, header.scrolled .nav-inner {
+  background:rgba(8,12,28,.88) !important;
+  color:#f4f7ff !important;
+  border:1px solid rgba(0,245,255,.30) !important;
+  box-shadow:0 8px 35px rgba(0,245,255,.08) !important;
+  backdrop-filter:blur(20px);
+}
+.nav-links a, .nav-links a:hover, .nav-links a.active { color:#e8f2ff !important; }
+.nav-links a:hover, .nav-links a.active { text-shadow:0 0 14px rgba(0,245,255,.65); }
+.hero-grid, #hero > .wrap, #hero .hero-grid > * { position:relative; z-index:1; }
+#hero {
+  position:relative; isolation:isolate; overflow:hidden;
+  background:
+    radial-gradient(ellipse at 75% 38%, rgba(0,245,255,.12), transparent 38%),
+    radial-gradient(ellipse at 18% 80%, rgba(168,85,247,.12), transparent 40%),
+    linear-gradient(135deg,#050611,#0b1020 65%,#10091e) !important;
+}
+.hero-bg-lines { opacity:.45; }
+.hero-title { color:#fff !important; text-shadow:0 0 35px rgba(0,245,255,.20); }
+.hero-eyebrow, .hero-role, .eyebrow, .section-eyebrow { color:#00f5ff !important; }
+.hero-portrait-frame {
+  border:1px solid rgba(0,245,255,.65) !important;
+  box-shadow:0 0 24px rgba(0,245,255,.17), 0 0 70px rgba(168,85,247,.14);
+  transition:box-shadow .35s ease, border-color .35s ease;
+}
+.hero-portrait-frame:hover { border-color:#a855f7 !important; box-shadow:0 0 32px rgba(0,245,255,.25),0 0 90px rgba(168,85,247,.2); }
+.btn, .nav-cta, .filter-btn {
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+}
+.btn-primary, .nav-cta {
+  background:linear-gradient(110deg,#00d9ff,#8b5cf6) !important;
+  color:#050611 !important; border:1px solid rgba(0,245,255,.6) !important;
+  box-shadow:0 0 20px rgba(0,245,255,.16);
+}
+.btn:hover, .nav-cta:hover {
+  transform:translateY(-3px);
+  box-shadow:0 0 18px rgba(0,245,255,.32),0 0 40px rgba(168,85,247,.18);
+}
+#about, #portfolio, #projects, #testimonials, #contact {
+  position:relative; scroll-margin-top:90px;
+}
+#about::before, #portfolio::before, #projects::before, #testimonials::before, #contact::before {
+  content:""; position:absolute; top:0; left:5%; right:5%; height:1px; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(0,245,255,.2),rgba(168,85,247,.2),transparent);
+}
+#gallery .g-card {
+  transform-style:preserve-3d; border:1px solid rgba(0,245,255,.14);
+  background:#0b1020; will-change:transform;
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+#gallery .g-card:hover {
+  border-color:rgba(0,245,255,.65);
+  box-shadow:0 0 24px rgba(0,245,255,.12),0 14px 45px rgba(0,0,0,.35);
+}
+#gallery .g-card img { transition:transform .65s cubic-bezier(.2,.8,.2,1); }
+#gallery .g-card:hover img { transform:scale(1.035); }
+.filter-btn { border-color:rgba(0,245,255,.22) !important; }
+.filter-btn.active, .filter-btn:hover {
+  color:#00f5ff !important; border-color:#00f5ff !important;
+  box-shadow:0 0 16px rgba(0,245,255,.10);
+}
+#mobile-menu { background:rgba(5,6,17,.97) !important; backdrop-filter:blur(24px); }
+#mobile-menu a { color:#f4f7ff !important; }
+#mobile-menu a:hover { color:#00f5ff !important; }
+#cursor-dot { background:#00f5ff !important; box-shadow:0 0 12px #00f5ff; }
+#cursor-ring { border-color:rgba(0,245,255,.6) !important; }
+#loader { background:#050611 !important; color:#00f5ff !important; }
+#loader .shutter .shutter-blade { fill:#00f5ff !important; }
+#loader .loader-label { color:#00f5ff !important; text-shadow:0 0 14px rgba(0,245,255,.3); }
+#loader .loader-pct { color:rgba(0,245,255,.72) !important; }
+#loader .shutter::before { border-color:rgba(0,245,255,.38); }
+#loader .shutter::after { border-color:#00f5ff; box-shadow:inset 0 0 18px rgba(0,245,255,.22),0 0 24px rgba(0,245,255,.25); }
+.form-success.show { background:rgba(10,15,32,.97) !important; color:#f4f7ff !important; border:1px solid rgba(0,245,255,.4) !important; }
+.form-success.show h3 { color:#f4f7ff !important; }
+.form-success.show p { color:#a5b2cc !important; }
+.form-success.show svg { color:#00f5ff !important; stroke:#00f5ff !important; }
+:focus-visible { outline:2px solid #00f5ff !important; outline-offset:4px; }
+@media (max-width:900px) {
+  #neon-particles { opacity:.42 !important; }
+  .hero-portrait-frame { box-shadow:0 0 18px rgba(0,245,255,.14); }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+}
