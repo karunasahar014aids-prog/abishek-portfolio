@@ -193,3 +193,44 @@ a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
 }
 
 
+
+/* Restore the original fixed navigation bar and all menu options. */
+#site-header {
+  display:block !important;
+  position:fixed !important;
+  top:0 !important; left:0 !important; right:0 !important;
+  width:100% !important;
+  z-index:2147483000 !important;
+  opacity:1 !important; visibility:visible !important;
+  pointer-events:auto !important;
+}
+#site-header .navbar,
+#site-header .nav-inner {
+  opacity:1 !important; visibility:visible !important;
+  pointer-events:auto !important;
+}
+#site-header .nav-inner {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+}
+#site-header .nav-links {
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+#site-header .nav-links a,
+#site-header .nav-cta {
+  pointer-events:auto !important;
+  visibility:visible !important;
+}
+#site-header .nav-links a { color:#e8f2ff !important; }
+#site-header .nav-cta {
+  background:linear-gradient(110deg,#00d9ff,#8b5cf6) !important;
+  color:#070914 !important;
+}
+@media(max-width:900px) {
+  #site-header .nav-links, #site-header .nav-cta { display:none !important; }
+  #site-header .burger { display:flex !important; pointer-events:auto !important; }
+}
