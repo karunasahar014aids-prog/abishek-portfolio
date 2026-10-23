@@ -4,6 +4,7 @@
   const SUPABASE_URL='https://jaryhmtzzassnzomtsch.supabase.co';
   const SUPABASE_KEY='sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA';
   const CATEGORIES=[['all','All'],['street','Street'],['covers','Covers'],['picsarts','Picsarts'],['posters','Posters']];
+  const PAGE_SIZE=8;
   let liveItems=[]; let activeFilter='all'; let client=null; let applying=false;
   const gallery=()=>document.getElementById('gallery');
   const filterBar=()=>document.getElementById('filter-bar');
