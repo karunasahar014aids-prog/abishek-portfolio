@@ -8,3 +8,24 @@ undefined
 .poster-item:hover{background:linear-gradient(130deg,rgba(255,255,255,.11),rgba(0,245,255,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 12px 30px rgba(0,0,0,.2),0 0 20px rgba(0,245,255,.035)}
 .logout-btn,.poster-actions button,#content-manager .cm-tab,#content-manager .cm-add,.cancel-btn,.collection-count{backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
 .input-group input,.form-field input,.form-field select,.form-field textarea,#content-manager .cm-field input,#content-manager .cm-field textarea{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+
+/* LIQUID GLASS — glossy, refractive, floating glass surfaces */
+:root{--lg-edge:rgba(226,249,255,.28);--lg-glow:rgba(103,232,249,.16)}
+.dashboard-top,.stat-card,.add-poster,.poster-list,#content-manager,.login-card,.poster-item{
+ border:1px solid var(--lg-edge)!important;
+ background:linear-gradient(145deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.055) 28%,rgba(110,160,255,.045) 62%,rgba(255,255,255,.025) 100%)!important;
+ backdrop-filter:blur(28px) saturate(175%)!important;-webkit-backdrop-filter:blur(28px) saturate(175%)!important;
+ box-shadow:inset 0 1.5px 0 rgba(255,255,255,.34),inset 1px 0 0 rgba(255,255,255,.09),inset 0 -1px 0 rgba(255,255,255,.08),0 18px 48px rgba(0,0,0,.2),0 0 26px rgba(103,232,249,.035)!important;
+}
+.dashboard-top:before,.stat-card:before,.add-poster:before,.poster-list:before,#content-manager:before,.login-card:after,.poster-item:before{
+ content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+ background:radial-gradient(ellipse at 8% 0%,rgba(255,255,255,.25),transparent 34%),linear-gradient(118deg,rgba(255,255,255,.09),transparent 28%,transparent 72%,rgba(122,220,255,.07));
+}
+.stat-card,.poster-item,.dashboard-top,.add-poster,.login-card{transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
+.stat-card:hover,.poster-item:hover{transform:translateY(-3px);border-color:rgba(220,250,255,.42)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.38),0 22px 48px rgba(0,0,0,.24),0 0 25px rgba(103,232,249,.12)!important}
+.logout-btn,.poster-actions button,#content-manager .cm-tab,#content-manager .cm-add,.cancel-btn,.collection-count,.input-group input,.form-field input,.form-field select,.form-field textarea,#content-manager .cm-field input,#content-manager .cm-field textarea{
+ border-color:rgba(230,249,255,.22)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 5px 18px rgba(0,0,0,.1)!important;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.dashboard-top,.stat-card,.add-poster,.poster-list,#content-manager,.login-card,.poster-item{background:rgba(28,35,58,.94)!important}}
+@media(prefers-reduced-motion:reduce){.stat-card,.poster-item,.dashboard-top,.add-poster,.login-card{transition:none}.stat-card:hover,.poster-item:hover{transform:none}}
