@@ -790,7 +790,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
         reply_to: email,
         project_type: type,
         message: message
-      });
+      }, EMAILJS_PUBLIC_KEY);
       form.style.display = 'none';
       status.innerHTML = '<h3>Message sent successfully</h3><p>Thank you! Your message has been emailed.</p>';
       status.classList.add('show');
