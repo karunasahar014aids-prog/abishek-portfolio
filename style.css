@@ -2446,3 +2446,43 @@ body.light-mode .theme-toggle{
     padding:24px;
   }
 }
+
+
+/* FINAL FIX: keep the feedback popup anchored in place; scroll only its contents */
+#fb-modal-backdrop{
+  position:fixed !important;
+  inset:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  padding:24px !important;
+  overscroll-behavior:none !important;
+}
+#fb-modal{
+  position:relative !important;
+  flex:0 1 560px !important;
+  width:min(100%, 560px) !important;
+  max-width:560px !important;
+  max-height:calc(100vh - 48px) !important;
+  max-height:calc(100dvh - 48px) !important;
+  margin:0 !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch !important;
+  touch-action:pan-y !important;
+}
+@media(max-width:600px){
+  #fb-modal-backdrop{
+    align-items:center !important;
+    padding:16px !important;
+  }
+  #fb-modal{
+    width:100% !important;
+    max-height:calc(100vh - 32px) !important;
+    max-height:calc(100dvh - 32px) !important;
+    margin:0 !important;
+    padding:24px !important;
+  }
+}
