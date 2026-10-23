@@ -426,3 +426,12 @@ body.page-ready #site-header {
   #hero-visual .hero-portrait-frame img, #hero-visual .hero-portrait-ring,
   #hero-visual::after { animation:none !important; }
 }
+
+
+/* Navigation interaction fix */
+#site-header, #site-header a, #site-header button { pointer-events:auto !important; }
+#site-header { z-index:2147483000 !important; }
+#mobile-menu { z-index:2147483002 !important; pointer-events:none !important; }
+#mobile-menu.open { pointer-events:auto !important; }
+#mobile-menu a, #mobile-menu button { pointer-events:auto !important; position:relative !important; z-index:2147483003 !important; }
+#hero-visual, #hero-visual::before, #hero-visual::after, .three-portfolio-canvas { pointer-events:none !important; }
