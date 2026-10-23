@@ -191,3 +191,35 @@ a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
   body, body * { cursor:auto !important; }
   #cursor-dot, #cursor-ring { display:none !important; }
 }
+
+
+/* Premium portfolio search bar */
+.portfolio-search {
+  display:flex; align-items:center; gap:12px; width:min(100%,560px);
+  margin:0 0 22px; padding:12px 16px; border-radius:16px;
+  border:1px solid rgba(0,225,255,.32);
+  background:linear-gradient(120deg,rgba(8,15,32,.94),rgba(15,13,35,.94));
+  box-shadow:0 8px 32px rgba(0,0,0,.18),inset 0 0 22px rgba(0,225,255,.025);
+  transition:border-color .25s ease,box-shadow .25s ease;
+  position:relative; z-index:3;
+}
+.portfolio-search:focus-within {
+  border-color:rgba(0,225,255,.82);
+  box-shadow:0 0 0 3px rgba(0,225,255,.08),0 0 28px rgba(0,225,255,.1);
+}
+.portfolio-search > svg { width:20px; height:20px; flex:0 0 20px; color:#42eaff; }
+.portfolio-search input {
+  min-width:0; flex:1; border:0 !important; outline:0 !important;
+  background:transparent !important; color:#f5f7ff !important;
+  font:inherit; font-size:15px; padding:3px 0 !important; box-shadow:none !important;
+}
+.portfolio-search input::placeholder { color:rgba(219,228,255,.58); }
+.portfolio-search button {
+  border:0; background:transparent; color:#62eaff; font:inherit; font-size:12px;
+  padding:6px 4px; cursor:pointer; opacity:.85;
+}
+.portfolio-search button:hover { opacity:1; color:#c7a5ff; }
+@media(max-width:600px) {
+  .portfolio-search { width:100%; padding:11px 12px; }
+  .portfolio-search input { font-size:14px; }
+}
