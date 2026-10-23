@@ -662,3 +662,39 @@ footer .footer-top > a.btn.btn-primary:focus-visible {
   outline: 2px solid #00eaff !important;
   outline-offset: 4px !important;
 }
+
+
+/* FULL NAVIGATION BAR — vivid neon-blue treatment */
+#site-header .nav-inner {
+  background: linear-gradient(105deg, #00eaff 0%, #00bfff 48%, #247bff 100%) !important;
+  background-color: #00bfff !important;
+  border: 1px solid #66f5ff !important;
+  box-shadow: 0 0 12px rgba(0,234,255,.72), 0 0 30px rgba(0,153,255,.35) !important;
+}
+#site-header .nav-links a,
+#site-header .logo,
+#site-header .nav-cta,
+#site-header .nav-cta svg {
+  color: #03121c !important;
+  -webkit-text-fill-color: #03121c !important;
+}
+#site-header .nav-links a:hover,
+#site-header .nav-links a.active {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 0 8px rgba(255,255,255,.65) !important;
+}
+#site-header .nav-cta {
+  background: #071827 !important;
+  border: 1px solid #a3faff !important;
+  color: #e8fdff !important;
+  -webkit-text-fill-color: #e8fdff !important;
+  box-shadow: 0 0 12px rgba(0,234,255,.6) !important;
+}
+#site-header .nav-cta svg { stroke: #e8fdff !important; }
+@media (max-width: 900px) {
+  #site-header .nav-inner {
+    background: linear-gradient(105deg, #00eaff 0%, #00bfff 48%, #247bff 100%) !important;
+  }
+  #site-header .burger span { background: #03121c !important; }
+}
