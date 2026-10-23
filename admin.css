@@ -56,3 +56,23 @@ button,input,select,textarea{font:inherit}button{touch-action:manipulation}butto
 @media(max-width:700px){.stats{grid-template-columns:1fr}.stat-card{padding:18px}.dashboard-top{align-items:flex-start;flex-direction:column;padding:22px}.dashboard-top h1{letter-spacing:-1px}.form-grid,#content-manager .cm-grid{grid-template-columns:1fr}.form-field.full,#content-manager .cm-full{grid-column:auto}.poster-item{grid-template-columns:76px minmax(0,1fr);gap:12px}.poster-image{width:76px;height:76px}.poster-actions{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}.poster-actions button{flex:1}.login-card{padding:30px 22px}.dashboard{width:92%}}
 @media(max-width:420px){.add-poster,.poster-list,#content-manager{padding:17px}.poster-item{padding:10px}.poster-info h3{font-size:13px}.poster-meta{gap:7px}.dashboard-top p{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* GLASSMORPHISM UPGRADE — fields, action bars, tabs and panels */
+:root{--glass-blur:blur(18px)}
+.login-card,.dashboard-top,.stat-card,.add-poster,.poster-list,#content-manager,#content-manager .cm-panel,.cm-project,.poster-item,.form-field input,.form-field select,.form-field textarea,.input-group input,#content-manager .cm-field input,#content-manager .cm-field textarea,.logout-btn,.cancel-btn,.poster-actions button,#content-manager .cm-tab,#content-manager .cm-add,#content-manager .cm-save,.collection-count{-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.dashboard-top{background:linear-gradient(130deg,rgba(255,255,255,.075),rgba(255,255,255,.018));border-color:rgba(255,255,255,.16)}
+.stat-card,.add-poster,.poster-list,#content-manager{background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.018));border-color:rgba(255,255,255,.14)}
+.stat-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 12px 35px rgba(0,0,0,.2)}
+.add-poster,.poster-list,#content-manager{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 45px rgba(0,0,0,.22)}
+.input-group input,.form-field input,.form-field select,.form-field textarea,#content-manager .cm-field input,#content-manager .cm-field textarea{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.input-group input:focus,.form-field input:focus,.form-field select:focus,.form-field textarea:focus,#content-manager .cm-field input:focus,#content-manager .cm-field textarea:focus{background:rgba(0,245,255,.055);border-color:rgba(0,245,255,.65);box-shadow:0 0 0 3px rgba(0,245,255,.08),0 0 24px rgba(0,245,255,.07)}
+.poster-item{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.poster-item:hover{background:rgba(255,255,255,.06);border-color:rgba(0,245,255,.34)}
+.logout-btn,.cancel-btn,.poster-actions button,#content-manager .cm-tab,#content-manager .cm-add{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.16)}
+.logout-btn:hover,.poster-actions button:hover,#content-manager .cm-tab:hover,#content-manager .cm-add:hover{background:rgba(0,245,255,.09);border-color:rgba(0,245,255,.55)}
+#content-manager .cm-panel{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.12)}
+#content-manager .cm-tab.active{background:linear-gradient(120deg,rgba(0,245,255,.88),rgba(168,85,247,.8));box-shadow:0 0 22px rgba(0,245,255,.12)}
+.login-btn,.save-btn,#content-manager .cm-save{background:linear-gradient(120deg,rgba(0,245,255,.9),rgba(145,251,255,.82));box-shadow:0 8px 28px rgba(0,245,255,.12),inset 0 1px 0 rgba(255,255,255,.45)}
+.google-login-btn{background:rgba(255,255,255,.045);border-color:rgba(168,85,247,.42)}
+@media(max-width:700px){.dashboard-top,.stat-card,.add-poster,.poster-list,#content-manager{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}}
