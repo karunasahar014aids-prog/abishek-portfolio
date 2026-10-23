@@ -364,3 +364,65 @@ body.page-ready #site-header {
   body, body * { cursor:auto !important; }
   #cursor-dot, #cursor-ring { display:none !important; }
 }
+
+
+/* CINEMATIC CAMERA PASS — slow dolly, orbit, rack-focus style depth */
+#hero { perspective:1400px; perspective-origin:50% 45%; }
+#hero-visual {
+  transform-origin:50% 50%;
+  transform-style:preserve-3d;
+  animation:cinemaCameraDrift 12s cubic-bezier(.45,0,.55,1) infinite alternate;
+  will-change:transform;
+}
+#hero-visual .hero-portrait-frame {
+  animation:cinemaSubjectFloat 8s ease-in-out infinite alternate;
+  transform-origin:50% 48%;
+  will-change:transform,filter;
+}
+#hero-visual .hero-portrait-frame img {
+  animation:cinemaFocusPulse 9s ease-in-out infinite alternate;
+}
+#hero-visual .hero-portrait-ring {
+  animation:cinemaOrbit 22s linear infinite !important;
+  transform-origin:center;
+}
+#hero-visual::after {
+  content:"";
+  position:absolute;
+  inset:-8%;
+  z-index:5;
+  pointer-events:none;
+  background:linear-gradient(110deg,transparent 35%,rgba(0,245,255,.055) 48%,rgba(168,85,247,.07) 52%,transparent 65%);
+  mix-blend-mode:screen;
+  transform:translateX(-120%) skewX(-8deg);
+  animation:cinemaLightSweep 10s ease-in-out infinite;
+}
+@keyframes cinemaCameraDrift {
+  0% { transform:translate3d(-1.2%,1%,0) rotateY(-3deg) rotateX(1deg) scale(.985); }
+  45% { transform:translate3d(.8%,-.6%,0) rotateY(2deg) rotateX(-.6deg) scale(1.025); }
+  100% { transform:translate3d(1.2%,.4%,0) rotateY(-1deg) rotateX(.8deg) scale(1.01); }
+}
+@keyframes cinemaSubjectFloat {
+  0% { transform:translate3d(0,8px,35px) rotateY(-2deg) rotateX(1deg); }
+  100% { transform:translate3d(0,-9px,65px) rotateY(2deg) rotateX(-1deg); }
+}
+@keyframes cinemaFocusPulse {
+  0%,100% { filter:contrast(1.02) saturate(1.02); }
+  50% { filter:contrast(1.09) saturate(1.12); }
+}
+@keyframes cinemaOrbit { to { rotate:360deg; } }
+@keyframes cinemaLightSweep {
+  0%,20% { transform:translateX(-120%) skewX(-8deg); opacity:0; }
+  35% { opacity:1; }
+  65% { transform:translateX(120%) skewX(-8deg); opacity:.75; }
+  80%,100% { transform:translateX(120%) skewX(-8deg); opacity:0; }
+}
+@media(max-width:700px) {
+  #hero-visual { animation-duration:16s; }
+  #hero-visual::after { opacity:.45; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #hero-visual, #hero-visual .hero-portrait-frame,
+  #hero-visual .hero-portrait-frame img, #hero-visual .hero-portrait-ring,
+  #hero-visual::after { animation:none !important; }
+}
