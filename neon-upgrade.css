@@ -698,3 +698,19 @@ footer .footer-top > a.btn.btn-primary:focus-visible {
   }
   #site-header .burger span { background: #03121c !important; }
 }
+
+
+/* Replace the yellow/gold halo beneath the hero portrait with a neon blue-pink gradient */
+#hero-visual .hero-portrait-ring {
+  border-color: rgba(0,234,255,.78) !important;
+  background: conic-gradient(from 0deg, #00eaff, #2878ff, #ff3bd4, #a855f7, #00eaff) !important;
+  box-shadow: 0 0 16px rgba(0,234,255,.45), 0 0 32px rgba(255,59,212,.32), inset 0 0 18px rgba(0,234,255,.12) !important;
+}
+#hero-visual .hero-portrait-ring::before,
+#hero-visual .hero-portrait-ring::after {
+  border-color: rgba(255,59,212,.72) !important;
+  box-shadow: 0 0 18px rgba(255,59,212,.38), 0 0 26px rgba(0,234,255,.25) !important;
+}
+#hero-visual::before {
+  background: radial-gradient(ellipse at 28% 30%, rgba(0,234,255,.2), transparent 56%), radial-gradient(ellipse at 72% 70%, rgba(255,59,212,.2), transparent 58%) !important;
+}
