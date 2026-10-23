@@ -326,3 +326,41 @@ body.page-ready #site-header {
 @media(prefers-reduced-motion:reduce) {
   #hero-visual::before, #hero-visual .hero-portrait-ring { animation:none !important; }
 }
+
+
+/* FIX: keep the custom cursor visible above the page and the 3D scene.
+   A previous usability rule accidentally placed it behind the whole page (z-index:0). */
+#cursor-dot, #cursor-ring {
+  position:fixed !important;
+  z-index:2147483000 !important;
+  pointer-events:none !important;
+  display:block;
+  opacity:1 !important;
+  visibility:visible !important;
+  will-change:left,top,transform;
+}
+#cursor-dot {
+  width:7px !important;
+  height:7px !important;
+  border-radius:50% !important;
+  background:#00f5ff !important;
+  box-shadow:0 0 10px #00f5ff,0 0 22px rgba(0,245,255,.7) !important;
+}
+#cursor-ring {
+  width:38px !important;
+  height:38px !important;
+  border:1px solid rgba(0,245,255,.8) !important;
+  border-radius:50% !important;
+  background:rgba(0,245,255,.035) !important;
+  box-shadow:0 0 14px rgba(0,245,255,.12),inset 0 0 10px rgba(0,245,255,.035) !important;
+}
+#cursor-ring.big {
+  width:64px !important;
+  height:64px !important;
+  border-color:rgba(168,85,247,.95) !important;
+  background:rgba(168,85,247,.09) !important;
+}
+@media (hover:none), (pointer:coarse), (max-width:900px) {
+  body, body * { cursor:auto !important; }
+  #cursor-dot, #cursor-ring { display:none !important; }
+}
