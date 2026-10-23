@@ -464,3 +464,27 @@ body.page-ready #site-header {
   }
   #site-header, #site-header * { cursor:none !important; }
 }
+
+
+/* FIX duplicated Home-to-Contact links: keep the mobile drawer hidden until opened. */
+#mobile-menu {
+  position:fixed !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100vh !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  transform:translateY(-110%) !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  overflow-y:auto !important;
+  z-index:2147483002 !important;
+}
+#mobile-menu.open {
+  transform:translateY(0) !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
