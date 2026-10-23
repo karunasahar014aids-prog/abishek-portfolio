@@ -446,6 +446,21 @@ body.page-ready #site-header {
     cursor:pointer !important;
   }
   #cursor-dot, #cursor-ring {
-    z-index:2147482000 !important;
+    z-index:2147483647 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    display:block !important;
   }
+}
+
+
+/* Final cursor-over-navbar visibility correction */
+@media (hover:hover) and (pointer:fine) and (min-width:901px) {
+  #cursor-dot, #cursor-ring {
+    z-index:2147483647 !important;
+    pointer-events:none !important;
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+  #site-header, #site-header * { cursor:none !important; }
 }
