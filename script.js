@@ -663,6 +663,7 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
   const name = document.getElementById('fb-name').value.trim();
   const phone = document.getElementById('fb-phone').value.trim();
   const email = document.getElementById('fb-email').value.trim();
+  const pin = document.getElementById('fb-pin').value.trim();
   const message = document.getElementById('fb-message').value.trim();
   const rating = parseInt(ratingInput.value);
 
@@ -674,12 +675,16 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
     errorEl.textContent = 'Please add a valid phone number.';
     return;
   }
+  if(!/^\d{4}$/.test(pin)){
+    errorEl.textContent = 'Please enter your own 4-digit PIN to manage your feedback later.';
+    return;
+  }
   errorEl.textContent = '';
   const btn = document.getElementById('fb-submit-btn');
   btn.textContent = 'Submitting...';
   btn.disabled = true;
 
-  await submitFeedback({ full_name:name, phone, email:email||null, rating, message, pin_hash: null });
+  await submitFeedback({ full_name:name, phone, email:email||null, rating, message, pin_hash: pin });
 
   btn.disabled = false;
   btn.innerHTML = 'Submit Feedback <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>';
