@@ -10,6 +10,8 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
     "sb_publishable_7VIks8jFhtcJtJOMzI5CKA_fPLazRUA";
 
+const ADMIN_REDIRECT_URL = "https://abishek-portfolio-pi.vercel.app/admin.html";
+
 let supabaseClient = null;
 let currentPosterId = null;
 const ADMIN_EMAIL = "abia38909@gmail.com";
@@ -66,7 +68,7 @@ async function loginWithGoogle() {
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: window.location.origin + window.location.pathname,
+                redirectTo: ADMIN_REDIRECT_URL,
                 queryParams: { prompt: "select_account" }
             }
         });
@@ -251,7 +253,6 @@ async function savePoster() {
                 description,
                 image_url: imageUrl,
                 display_order: order,
-                /* New photographs are live immediately. */
                 published: true
             });
             if (error) throw error;
