@@ -714,3 +714,26 @@ footer .footer-top > a.btn.btn-primary:focus-visible {
 #hero-visual::before {
   background: radial-gradient(ellipse at 28% 30%, rgba(0,234,255,.2), transparent 56%), radial-gradient(ellipse at 72% 70%, rgba(255,59,212,.2), transparent 58%) !important;
 }
+
+
+/* Photography View More button — match the site's neon cyan/blue/pink theme only. */
+#portfolio .view-more-wrap #load-more-btn {
+  background: linear-gradient(110deg, #00eaff 0%, #247bff 55%, #ff3bd4 100%) !important;
+  color: #050611 !important;
+  -webkit-text-fill-color: #050611 !important;
+  border: 1px solid rgba(0,245,255,.85) !important;
+  box-shadow: 0 0 12px rgba(0,234,255,.35), 0 0 24px rgba(255,59,212,.14) !important;
+  font-weight: 700 !important;
+}
+#portfolio .view-more-wrap #load-more-btn:hover:not(:disabled) {
+  background: linear-gradient(110deg, #8ffaff 0%, #69a7ff 55%, #ff9bed 100%) !important;
+  color: #050611 !important;
+  -webkit-text-fill-color: #050611 !important;
+  border-color: #ff3bd4 !important;
+  box-shadow: 0 0 18px rgba(0,234,255,.55), 0 0 32px rgba(255,59,212,.3) !important;
+  transform: translateY(-3px);
+}
+#portfolio .view-more-wrap #load-more-btn:focus-visible {
+  outline: 2px solid #00eaff !important;
+  outline-offset: 4px !important;
+}
