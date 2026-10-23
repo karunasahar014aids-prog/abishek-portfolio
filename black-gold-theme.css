@@ -64,3 +64,76 @@ html,body{background:#080808!important;color:#F7F4EA!important}body{color-scheme
     min-height:280px !important;
   }
 }
+
+
+/* Animated gold success mark in the center of the feedback popup */
+#fb-modal #fb-success.show{
+  position:relative !important;
+  overflow:hidden !important;
+}
+#fb-modal #fb-success.show::before{
+  content:"✓" !important;
+  display:grid !important;
+  place-items:center !important;
+  flex:0 0 62px !important;
+  width:62px !important;
+  height:62px !important;
+  margin:0 auto 4px !important;
+  border:2px solid #FFD400 !important;
+  border-radius:50% !important;
+  background:radial-gradient(circle,rgba(255,212,0,.18),rgba(255,212,0,.035) 70%) !important;
+  color:#FFD400 !important;
+  font-family:Arial,sans-serif !important;
+  font-size:36px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  box-shadow:0 0 0 0 rgba(255,212,0,.42),0 0 28px rgba(255,212,0,.2) !important;
+  animation:feedback-check-pop .65s cubic-bezier(.2,.85,.25,1.35) both, feedback-gold-pulse 1.8s .65s ease-out infinite !important;
+  transform-origin:center !important;
+}
+#fb-modal #fb-success.show::after{
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  top:29px !important;
+  left:50% !important;
+  width:62px !important;
+  height:62px !important;
+  border:1px solid rgba(255,212,0,.65) !important;
+  border-radius:50% !important;
+  pointer-events:none !important;
+  animation:feedback-ring-wave 1.8s .45s ease-out infinite !important;
+}
+#fb-modal #fb-success.show h3{
+  animation:feedback-title-in .55s .12s ease both !important;
+}
+#fb-modal #fb-success.show p{
+  animation:feedback-copy-in .55s .22s ease both !important;
+}
+@keyframes feedback-check-pop{
+  0%{opacity:0;transform:scale(.25) rotate(-35deg)}
+  70%{opacity:1;transform:scale(1.12) rotate(6deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes feedback-gold-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,212,0,.25),0 0 22px rgba(255,212,0,.18)}
+  50%{box-shadow:0 0 0 8px rgba(255,212,0,.04),0 0 34px rgba(255,212,0,.32)}
+}
+@keyframes feedback-ring-wave{
+  0%{opacity:.75;transform:translateX(-50%) scale(.85)}
+  100%{opacity:0;transform:translateX(-50%) scale(1.85)}
+}
+@keyframes feedback-title-in{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes feedback-copy-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  #fb-modal #fb-success.show::before,
+  #fb-modal #fb-success.show::after,
+  #fb-modal #fb-success.show h3,
+  #fb-modal #fb-success.show p{animation:none!important}
+}
