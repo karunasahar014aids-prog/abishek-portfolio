@@ -32,30 +32,26 @@ function initializeSupabase() {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-async function login() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+async function loginWithGoogle() {
     const message = document.getElementById("message");
-
-    if (!email || !password) {
-        message.textContent = "Please enter email and password.";
-        return;
-    }
     if (!supabaseClient) {
         message.textContent = "Supabase is not configured.";
         return;
     }
 
-    message.textContent = "Authenticating...";
+    message.textContent = "Redirecting to Google sign-in...";
     try {
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: window.location.origin + window.location.pathname,
+                queryParams: { prompt: "select_account" }
+            }
+        });
         if (error) throw error;
-        message.textContent = "Login successful.";
-        showDashboard();
-        await loadPosters();
     } catch (error) {
         console.error(error);
-        message.textContent = error.message || "Login failed.";
+        message.textContent = error.message || "Google sign-in could not start. Check Supabase Google provider settings.";
     }
 }
 
