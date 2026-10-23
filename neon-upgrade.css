@@ -612,3 +612,7 @@ body.page-ready #site-header {
 @media(prefers-reduced-motion:reduce) {
   #hero-visual .hero-portrait-frame::after { animation:none !important; }
 }
+
+
+/* Remove the animated blur glow beneath the hero portrait */
+#hero-visual .hero-portrait-frame::after { content:none !important; animation:none !important; filter:none !important; }
