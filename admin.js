@@ -14,6 +14,7 @@ const ADMIN_REDIRECT_URL = "https://abishek-portfolio-pi.vercel.app/admin.html";
 
 let supabaseClient = null;
 let currentPosterId = null;
+const ADMIN_EMAIL = "abia38909@gmail.com";
 
 function loadSupabase() {
     return new Promise((resolve, reject) => {
@@ -40,6 +41,10 @@ async function loginWithEmail(event) {
     const email = (document.getElementById("email")?.value || "").trim().toLowerCase();
     const password = document.getElementById("password")?.value || "";
     if (!supabaseClient) { message.textContent = "Supabase is not configured."; return; }
+    if (email !== ADMIN_EMAIL.toLowerCase()) {
+        message.textContent = "Access denied. Please use the authorized admin email: " + ADMIN_EMAIL;
+        return;
+    }
     message.textContent = "Signing in...";
     try {
         const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -363,8 +368,24 @@ function escapeHTML(value) {
 async function checkSession() {
     if (!supabaseClient) return;
     const { data, error } = await supabaseClient.auth.getSession();
-    if (error) return console.error(error);
-    // Public dashboard mode: open without requiring a signed-in session.
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    const session = data?.session;
+    if (!session) return;
+
+    const email = (session.user?.email || "").trim().toLowerCase();
+    if (email !== ADMIN_EMAIL.toLowerCase()) {
+        await supabaseClient.auth.signOut();
+        const message = document.getElementById("message");
+        if (message) message.textContent = "Access denied. This account is not authorized for admin access.";
+        const login = document.querySelector(".login-wrapper");
+        if (login) login.style.display = "";
+        return;
+    }
+
     showDashboard();
     await loadPosters();
 }
