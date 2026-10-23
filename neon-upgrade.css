@@ -153,3 +153,22 @@ a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
 @media (hover:none), (pointer:coarse) {
   #cursor-dot, #cursor-ring { display:none !important; }
 }
+
+/* Safety fallback: contact content must remain visible if scroll-trigger JS fails. */
+#contact .reveal,
+#contact .contact-grid,
+#contact .contact-grid > *,
+#contact .contact-info-list,
+#contact .contact-form {
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:none !important;
+}
+#contact .contact-grid { display:grid; }
+#contact .contact-info-list { display:grid; }
+#contact .contact-form { display:block; }
+#contact .btn-primary, #contact .send-btn, #contact button[type="submit"] {
+  background:linear-gradient(110deg,#00d9ff 0%,#8b5cf6 100%) !important;
+  color:#070914 !important;
+  border:1px solid rgba(0,245,255,.72) !important;
+}
