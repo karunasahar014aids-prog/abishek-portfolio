@@ -13,3 +13,54 @@ html,body{background:#080808!important;color:#F7F4EA!important}body{color-scheme
 @keyframes success-message-five-seconds{0%,88%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
 .contact-form:has(.form-success.show),#fb-modal:has(#fb-success.show){filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important;animation:none!important}
 @media(max-width:700px){.logo-img{height:125px!important;max-width:420px!important;transform:scale(1.25)!important}.hero-portrait-frame{width:min(300px,78vw)!important;height:min(390px,102vw)!important}.projects-grid .p-cover,.projects-grid .p-cover img{min-height:220px!important}}
+
+/* Feedback submitted: keep the Thank You message centered inside the popup */
+#fb-modal:has(#fb-success.show){
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:stretch !important;
+  height:300px !important;
+  min-height:300px !important;
+  max-height:calc(100dvh - 48px) !important;
+  overflow:hidden !important;
+}
+#fb-modal:has(#fb-success.show) .fb-modal-head,
+#fb-modal:has(#fb-success.show) #fb-form,
+#fb-modal:has(#fb-success.show) > #fb-modal-close{
+  /* Header and form are hidden in success state; close button is positioned independently below */
+}
+#fb-modal:has(#fb-success.show) .fb-modal-head,
+#fb-modal:has(#fb-success.show) #fb-form{
+  display:none !important;
+}
+#fb-modal #fb-success.show{
+  box-sizing:border-box !important;
+  width:100% !important;
+  min-height:220px !important;
+  margin:0 !important;
+  padding:32px 24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:12px !important;
+  text-align:center !important;
+}
+#fb-modal #fb-success.show h3{
+  width:100% !important;
+  text-align:center !important;
+}
+#fb-modal #fb-success.show p{
+  max-width:360px !important;
+  margin:0 auto !important;
+  text-align:center !important;
+  line-height:1.6 !important;
+  color:#F7F4EA !important;
+}
+@media(max-width:600px){
+  #fb-modal:has(#fb-success.show){
+    height:280px !important;
+    min-height:280px !important;
+  }
+}
