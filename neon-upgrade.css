@@ -435,3 +435,17 @@ body.page-ready #site-header {
 #mobile-menu.open { pointer-events:auto !important; }
 #mobile-menu a, #mobile-menu button { pointer-events:auto !important; position:relative !important; z-index:2147483003 !important; }
 #hero-visual, #hero-visual::before, #hero-visual::after, .three-portfolio-canvas { pointer-events:none !important; }
+
+
+/* NAV CURSOR FIX: restore native cursor over the navbar so it never feels blocked. */
+@media (hover:hover) and (pointer:fine) {
+  #site-header, #site-header *, #mobile-menu, #mobile-menu * {
+    cursor:auto !important;
+  }
+  #site-header a, #site-header button, #mobile-menu a, #mobile-menu button {
+    cursor:pointer !important;
+  }
+  #cursor-dot, #cursor-ring {
+    z-index:2147482000 !important;
+  }
+}
