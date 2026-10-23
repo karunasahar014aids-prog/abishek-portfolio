@@ -616,3 +616,25 @@ body.page-ready #site-header {
 
 /* Remove the animated blur glow beneath the hero portrait */
 #hero-visual .hero-portrait-frame::after { content:none !important; animation:none !important; filter:none !important; }
+
+
+/* FIX: make the footer “Start a Project” CTA readable against its bright background */
+footer .footer-top > a.btn.btn-primary {
+  color: #11131b !important;
+  -webkit-text-fill-color: #11131b !important;
+  text-shadow: none !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  background: linear-gradient(110deg, #ffe84a 0%, #ffd928 100%) !important;
+  border: 1px solid #ffe84a !important;
+}
+footer .footer-top > a.btn.btn-primary:hover,
+footer .footer-top > a.btn.btn-primary:focus-visible {
+  color: #080a12 !important;
+  -webkit-text-fill-color: #080a12 !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  outline: 2px solid #00d9ff !important;
+  outline-offset: 4px !important;
+}
