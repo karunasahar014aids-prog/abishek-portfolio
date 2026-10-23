@@ -2411,3 +2411,38 @@ body.light-mode .theme-toggle{
     }
 
 }
+
+
+/* FIX: keep the feedback dialog itself scrollable while the page behind it stays still */
+#fb-modal-backdrop{
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+#fb-modal{
+  height:auto;
+  max-height:calc(100vh - 48px);
+  max-height:calc(100dvh - 48px);
+  min-height:0;
+  overflow-x:hidden;
+  overflow-y:auto !important;
+  overscroll-behavior-y:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  scrollbar-gutter:stable;
+}
+#fb-modal form{
+  min-height:0;
+}
+@media(max-width:600px){
+  #fb-modal-backdrop{
+    align-items:flex-start;
+    padding:16px;
+  }
+  #fb-modal{
+    max-height:calc(100vh - 32px);
+    max-height:calc(100dvh - 32px);
+    margin:auto 0;
+    padding:24px;
+  }
+}
