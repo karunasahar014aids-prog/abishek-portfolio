@@ -108,3 +108,21 @@ header .nav-inner, header.scrolled .nav-inner {
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
+
+/* Premium 3D scene layer */
+#hero-visual { isolation:isolate; perspective:1100px; transform-style:preserve-3d; }
+.three-portfolio-canvas {
+  position:absolute !important; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none; display:block; opacity:.96;
+  filter:drop-shadow(0 0 20px rgba(0,220,255,.08));
+}
+#hero-visual .hero-portrait-ring { z-index:1; transform:translateZ(24px); }
+#hero-visual .hero-portrait-frame { z-index:2; transform:translateZ(48px); }
+#hero-visual .float-icon { z-index:3; transform:translateZ(70px); }
+#hero-visual .hero-portrait-frame img { transform:translateZ(18px); }
+@media (max-width: 700px) {
+  .three-portfolio-canvas { opacity:.72; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .three-portfolio-canvas { opacity:.5; }
+}
