@@ -236,12 +236,17 @@ const gallery = document.getElementById('gallery');
 let visibleCount = 8;
 let currentFilteredList = galleryData.slice();
 let currentModalIndex = -1; // index within currentFilteredList
+let portfolioSearchQuery = '';
 
 function renderGallery(filter){
   gallery.innerHTML = '';
-  currentFilteredList = filter==='all'
-  ? categories.filter(c=>c!=='all').map(c=> galleryData.find(g=>g.cat===c)).filter(Boolean)
-  : galleryData.filter(g => g.cat===filter);
+  const categoryItems = filter==='all'
+    ? (portfolioSearchQuery ? galleryData.slice() : categories.filter(c=>c!=='all').map(c=> galleryData.find(g=>g.cat===c)).filter(Boolean))
+    : galleryData.filter(g => g.cat===filter);
+  const q = portfolioSearchQuery.trim().toLocaleLowerCase();
+  currentFilteredList = q
+    ? categoryItems.filter(g => [g.title,g.cat,g.loc,g.desc,g.story,g.client,g.role].filter(Boolean).join(' ').toLocaleLowerCase().includes(q))
+    : categoryItems;
   const items = currentFilteredList.slice(0, visibleCount);
   items.forEach((g)=>{
     const gid = galleryData.indexOf(g); // stable id — never changes across filters/reloads
@@ -292,6 +297,28 @@ document.getElementById('load-more-btn').addEventListener('click', ()=>{
   const active = filterBar.querySelector('.filter-btn.active').dataset.cat;
   renderGallery(active);
 });
+
+const portfolioSearchInput = document.getElementById('portfolio-search-input');
+const portfolioSearchClear = document.getElementById('portfolio-search-clear');
+if (portfolioSearchInput) {
+  portfolioSearchInput.addEventListener('input', () => {
+    portfolioSearchQuery = portfolioSearchInput.value;
+    visibleCount = 8;
+    renderGallery(filterBar.querySelector('.filter-btn.active')?.dataset.cat || 'all');
+  });
+}
+if (portfolioSearchClear) {
+  portfolioSearchClear.addEventListener('click', () => {
+    if (portfolioSearchInput) {
+      portfolioSearchInput.value = '';
+      portfolioSearchQuery = '';
+      visibleCount = 8;
+      renderGallery(filterBar.querySelector('.filter-btn.active')?.dataset.cat || 'all');
+      portfolioSearchInput.focus();
+    }
+  });
+}
+
 
 function setFavUI(card, active){
   const badge = card.querySelector('.g-fav-badge');
