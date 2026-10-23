@@ -580,3 +580,35 @@ body.page-ready #site-header {
 @media(prefers-reduced-motion:reduce) {
   .cinema-camera,.cinema-film,.floating-photo,.clapper,.aperture-orb { animation:none !important; }
 }
+
+
+/* SOFT CINEMATIC BLUR GLOW UNDER THE HERO PORTRAIT */
+#hero-visual .hero-portrait-frame {
+  position:relative !important;
+  isolation:isolate;
+  z-index:3 !important;
+}
+#hero-visual .hero-portrait-frame::after {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:10%; right:10%; bottom:-22px;
+  height:34px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(0,214,255,.82) 0%, rgba(70,91,255,.48) 38%, rgba(0,214,255,.12) 64%, transparent 78%);
+  filter:blur(17px);
+  opacity:.9;
+  transform:scaleX(1.08);
+  animation:portraitBaseGlow 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes portraitBaseGlow {
+  0%,100% { opacity:.62; transform:translateY(0) scaleX(.94); filter:blur(17px); }
+  50% { opacity:1; transform:translateY(-3px) scaleX(1.12); filter:blur(22px); }
+}
+@media(max-width:600px) {
+  #hero-visual .hero-portrait-frame::after { bottom:-16px; height:24px; filter:blur(13px); }
+}
+@media(prefers-reduced-motion:reduce) {
+  #hero-visual .hero-portrait-frame::after { animation:none !important; }
+}
