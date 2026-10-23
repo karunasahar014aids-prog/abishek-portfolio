@@ -1,4 +1,5 @@
-gsap.registerPlugin(ScrollTrigger);
+// Keep the gallery and its controls usable even if an animation CDN is temporarily unavailable.
+if (window.gsap && window.ScrollTrigger) window.gsap.registerPlugin(window.ScrollTrigger);
 
 /* ============================================================
    MODAL SCROLL LOCK (shared by all modals: gallery, feedback
@@ -821,6 +822,14 @@ window.addEventListener('load', ()=>{
     pctEl.textContent = Math.floor(p)+'%';
   }, 90);
 
+  // A failed animation CDN must never leave the full-screen loader blocking clicks.
+  if (!window.gsap || !window.ScrollTrigger) {
+    const loader = document.getElementById('loader');
+    if (loader) { loader.style.opacity = '0'; loader.style.pointerEvents = 'none'; loader.style.display = 'none'; }
+    document.body.classList.add('page-ready');
+    if (pctEl) pctEl.textContent = '100%';
+    return;
+  }
   const tl = gsap.timeline({ delay: 0.9, onComplete: initPage });
   tl.to('.shutter-blade', { scale: 0, transformOrigin:'75px 75px', duration:.9, ease:'power3.inOut', stagger:.03 })
     .to('#loader', { opacity:0, duration:.6, ease:'power2.inOut', pointerEvents:'none' }, '-=.3')
