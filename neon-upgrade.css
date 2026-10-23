@@ -488,3 +488,95 @@ body.page-ready #site-header {
   opacity:1 !important;
   pointer-events:auto !important;
 }
+
+
+/* CINEMA PHOTOGRAPHY 3D SET — floating camera, film and photo frames */
+#hero-visual { overflow:visible !important; }
+.cinema-props {
+  position:absolute; inset:-12% -20% -10% -18%; z-index:1;
+  pointer-events:none; transform-style:preserve-3d; perspective:1000px;
+}
+.cinema-camera {
+  position:absolute; width:190px; height:125px; left:2%; top:28%;
+  transform-style:preserve-3d; transform:rotateY(-22deg) rotateX(5deg) rotateZ(-4deg);
+  animation: cameraFloat 7s ease-in-out infinite;
+  filter:drop-shadow(0 22px 20px rgba(0,0,0,.5));
+}
+.camera-body {
+  position:absolute; inset:20px 0 14px; border-radius:14px 12px 18px 12px;
+  background:linear-gradient(145deg,#4a5869 0%,#151d2b 26%,#080d17 68%,#293746 100%);
+  border:2px solid rgba(125,220,255,.5);
+  box-shadow:inset 0 3px 5px #a9d7e8,inset 0 -8px 12px #02040a,0 0 24px rgba(0,204,255,.18);
+  transform:translateZ(18px);
+}
+.camera-top {
+  position:absolute; top:7px; left:30px; width:62px; height:22px;
+  border-radius:7px 7px 0 0; background:linear-gradient(#637587,#1b2735);
+  border:1px solid #536b7c; transform:translateZ(10px);
+}
+.camera-lens {
+  position:absolute; width:76px; height:76px; left:-28px; top:4px; border-radius:50%;
+  background:repeating-radial-gradient(circle,#090d14 0 5px,#344b5e 6px 9px,#101722 10px 14px);
+  border:5px solid #6e8190; box-shadow:0 0 0 5px #141c28,0 0 0 7px #8193a0,0 0 25px rgba(0,211,255,.28);
+  transform:translateZ(24px);
+}
+.camera-lens i {
+  position:absolute; inset:17px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#a3f3ff 0%,#227fba 14%,#0b1935 42%,#02040b 72%);
+  border:2px solid #1f364a; box-shadow:inset 0 0 14px #00bfff;
+}
+.camera-screen {
+  position:absolute; width:42px; height:28px; right:15px; top:17px;
+  border:3px solid #485c6d; border-radius:3px;
+  background:linear-gradient(135deg,rgba(0,221,255,.8),rgba(20,40,78,.5)),repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.2) 6px);
+  box-shadow:0 0 12px rgba(0,211,255,.25);
+}
+.camera-grip { position:absolute; right:-8px; top:35px; width:15px; height:42px; border-radius:4px; background:repeating-linear-gradient(0deg,#101722 0 5px,#394a59 6px 8px); }
+.camera-foot { position:absolute; bottom:0; left:66px; width:64px; height:15px; background:linear-gradient(#687c8c,#141d28); clip-path:polygon(15% 0,85% 0,100% 100%,0 100%); }
+.cinema-film {
+  position:absolute; width:340px; height:58px; display:flex; gap:5px; padding:12px 8px;
+  border-top:7px solid #080b12; border-bottom:7px solid #080b12;
+  background:repeating-linear-gradient(90deg,#d5e7ed 0 9px,transparent 9px 19px) top/100% 5px no-repeat,
+    repeating-linear-gradient(90deg,#d5e7ed 0 9px,transparent 9px 19px) bottom/100% 5px no-repeat;
+  transform-style:preserve-3d; opacity:.88;
+}
+.cinema-film span { flex:1; border:1px solid rgba(255,255,255,.25); background:linear-gradient(150deg,#f3b56d,#183c5c 52%,#07121d); box-shadow:inset 0 0 10px rgba(0,0,0,.45); }
+.film-left { left:-19%; top:12%; transform:rotateZ(-17deg) rotateY(22deg); animation:filmDriftLeft 13s ease-in-out infinite alternate; }
+.film-right { right:-12%; bottom:13%; transform:rotateZ(13deg) rotateY(-20deg); animation:filmDriftRight 15s ease-in-out infinite alternate; }
+.floating-photo {
+  position:absolute; width:80px; height:102px; padding:5px 5px 16px; background:#e8edf1;
+  border:1px solid #fff; box-shadow:0 12px 24px rgba(0,0,0,.45);
+  background-image:linear-gradient(155deg,transparent 35%,rgba(8,17,32,.45)),linear-gradient(25deg,#132d43 0 25%,#df985b 26% 39%,#477f9a 40% 61%,#192a38 62%);
+}
+.photo-one { right:6%; top:7%; transform:rotate(13deg) translateZ(45px); animation:photoFloat 6s ease-in-out infinite; }
+.photo-two { left:23%; top:2%; width:62px;height:80px; transform:rotate(-16deg); animation:photoFloat 7s ease-in-out -2s infinite; }
+.photo-three { right:0; bottom:18%; width:64px;height:82px; transform:rotate(-9deg); animation:photoFloat 8s ease-in-out -4s infinite; }
+.clapper { position:absolute; left:0; bottom:11%; width:120px; transform:rotate(-14deg) translateZ(55px); animation:clapperFloat 5s ease-in-out infinite; }
+.clapper-top { height:17px; border:1px solid #6b7d8b; background:repeating-linear-gradient(135deg,#dce6eb 0 12px,#182333 12px 24px); transform:skewY(-9deg); transform-origin:left; }
+.clapper-board { display:flex; justify-content:space-between; padding:12px 8px; color:#d9f5ff; font-size:8px; letter-spacing:1px; font-weight:800; background:linear-gradient(145deg,#253747,#080c14); border:1px solid #516777; box-shadow:0 7px 12px #0008; }
+.aperture-orb { position:absolute; right:4%; top:46%; display:grid; place-items:center; width:48px;height:48px; color:#7feaff; font-size:34px; border:1px solid #00cfff55; border-radius:50%; background:#081424aa; box-shadow:0 0 28px #00cfff25; animation:apertureSpin 12s linear infinite; }
+@keyframes cameraFloat { 0%,100%{transform:translate3d(0,0,25px) rotateY(-22deg) rotateX(5deg) rotateZ(-4deg)} 50%{transform:translate3d(7px,-17px,60px) rotateY(-10deg) rotateX(1deg) rotateZ(-1deg)} }
+@keyframes filmDriftLeft { from{translate:-8px 8px;rotate:-2deg} to{translate:25px -12px;rotate:3deg} }
+@keyframes filmDriftRight { from{translate:14px -8px;rotate:2deg} to{translate:-18px 12px;rotate:-3deg} }
+@keyframes photoFloat { 0%,100%{translate:0 0;rotate:0deg} 50%{translate:0 -16px;rotate:4deg} }
+@keyframes clapperFloat { 0%,100%{translate:0 0} 50%{translate:0 -10px} }
+@keyframes apertureSpin { to{rotate:360deg} }
+@media(max-width:900px) {
+  .cinema-props { inset:-8% -8% -6%; opacity:.72; }
+  .cinema-camera { transform:scale(.72) rotateY(-20deg); left:-8%; top:38%; }
+  .cinema-film { width:245px; opacity:.7; }
+  .film-left { left:-22%; top:6%; }
+  .film-right { right:-20%; bottom:9%; }
+  .floating-photo { scale:.72; }
+  .clapper { scale:.72; left:-5%; }
+}
+@media(max-width:600px) {
+  .cinema-props { opacity:.42; inset:-3%; }
+  .cinema-camera { scale:.68; left:-16%; top:45%; }
+  .film-left { top:0; left:-40%; }
+  .film-right { right:-42%; bottom:4%; }
+  .photo-two,.photo-three,.aperture-orb { display:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .cinema-camera,.cinema-film,.floating-photo,.clapper,.aperture-orb { animation:none !important; }
+}
