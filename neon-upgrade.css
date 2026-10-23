@@ -234,3 +234,27 @@ a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
   #site-header .nav-links, #site-header .nav-cta { display:none !important; }
   #site-header .burger { display:flex !important; pointer-events:auto !important; }
 }
+
+
+/* Navigation timing and spacing: show only after the shutter loader finishes. */
+#site-header {
+  opacity:0 !important;
+  visibility:hidden !important;
+  transform:translateY(-10px) !important;
+  transition:opacity .35s ease, transform .35s ease, visibility .35s ease !important;
+  padding:8px 0 !important;
+}
+body.page-ready #site-header {
+  opacity:1 !important;
+  visibility:visible !important;
+  transform:translateY(0) !important;
+}
+#site-header .nav-inner { margin:0 auto !important; }
+#hero { padding-top:96px !important; }
+@media(max-width:900px) {
+  #site-header { padding:8px 0 !important; }
+  #hero { padding-top:88px !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #site-header { transition:none !important; }
+}
