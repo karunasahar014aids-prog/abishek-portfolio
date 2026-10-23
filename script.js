@@ -17,12 +17,19 @@ function lockPageScroll(){
   modalLockCount++;
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
+  // Lenis uses its own scroll engine, so stop it while any modal is open.
+  if(window.__siteLenis && typeof window.__siteLenis.stop === 'function'){
+    window.__siteLenis.stop();
+  }
 }
 function unlockPageScroll(){
   modalLockCount = Math.max(0, modalLockCount - 1);
   if(modalLockCount === 0){
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
+    if(window.__siteLenis && typeof window.__siteLenis.start === 'function'){
+      window.__siteLenis.start();
+    }
   }
 }
 function preventBackdropScroll(backdropEl, boxSelector){
@@ -761,6 +768,8 @@ function initPage(){
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const lenis = new Lenis({ duration:1.1, easing:(t)=>Math.min(1,1.001-Math.pow(2,-10*t)) });
+  // Expose the page scroller so modal open/close can pause and resume it.
+  window.__siteLenis = lenis;
   function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
   lenis.on('scroll', ScrollTrigger.update);
