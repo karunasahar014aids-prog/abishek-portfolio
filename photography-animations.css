@@ -48,3 +48,67 @@
 @keyframes photoReveal{from{opacity:0;transform:translateY(38px) scale(.975);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @media (max-width:640px){#portfolio .gallery-item:hover,#portfolio .portfolio-item:hover,#portfolio .work-item:hover,#portfolio .masonry-item:hover,#portfolio .gallery-card:hover,#portfolio .portfolio-card:hover,#portfolio .work-card:hover{transform:translateY(-4px) scale(1.005)}}
 @media (prefers-reduced-motion:reduce){#portfolio .gallery-item,#portfolio .portfolio-item,#portfolio .work-item,#portfolio .masonry-item,#portfolio .gallery-card,#portfolio .portfolio-card,#portfolio .work-card{animation:none!important;transition:none!important}#portfolio img{transition:none!important}#portfolio .gallery-item::after,#portfolio .portfolio-item::after,#portfolio .work-item::after,#portfolio .masonry-item::after,#portfolio .gallery-card::after,#portfolio .portfolio-card::after,#portfolio .work-card::after{display:none}}
+
+
+/* CINEMATIC MOTION ACROSS EVERY PAGE SECTION (not only the hero) */
+#about, #skills, #portfolio, #projects, #testimonials, #contact {
+  position: relative;
+  isolation: isolate;
+}
+#about .wrap > *,
+#skills .wrap > *,
+#projects .wrap > *,
+#testimonials .wrap > *,
+#contact .wrap > * {
+  animation: sectionContentReveal .85s cubic-bezier(.16,.84,.44,1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 24%;
+}
+#about .section-head, #skills .section-head, #projects .section-head,
+#testimonials .section-head, #contact .section-head {
+  position: relative;
+}
+#about .section-head::after, #skills .section-head::after,
+#projects .section-head::after, #testimonials .section-head::after,
+#contact .section-head::after {
+  content: "";
+  display: block;
+  width: 74px;
+  height: 2px;
+  margin-top: 16px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #00eaff, #247bff, transparent);
+  box-shadow: 0 0 12px rgba(0,234,255,.35);
+  transform-origin: left center;
+  animation: neonLineGrow .9s cubic-bezier(.16,.84,.44,1) both;
+}
+#about .about-card, #about .about-item, #skills .skill-card,
+#skills .skill-item, #projects .project-card, #projects .project-item,
+#testimonials .testimonial-card, #testimonials .feedback-card,
+#contact .contact-card, #contact .contact-item {
+  transition: transform .45s cubic-bezier(.16,.84,.44,1), box-shadow .45s ease, border-color .35s ease;
+}
+#about .about-card:hover, #about .about-item:hover, #skills .skill-card:hover,
+#skills .skill-item:hover, #projects .project-card:hover, #projects .project-item:hover,
+#testimonials .testimonial-card:hover, #testimonials .feedback-card:hover,
+#contact .contact-card:hover, #contact .contact-item:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0,234,255,.55);
+  box-shadow: 0 18px 48px rgba(0,0,0,.2), 0 0 22px rgba(0,191,255,.10);
+}
+@keyframes sectionContentReveal {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes neonLineGrow {
+  from { transform: scaleX(.12); opacity: .25; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #about .wrap > *, #skills .wrap > *, #projects .wrap > *,
+  #testimonials .wrap > *, #contact .wrap > *,
+  #about .section-head::after, #skills .section-head::after,
+  #projects .section-head::after, #testimonials .section-head::after,
+  #contact .section-head::after { animation: none !important; }
+  #about *, #skills *, #projects *, #testimonials *, #contact * { scroll-behavior: auto !important; }
+}
