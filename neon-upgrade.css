@@ -126,3 +126,30 @@ header .nav-inner, header.scrolled .nav-inner {
 @media (prefers-reduced-motion: reduce) {
   .three-portfolio-canvas { opacity:.5; }
 }
+
+/* Usability patch: keep decorative cursor/3D layers from intercepting clicks. */
+#cursor-dot, #cursor-ring, #neon-particles, .three-portfolio-canvas { pointer-events:none !important; }
+#cursor-dot, #cursor-ring { z-index:0 !important; }
+#site-header, #site-header .nav-inner, #mobile-menu { position:relative; z-index:1000; }
+a, button, input, textarea, select, [role="button"] { pointer-events:auto; }
+#hero-visual canvas { pointer-events:none !important; }
+/* Remove the unwanted yellow CTA; use the same premium cyan-to-violet palette. */
+#contact .btn, #contact a.btn, #contact .magnetic,
+#contact .btn-primary, #contact .btn-secondary,
+#contact a[href^="mailto:"], #contact a[href*="#contact"] {
+  background:linear-gradient(110deg,#00d9ff 0%,#8b5cf6 100%) !important;
+  color:#070914 !important;
+  border:1px solid rgba(0,245,255,.72) !important;
+  box-shadow:0 0 22px rgba(0,217,255,.18),0 0 34px rgba(139,92,246,.12) !important;
+}
+#contact .btn:hover, #contact a.btn:hover, #contact .magnetic:hover {
+  background:linear-gradient(110deg,#4ceaff 0%,#a78bfa 100%) !important;
+  box-shadow:0 0 28px rgba(0,217,255,.28),0 0 42px rgba(139,92,246,.2) !important;
+}
+/* Keep clickable controls above visual decoration and restore obvious focus. */
+.nav-links, .nav-cta, .btn, .filter-btn, .g-card, #mobile-menu a {
+  position:relative; z-index:2;
+}
+@media (hover:none), (pointer:coarse) {
+  #cursor-dot, #cursor-ring { display:none !important; }
+}
