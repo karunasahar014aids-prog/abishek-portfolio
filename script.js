@@ -689,15 +689,20 @@ document.getElementById('fb-form').addEventListener('submit', async function(e){
   btn.disabled = false;
   btn.innerHTML = 'Submit Feedback <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>';
   this.style.display = 'none';
-  document.getElementById('fb-success').classList.add('show');
+  const fbModal = document.getElementById('fb-modal');
+  const successEl = document.getElementById('fb-success');
+  fbModal.scrollTop = 0;
+  successEl.classList.add('show');
+  // Keep the success message visible in the center of the popup before closing it.
   setTimeout(()=>{
     closeFbModal();
     this.reset();
     this.style.display='';
-    document.getElementById('fb-success').classList.remove('show');
+    successEl.classList.remove('show');
+    fbModal.scrollTop = 0;
     starButtons.forEach(b=>b.classList.remove('active'));
     ratingInput.value = 0;
-  }, 1800);
+  }, 3500);
 });
 
 /* ============================================================
